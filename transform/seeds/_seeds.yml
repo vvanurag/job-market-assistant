@@ -1,0 +1,28 @@
+version: 2
+
+seeds:
+  - name: city_aliases
+    description: >
+      Maps text found in posting locations to a canonical target city (FR-TRN-12).
+      match_level ranks how specific the match is: a city name beats an area name,
+      which beats a state-only location such as "Telangana, India".
+    config:
+      column_types:
+        alias: varchar
+        city: varchar
+        match_level: varchar
+    columns:
+      - name: alias
+        description: Lowercase text to look for in the location string.
+        data_tests: [unique, not_null]
+      - name: city
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["Hyderabad", "Bengaluru"]
+      - name: match_level
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["city", "area", "state"]

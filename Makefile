@@ -3,7 +3,7 @@ VENV   := .venv
 BIN    := $(VENV)/bin
 
 .DEFAULT_GOAL := help
-.PHONY: help setup lint format test doctor doctor-deep docs check bronze
+.PHONY: help setup lint format test doctor doctor-deep docs check bronze dbt-build dbt-build-snowflake
 
 help: ## Show available commands
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "} {printf "  make %-12s %s\n", $$1, $$2}'
@@ -11,7 +11,7 @@ help: ## Show available commands
 setup: ## Create the virtual environment, install dependencies and git hooks
 	$(PYTHON) -m venv $(VENV)
 	$(BIN)/pip install --upgrade pip
-	$(BIN)/pip install -e ".[dev]"
+	$(BIN)/pip install -e ".[dev,transform]"
 	$(BIN)/pre-commit install
 	@test -f .env || (cp .env.example .env && echo "Created .env from .env.example; fill in your values.")
 
@@ -35,6 +35,15 @@ doctor-deep: ## Like doctor, but also calls each model and API
 bronze: ## Load raw files into the Bronze layer, then show totals
 	$(BIN)/jobmarket bronze load
 	$(BIN)/jobmarket bronze status
+
+# dbt reads its settings from environment variables; load them from .env first.
+DBT = set -a && . ./.env && set +a && cd transform && ../$(BIN)/dbt
+
+dbt-build: ## Build and test Silver/Gold models on local DuckDB
+	$(DBT) build --profiles-dir . --target dev
+
+dbt-build-snowflake: ## Build and test Silver/Gold models on Snowflake
+	$(DBT) build --profiles-dir . --target snowflake
 
 docs: ## Serve the documentation site at http://127.0.0.1:8000
 	$(BIN)/mkdocs serve

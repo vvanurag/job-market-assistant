@@ -1,0 +1,23 @@
+# Connection settings for dbt. No secrets live here: every value comes from an
+# environment variable, which `make` loads from the repository's .env file.
+jobmarket:
+  target: dev
+  outputs:
+    # Local development warehouse (ADR-0005)
+    dev:
+      type: duckdb
+      path: "{{ env_var('DUCKDB_PATH', '../data/dev/jobmarket.duckdb') }}"
+      schema: main
+      threads: 4
+
+    # Cloud warehouse (ADR-0003), key-pair authentication
+    snowflake:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT', '') }}"
+      user: "{{ env_var('SNOWFLAKE_USER', '') }}"
+      private_key_path: "{{ env_var('SNOWFLAKE_PRIVATE_KEY_PATH', '') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE', 'JMA_TRANSFORM') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE', 'JMA_WH') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE', 'JOB_MARKET') }}"
+      schema: silver
+      threads: 4

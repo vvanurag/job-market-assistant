@@ -60,6 +60,7 @@ nav:
   - Roadmap: roadmap.md
   - Pipeline:
       - Bronze Layer: pipeline/bronze.md
+      - Silver Layer: pipeline/silver.md
   - Development:
       - Setup: development/setup.md
       - Conventions: development/conventions.md

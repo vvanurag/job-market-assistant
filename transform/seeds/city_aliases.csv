@@ -1,0 +1,20 @@
+alias,city,match_level
+hyderabad,Hyderabad,city
+secunderabad,Hyderabad,city
+cyberabad,Hyderabad,area
+hitec city,Hyderabad,area
+gachibowli,Hyderabad,area
+madhapur,Hyderabad,area
+kondapur,Hyderabad,area
+serilingampalli,Hyderabad,area
+serilingampally,Hyderabad,area
+asifnagar,Hyderabad,area
+khairatabad,Hyderabad,area
+peerancheru,Hyderabad,area
+telangana,Hyderabad,state
+bengaluru,Bengaluru,city
+bangalore,Bengaluru,city
+whitefield,Bengaluru,area
+electronic city,Bengaluru,area
+anekal,Bengaluru,area
+karnataka,Bengaluru,state

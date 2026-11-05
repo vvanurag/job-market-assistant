@@ -12,6 +12,8 @@ htmlcov/
 .env.*
 !.env.example
 profiles.yml
+# transform/profiles.yml has no secrets: every value comes from environment variables
+!transform/profiles.yml
 
 # dbt
 target/
@@ -40,3 +42,4 @@ data/
 # Tooling caches
 .ruff_cache/
 *.egg-info/
+.user.yml

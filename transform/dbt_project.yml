@@ -1,0 +1,24 @@
+name: jobmarket
+version: "0.1.0"
+config-version: 2
+profile: jobmarket
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  jobmarket:
+    staging:
+      +schema: silver
+      +materialized: view
+    silver:
+      +schema: silver
+      +materialized: table
+
+seeds:
+  jobmarket:
+    +schema: silver

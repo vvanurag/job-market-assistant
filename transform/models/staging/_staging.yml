@@ -1,0 +1,24 @@
+version: 2
+
+models:
+  - name: stg_postings
+    description: >
+      Bronze postings with the JSON payload parsed into typed columns (FR-TRN-01).
+      Grain: one row per (source_id, batch_id, source_posting_id), same as Bronze.
+    data_tests:
+      - unique:
+          column_name: "source_id || '|' || batch_id || '|' || source_posting_id"
+    columns:
+      - name: source_posting_id
+        data_tests: [not_null]
+      - name: title
+        data_tests: [not_null]
+      - name: company_name
+        data_tests: [not_null]
+      - name: description_raw
+        description: Original description text. Contains personal data; never exposed beyond staging.
+        data_tests: [not_null]
+      - name: seniority_raw
+        description: Seniority as stated by the source; "Not Applicable" becomes NULL.
+      - name: posted_date
+        description: Date the posting was published, when the source provides it.

@@ -13,6 +13,7 @@ job-market-assistant/
 │   ├── checks.py         Environment checks used by `jobmarket doctor`
 │   └── cli.py            Command-line entry point
 ├── tests/                Pytest suite, mirroring src/ module names
+├── transform/            dbt project: staging, Silver and Gold models, seeds, tests
 ├── infra/snowflake/      Numbered, idempotent SQL scripts for Snowflake objects
 ├── docs/                 This documentation site (MkDocs)
 ├── data/                 Local data (git-ignored): DuckDB file, Bronze files
@@ -21,7 +22,7 @@ job-market-assistant/
 └── pyproject.toml        Package metadata, dependencies and tool settings
 ```
 
-New components get their own subpackage under `src/jobmarket/` when their phase starts, for example `ingestion/` in Phase 1 and `api/` in Phase 6. The dbt project will live in `transform/` from Phase 2.
+New components get their own subpackage under `src/jobmarket/` when their phase starts, for example `ingestion/` in Phase 1 and `api/` in Phase 6. The dbt project lives in `transform/`.
 
 ## Python
 

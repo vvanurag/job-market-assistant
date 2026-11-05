@@ -25,6 +25,12 @@ dev = [
     "ruff>=0.6",
 ]
 
+transform = [
+    "dbt-core>=1.9",
+    "dbt-duckdb>=1.9",
+    "dbt-snowflake>=1.9",
+]
+
 [project.scripts]
 jobmarket = "jobmarket.cli:app"
 

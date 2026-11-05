@@ -1,0 +1,43 @@
+version: 2
+
+models:
+  - name: slv_postings
+    description: >
+      Cleaned postings, one row per posting per source. Location resolved to a target
+      city, personal contact details removed, and reposts linked to one canonical
+      posting. Postings outside Hyderabad and Bengaluru are excluded (FR-TRN-12).
+    columns:
+      - name: posting_key
+        description: Surrogate key, md5(source_id | source_posting_id).
+        data_tests: [unique, not_null]
+      - name: city
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["Hyderabad", "Bengaluru"]
+      - name: city_match_level
+        description: How the city was found — city name, an area of the city, or the state only.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["city", "area", "state"]
+      - name: description_text
+        description: Description with email addresses and phone numbers removed (NFR-15).
+        data_tests: [not_null]
+      - name: content_fingerprint
+        description: md5 of company and whitespace-normalised description. Equal fingerprints mean a repost.
+        data_tests: [not_null]
+      - name: canonical_posting_key
+        description: The posting chosen to represent its repost group (earliest posted, then lowest id).
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_postings')
+                field: posting_key
+      - name: copies_in_group
+        description: Number of postings sharing this fingerprint, including this one.
+      - name: is_canonical
+        description: True for exactly one posting in each repost group.
+        data_tests: [not_null]

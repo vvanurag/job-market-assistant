@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+  - name: bronze
+    description: Raw records loaded by `jobmarket bronze load`. See docs/pipeline/bronze.md.
+    schema: bronze
+    tables:
+      - name: raw_postings
+        description: One row per posting per batch, payload stored exactly as received.
+        config:
+          loaded_at_field: loaded_at
+          freshness:
+            warn_after: { count: 26, period: hour }   # NFR-01
+        columns:
+          - name: source_posting_id
+            data_tests: [not_null]
+          - name: payload
+            data_tests: [not_null]
