@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Secrets and local config
+.env
+.env.*
+!.env.example
+profiles.yml
+
+# dbt
+target/
+dbt_packages/
+logs/
+
+# Airflow / Astro
+.astro/
+airflow.db
+
+# Docs build
+site/
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+
+# Personal data
+resumes/
+*.pdf
+
+# Collected data (Bronze files, personal and third-party content)
+data/

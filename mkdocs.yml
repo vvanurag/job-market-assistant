@@ -1,0 +1,61 @@
+site_name: Job Market Assistant
+site_description: Data platform and RAG assistant for the data engineering and AI job market.
+site_author: Anurag V V
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: blue grey
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: blue grey
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+nav:
+  - Home: index.md
+  - Requirements:
+      - Product Requirements: requirements/product_requirements.md
+      - Functional Requirements: requirements/functional_requirements.md
+      - Non-Functional Requirements: requirements/non_functional_requirements.md
+      - Data Sources: requirements/data_sources.md
+      - Evaluation Plan: requirements/evaluation_plan.md
+  - Roadmap: roadmap.md
+  - Decisions:
+      - Overview: decisions/index.md
+      - "ADR-0001: Record decisions": decisions/0001-record-architecture-decisions.md
+      - "ADR-0002: Project domain": decisions/0002-job-market-as-project-domain.md
+      - "ADR-0003: Primary warehouse": decisions/0003-snowflake-as-primary-warehouse.md
+      - "ADR-0004: Vector store": decisions/0004-vector-store-selection.md
+      - "ADR-0005: Portable warehouse": decisions/0005-portable-warehouse-layer.md
+      - "ADR-0006: LLM providers": decisions/0006-llm-provider-strategy.md
+      - Template: decisions/template.md
+  - Glossary: glossary.md
