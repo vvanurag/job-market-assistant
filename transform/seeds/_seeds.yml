@@ -26,3 +26,25 @@ seeds:
           - accepted_values:
               arguments:
                 values: ["city", "area", "state"]
+
+  - name: skills
+    description: >
+      The skill dictionary (FR-TRN-05). One row per skill. `pattern` is a lowercase
+      regular expression; alternatives are separated by "|". Patterns must not contain
+      backslashes (use [.] or [+]) so they work in both DuckDB and Snowflake. The model
+      adds whole-word boundaries, so don't add them here.
+    config:
+      column_types:
+        skill_id: varchar
+        skill_name: varchar
+        category: varchar
+        pattern: varchar
+    columns:
+      - name: skill_id
+        data_tests: [unique, not_null]
+      - name: skill_name
+        data_tests: [unique, not_null]
+      - name: category
+        data_tests: [not_null]
+      - name: pattern
+        data_tests: [not_null]

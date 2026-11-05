@@ -1,0 +1,129 @@
+skill_id,skill_name,category,pattern
+python,Python,Programming language,python
+sql,SQL,Programming language,sql|t-sql|pl/sql|plsql
+java,Java,Programming language,java
+scala,Scala,Programming language,scala
+javascript,JavaScript,Programming language,javascript|node[.]js|nodejs
+typescript,TypeScript,Programming language,typescript
+golang,Go,Programming language,golang
+r_lang,R,Programming language,r programming|r language|rstudio
+cpp,C++,Programming language,c[+][+]
+csharp,C#,Programming language,c#
+rust,Rust,Programming language,rust
+shell,Shell scripting,Programming language,bash|shell scripting|unix shell
+spark,Apache Spark,Data processing,spark|pyspark|apache spark|spark sql
+pandas,pandas,Data processing,pandas
+polars,Polars,Data processing,polars
+hadoop,Hadoop,Data processing,hadoop|hdfs|mapreduce
+hive,Hive,Data processing,hive|hiveql
+flink,Apache Flink,Data processing,flink
+beam,Apache Beam,Data processing,apache beam|dataflow
+trino,Trino or Presto,Data processing,trino|presto
+dbt,dbt,Data processing,dbt
+informatica,Informatica,Data integration,informatica
+talend,Talend,Data integration,talend
+ssis,SSIS,Data integration,ssis
+adf,Azure Data Factory,Data integration,azure data factory|adf
+glue,AWS Glue,Data integration,aws glue
+fivetran,Fivetran,Data integration,fivetran
+airbyte,Airbyte,Data integration,airbyte
+matillion,Matillion,Data integration,matillion
+airflow,Apache Airflow,Orchestration,airflow
+dagster,Dagster,Orchestration,dagster
+prefect,Prefect,Orchestration,prefect
+oozie,Oozie,Orchestration,oozie
+kafka,Apache Kafka,Streaming,kafka
+kinesis,Amazon Kinesis,Streaming,kinesis
+pubsub,Google Pub/Sub,Streaming,pub/sub|pubsub
+spark_streaming,Spark Streaming,Streaming,spark streaming|structured streaming
+rabbitmq,RabbitMQ,Streaming,rabbitmq
+snowflake,Snowflake,Warehouse and lakehouse,snowflake
+databricks,Databricks,Warehouse and lakehouse,databricks
+bigquery,BigQuery,Warehouse and lakehouse,bigquery|big query
+redshift,Amazon Redshift,Warehouse and lakehouse,redshift
+synapse,Azure Synapse,Warehouse and lakehouse,synapse
+fabric,Microsoft Fabric,Warehouse and lakehouse,microsoft fabric|ms fabric
+delta_lake,Delta Lake,Warehouse and lakehouse,delta lake
+iceberg,Apache Iceberg,Warehouse and lakehouse,iceberg
+hudi,Apache Hudi,Warehouse and lakehouse,hudi
+teradata,Teradata,Warehouse and lakehouse,teradata
+unity_catalog,Unity Catalog,Warehouse and lakehouse,unity catalog
+postgresql,PostgreSQL,Database,postgresql|postgres
+mysql,MySQL,Database,mysql
+oracle_db,Oracle Database,Database,oracle database|oracle db|oracle sql|oracle
+sql_server,SQL Server,Database,sql server|mssql
+mongodb,MongoDB,Database,mongodb|mongo
+cassandra,Cassandra,Database,cassandra
+redis,Redis,Database,redis
+elasticsearch,Elasticsearch,Database,elasticsearch|elastic search|opensearch
+dynamodb,DynamoDB,Database,dynamodb
+neo4j,Neo4j,Database,neo4j
+cosmos_db,Cosmos DB,Database,cosmos db|cosmosdb
+nosql,NoSQL,Database,nosql
+pinecone,Pinecone,Vector database,pinecone
+weaviate,Weaviate,Vector database,weaviate
+milvus,Milvus,Vector database,milvus
+qdrant,Qdrant,Vector database,qdrant
+chroma,Chroma,Vector database,chromadb|chroma db
+faiss,FAISS,Vector database,faiss
+pgvector,pgvector,Vector database,pgvector
+aws,AWS,Cloud,aws|amazon web services
+azure,Azure,Cloud,azure
+gcp,Google Cloud,Cloud,gcp|google cloud
+s3,Amazon S3,Cloud,s3
+emr,Amazon EMR,Cloud,aws emr|amazon emr
+pytorch,PyTorch,Machine learning,pytorch
+tensorflow,TensorFlow,Machine learning,tensorflow
+keras,Keras,Machine learning,keras
+scikit_learn,scikit-learn,Machine learning,scikit-learn|scikit learn|sklearn
+xgboost,XGBoost,Machine learning,xgboost
+lightgbm,LightGBM,Machine learning,lightgbm
+hugging_face,Hugging Face,Machine learning,hugging face|huggingface
+spacy,spaCy,Machine learning,spacy
+opencv,OpenCV,Machine learning,opencv
+nlp,NLP,Machine learning,nlp|natural language processing
+computer_vision,Computer vision,Machine learning,computer vision
+deep_learning,Deep learning,Machine learning,deep learning
+llm,LLMs,Generative AI,llm|llms|large language models?
+genai,Generative AI,Generative AI,generative ai|genai|gen ai
+rag,RAG,Generative AI,rag|retrieval[- ]augmented generation
+langchain,LangChain,Generative AI,langchain
+llamaindex,LlamaIndex,Generative AI,llamaindex|llama index|llama-index
+langgraph,LangGraph,Generative AI,langgraph
+prompt_engineering,Prompt engineering,Generative AI,prompt engineering|prompt design
+fine_tuning,Fine-tuning,Generative AI,fine[- ]?tuning
+embeddings,Embeddings,Generative AI,embeddings?
+vector_search,Vector search,Generative AI,vector search|vector databases?|vector stores?|semantic search
+ai_agents,AI agents,Generative AI,ai agents?|agentic|multi-agent
+openai,OpenAI API,Generative AI,openai|gpt-4|chatgpt
+mlflow,MLflow,MLOps and DevOps,mlflow
+kubeflow,Kubeflow,MLOps and DevOps,kubeflow
+sagemaker,SageMaker,MLOps and DevOps,sagemaker
+vertex_ai,Vertex AI,MLOps and DevOps,vertex ai
+azure_ml,Azure Machine Learning,MLOps and DevOps,azure ml|azure machine learning
+feature_store,Feature store,MLOps and DevOps,feature stores?
+docker,Docker,MLOps and DevOps,docker
+kubernetes,Kubernetes,MLOps and DevOps,kubernetes|k8s
+terraform,Terraform,MLOps and DevOps,terraform
+cicd,CI/CD,MLOps and DevOps,ci/cd|cicd|ci-cd|continuous integration
+git,Git,MLOps and DevOps,git
+github_actions,GitHub Actions,MLOps and DevOps,github actions
+jenkins,Jenkins,MLOps and DevOps,jenkins
+power_bi,Power BI,BI and visualisation,power ?bi
+tableau,Tableau,BI and visualisation,tableau
+looker,Looker,BI and visualisation,looker
+superset,Apache Superset,BI and visualisation,superset
+qlik,Qlik,BI and visualisation,qlik
+excel,Excel,BI and visualisation,ms excel|microsoft excel|advanced excel|excel (skills|spreadsheets?|macros|formulas|reporting)|vba
+data_modeling,Data modeling,Data practice,data modell?ing|data models?
+dimensional_modeling,Dimensional modeling,Data practice,dimensional modell?ing|star schema|kimball
+data_vault,Data Vault,Data practice,data vault
+data_quality,Data quality,Data practice,data quality
+data_governance,Data governance,Data practice,data governance
+etl,ETL and ELT,Data practice,etl|elt
+data_warehousing,Data warehousing,Data practice,data warehous(e|es|ing)
+great_expectations,Great Expectations,Data practice,great expectations
+fastapi,FastAPI,APIs,fastapi
+flask,Flask,APIs,flask
+django,Django,APIs,django
+rest_api,REST APIs,APIs,rest apis?|restful

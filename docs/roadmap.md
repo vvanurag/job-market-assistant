@@ -14,18 +14,18 @@ The project is also a structured learning path, so each phase lists the skills i
 
 ## Overview
 
-| Phase | Name | Delivers | Status |
-|---|---|---|---|
-| 0 | Foundations | Repository, environment, conventions | In progress |
-| 1 | Ingestion (Bronze) | Raw postings landing in the warehouse daily | In progress |
-| 2 | Modeling (Silver and Gold) | Clean, deduplicated, historised, tested models | In progress |
-| 3 | Orchestration | Scheduled, monitored, alerting pipeline | Not started |
-| 4 | Streaming | Near-real-time path for new postings | Not started |
-| 5 | Retrieval index | Chunked, embedded, filterable index kept in sync | Not started |
-| 6 | Serving | FastAPI service with routing and cited answers | Not started |
-| 7 | Evaluation | Evaluation set, baseline, data-quality experiment, model comparison | Not started |
-| 8 | Delivery | CI/CD, containers, deployment, health view | Not started |
-| 9 | Extensions | Optional comparisons and advanced topics | Not started |
+| Phase | Name | Delivers | Topics covered | Status |
+|---|---|---|---|---|
+| 0 | Foundations | Repository, environment, conventions | Python basics, virtual environments, Git and GitHub, Docker, Snowflake access control | In progress |
+| 1 | Ingestion (Bronze) | Raw postings landing in the warehouse daily | ELT, REST APIs, retries, idempotent loading, Medallion Bronze | In progress |
+| 2 | Modeling (Silver and Gold) | Clean, deduplicated, historised, tested models | **SQL and data modeling**, window functions, dimensional modeling, slowly changing dimensions, Medallion Silver and Gold, dbt and data tests | In progress |
+| 3 | Orchestration | Scheduled, monitored, alerting pipeline | Apache Airflow, scheduling, monitoring, SLAs and SLOs | Not started |
+| 4 | Streaming | Near-real-time path for new postings | Apache Kafka, Lambda vs Kappa architecture | Not started |
+| 5 | Retrieval index | Chunked, embedded, filterable index kept in sync | Data engineering for RAG, chunking, embeddings, semantic and hybrid search, ETL | Not started |
+| 6 | Serving | FastAPI service with routing and cited answers | FastAPI, API design, query routing, text-to-SQL safety, service-oriented architecture | Not started |
+| 7 | Evaluation | Evaluation set, baseline, data-quality experiment, model comparison | Choosing LLMs and embedding models, retrieval metrics, LLM-as-judge | Not started |
+| 8 | Delivery | CI/CD, containers, deployment, health view | CI/CD, GitHub Actions, containers, secrets management, non-functional requirements | Not started |
+| 9 | Extensions | Optional comparisons and advanced topics | Databricks, lakehouse and Iceberg, fine-tuning, Azure Data Factory | Not started |
 
 ## Phase 0: Foundations
 

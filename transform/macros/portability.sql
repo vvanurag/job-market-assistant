@@ -54,3 +54,17 @@
 {% macro target_role_pattern() -%}
 (^|[^a-z])(data|ml|mlops|ai|llm|genai|etl|elt|bi|nlp|rag)([^a-z]|$)|machine learning|artificial intelligence|generative|analytics|big data|snowflake|databricks|spark|hadoop|kafka|airflow|warehouse|lakehouse|deep learning|computer vision
 {%- endmacro %}
+
+
+{# matches_column(expression, pattern_expression): like matches(), but the regex comes from a column #}
+{% macro matches_column(expression, pattern_expression) -%}
+    {{ return(adapter.dispatch('matches_column', 'jobmarket')(expression, pattern_expression)) }}
+{%- endmacro %}
+
+{% macro default__matches_column(expression, pattern_expression) -%}
+    regexp_matches({{ expression }}, {{ pattern_expression }})
+{%- endmacro %}
+
+{% macro snowflake__matches_column(expression, pattern_expression) -%}
+    regexp_instr({{ expression }}, {{ pattern_expression }}) > 0
+{%- endmacro %}

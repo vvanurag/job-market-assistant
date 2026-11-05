@@ -46,3 +46,28 @@ models:
           True when the title is a data engineering, analytics, ML or AI role. Some sources
           return every role at a company, so Gold and the assistant filter on this.
         data_tests: [not_null]
+
+  - name: slv_posting_skills
+    description: >
+      Skills found in each posting with the skill dictionary (FR-TRN-05).
+      Grain: one row per (posting_key, skill_id).
+    data_tests:
+      - unique:
+          column_name: "posting_key || '|' || skill_id"
+    columns:
+      - name: posting_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_postings')
+                field: posting_key
+      - name: skill_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('skills')
+                field: skill_id
+      - name: extraction_method
+        description: How the skill was found. Currently always "dictionary".
