@@ -40,61 +40,10 @@ Data moves through stages, much like a kitchen: raw groceries arrive, get washed
 
 ### The full flow
 
+[Open the diagram full screen (zoomable)](flow.html){ .md-button .md-button--primary }
+
 ```mermaid
-flowchart TB
-    SRC["Public job sources<br/>job boards · company career pages"]
-
-    subgraph COLLECT["1 · COLLECT"]
-        EXT["Python extractors<br/>download · retry · log<br/><i>daily batch</i>"]
-        KAFKA["Apache Kafka<br/>new postings<br/><i>near real time</i>"]
-    end
-
-    subgraph WAREHOUSE["WAREHOUSE · Snowflake (cloud) · DuckDB (laptop)"]
-        BRONZE[("2 · BRONZE<br/>raw postings, as received")]
-        SILVER[("3 · SILVER<br/>deduplicate · fix city names<br/>remove emails and phones<br/>extract skills · track changes")]
-        GOLD[("4 · GOLD<br/>postings · companies<br/>skills · locations · dates")]
-    end
-
-    subgraph INDEX["5 · INDEX"]
-        PREP["Split into passages<br/>and embed them<br/><i>Ollama · nomic-embed-text</i>"]
-        VECTOR[("Vector index<br/>pgvector or Qdrant")]
-    end
-
-    subgraph ANSWER["6 · ANSWER"]
-        ROUTER{"FastAPI service<br/>count or meaning?"}
-        LLM["Language model writes<br/>the answer with citations<br/><i>Ollama · Gemini · Groq</i>"]
-    end
-
-    USER(["You"])
-
-    SRC --> EXT
-    SRC --> KAFKA
-    EXT -- load --> BRONZE
-    KAFKA -- load --> BRONZE
-    BRONZE -- "dbt (SQL)" --> SILVER
-    SILVER -- "dbt (SQL)" --> GOLD
-    SILVER -- "new or changed<br/>postings" --> PREP
-    PREP --> VECTOR
-    GOLD -- "counts and trends<br/>(SQL)" --> ROUTER
-    VECTOR -- "what postings say<br/>(semantic search)" --> ROUTER
-    ROUTER --> LLM
-    LLM -- "cited answer" --> USER
-    USER -. question .-> ROUTER
-
-    subgraph SUPPORT["SUPPORTING TOOLS · act on every stage"]
-        AIRFLOW["Apache Airflow<br/>schedules · retries · alerts"]
-        EVAL["Evaluation<br/>50 test questions · scores"]
-        CICD["GitHub Actions · Docker<br/>tests · one-command start"]
-    end
-
-    classDef bronze fill:#cd7f32,stroke:#7a4a1c,color:#fff
-    classDef silver fill:#c0c0c0,stroke:#6b6b6b,color:#000
-    classDef gold fill:#e6c200,stroke:#8a7400,color:#000
-    classDef support fill:#eef2f7,stroke:#8a9bb0,color:#1f2d3d
-    class BRONZE bronze
-    class SILVER silver
-    class GOLD gold
-    class AIRFLOW,EVAL,CICD support
+--8<-- "docs/assets/flow.mmd"
 ```
 
 Read it from top to bottom: postings come in at the top and answers come out at the bottom. Solid arrows show data moving. The dotted arrow is your question going to the service. The supporting tools run, test and measure every stage.

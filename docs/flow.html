@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Job Market Assistant · Data Flow</title>
+  <style>
+    :root { --bar: #455a64; --bg: #ffffff; --text: #1f2d3d; }
+    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text);
+                 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    header { position: fixed; inset: 0 0 auto 0; height: 52px; display: flex; align-items: center;
+             gap: 16px; padding: 0 16px; background: var(--bar); color: #fff; z-index: 2; }
+    header h1 { font-size: 16px; font-weight: 600; margin: 0; white-space: nowrap; }
+    header .hint { font-size: 13px; opacity: .85; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    header a, header button { color: #fff; font-size: 13px; text-decoration: none; background: rgba(255,255,255,.15);
+             border: 1px solid rgba(255,255,255,.35); border-radius: 4px; padding: 6px 10px; cursor: pointer; white-space: nowrap; }
+    header a:hover, header button:hover { background: rgba(255,255,255,.28); }
+    #diagram { position: fixed; inset: 52px 0 0 0; }
+    #diagram svg { width: 100%; height: 100%; cursor: grab; }
+    #diagram svg:active { cursor: grabbing; }
+    #status { padding: 24px; font-size: 15px; }
+    @media (max-width: 640px) { header .hint { display: none; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Job Market Assistant · Data Flow</h1>
+    <span class="hint">Scroll or pinch to zoom · drag to move · double-click to zoom in</span>
+    <button id="zoom-in" title="Zoom in">+</button>
+    <button id="zoom-out" title="Zoom out">−</button>
+    <button id="fit" title="Fit to screen">Fit</button>
+    <a href="./">← Back to docs</a>
+  </header>
+  <div id="diagram"><p id="status">Loading diagram…</p></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+  <script>
+    // The diagram source lives in assets/flow.mmd and is shared with the docs home page.
+    const container = document.getElementById("diagram");
+    mermaid.initialize({ startOnLoad: false, theme: "default", flowchart: { useMaxWidth: false } });
+
+    fetch("assets/flow.mmd")
+      .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
+      .then((source) => mermaid.render("flow", source))
+      .then(({ svg }) => {
+        container.innerHTML = svg;
+        const el = container.querySelector("svg");
+        el.removeAttribute("style");
+        el.setAttribute("width", "100%");
+        el.setAttribute("height", "100%");
+
+        const pz = svgPanZoom(el, {
+          zoomEnabled: true, panEnabled: true, dblClickZoomEnabled: true,
+          mouseWheelZoomEnabled: true, fit: true, center: true,
+          minZoom: 0.2, maxZoom: 20, zoomScaleSensitivity: 0.3,
+        });
+        const refit = () => { pz.resize(); pz.fit(); pz.center(); };
+        document.getElementById("zoom-in").onclick = () => pz.zoomIn();
+        document.getElementById("zoom-out").onclick = () => pz.zoomOut();
+        document.getElementById("fit").onclick = refit;
+        window.addEventListener("resize", refit);
+      })
+      .catch((err) => {
+        document.getElementById("status").textContent = "Could not load the diagram (" + err.message + ").";
+      });
+  </script>
+</body>
+</html>
