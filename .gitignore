@@ -36,3 +36,7 @@ resumes/
 
 # Collected data (Bronze files, personal and third-party content)
 data/
+
+# Tooling caches
+.ruff_cache/
+*.egg-info/

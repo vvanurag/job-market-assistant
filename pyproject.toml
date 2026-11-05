@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "jobmarket"
+version = "0.1.0"
+description = "Data platform and RAG assistant for the data engineering and AI job market in Hyderabad and Bengaluru."
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [{ name = "Anurag V V" }]
+dependencies = [
+    "duckdb>=1.1",
+    "httpx>=0.27",
+    "pydantic-settings>=2.4",
+    "snowflake-connector-python>=3.12",
+    "typer>=0.12",
+]
+
+[project.optional-dependencies]
+dev = [
+    "mkdocs-material>=9.5",
+    "pre-commit>=3.8",
+    "pytest>=8.3",
+    "ruff>=0.6",
+]
+
+[project.scripts]
+jobmarket = "jobmarket.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/jobmarket"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

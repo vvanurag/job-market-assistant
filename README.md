@@ -7,7 +7,18 @@ The system collects job postings from public sources every day, models them in a
 - **Analytical answers** from SQL over modeled warehouse tables, such as "Which skills grew fastest in data engineering postings over the last 90 days?"
 - **Semantic answers** from retrieval over posting text, such as "What do employers mean by 'strong Kafka experience'? Show three examples."
 
-> **Status:** Requirements phase. No code yet. See the [Roadmap](docs/roadmap.md).
+> **Status:** Phase 0 (Foundations) in progress. See the [Roadmap](docs/roadmap.md).
+
+## Quick start
+
+```bash
+git clone https://github.com/vvanurag/job-market-assistant.git
+cd job-market-assistant
+make setup     # virtual environment, dependencies, git hooks, .env
+make doctor    # checks Python, Docker, DuckDB, Snowflake, Ollama and API keys
+```
+
+The full guide, including Snowflake and API key setup, is in [Development Setup](docs/development/setup.md).
 
 ---
 
@@ -82,13 +93,10 @@ flowchart LR
 | [Roadmap](docs/roadmap.md) | Delivery phases and exit criteria |
 | [Architecture Decisions](docs/decisions/index.md) | Record of significant technical decisions |
 | [Glossary](docs/glossary.md) | Terms used across the project |
+| [Development Setup](docs/development/setup.md) | Getting a working local environment |
+| [Conventions](docs/development/conventions.md) | Repository layout, code style, git and documentation rules |
 
-To browse the documentation locally:
-
-```bash
-pip install mkdocs-material
-mkdocs serve
-```
+To browse the documentation locally, run `make docs`.
 
 ## Author
 
