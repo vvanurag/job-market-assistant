@@ -41,3 +41,8 @@ models:
       - name: is_canonical
         description: True for exactly one posting in each repost group.
         data_tests: [not_null]
+      - name: is_target_role
+        description: >
+          True when the title is a data engineering, analytics, ML or AI role. Some sources
+          return every role at a company, so Gold and the assistant filter on this.
+        data_tests: [not_null]

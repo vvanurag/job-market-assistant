@@ -26,6 +26,14 @@ data/bronze/
             └── ...
 ```
 
+Files arrive from collectors:
+
+| Source | Command | What it collects |
+|---|---|---|
+| Greenhouse | `make collect` (or `jobmarket collect greenhouse`) | One request per company in [`config/greenhouse_boards.csv`](https://github.com/vvanurag/job-market-assistant/blob/main/config/greenhouse_boards.csv); keeps jobs in Hyderabad or Bengaluru. Each file wraps the API's job object, unchanged, under `job`. A `_run.json` beside `postings/` records each board's outcome |
+
+Running a collector twice on the same day rewrites the same files, so it never creates duplicates. A board that fails is recorded and skipped, and the others continue.
+
 The loader finds every `postings` folder automatically. Each file must contain one JSON object with an identifier in one of these fields, checked in order: `source_posting_id`, `job_id`, `id`.
 
 ## Output: tables

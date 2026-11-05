@@ -4,7 +4,7 @@ The Silver layer turns raw Bronze records into **clean, trustworthy rows**: type
 
 | | |
 |---|---|
-| **Requirements** | FR-TRN-01 (typed columns), FR-TRN-02 (latest version), FR-TRN-11 (grain and tests), FR-TRN-12 (target cities), NFR-15 (personal data removed), NFR-24 (portable SQL) |
+| **Requirements** | FR-ING-01 (two sources), FR-TRN-01 (typed columns), FR-TRN-02 (latest version), FR-TRN-11 (grain and tests), FR-TRN-12 (target cities), NFR-15 (personal data removed), NFR-24 (portable SQL) |
 | **Models** | `transform/models/staging/stg_postings.sql`, `transform/models/silver/slv_postings.sql` |
 | **Engine** | DuckDB locally; Snowflake through the same models ([ADR-0005](../decisions/0005-portable-warehouse-layer.md)) |
 
@@ -14,14 +14,23 @@ The Silver layer turns raw Bronze records into **clean, trustworthy rows**: type
 
 ```mermaid
 flowchart LR
-    B[("bronze.raw_postings<br/>raw JSON")] --> S["stg_postings<br/>view<br/>JSON → typed columns"]
+    B[("bronze.raw_postings<br/>raw JSON")] --> S1["stg_postings__backfill"] & S2["stg_postings__greenhouse"]
+    S1 & S2 --> S["stg_postings<br/>view<br/>all sources, one shape"]
     A[/"city_aliases<br/>seed (CSV)"/] --> P
     S --> P[("slv_postings<br/>table<br/>clean · located ·<br/>private · deduplicated")]
 ```
 
-### `stg_postings` (view)
+### Staging views
 
-Parses the JSON payload into typed, consistently named columns. Nothing is removed or interpreted, apart from trimming text, turning "Not Applicable" into NULL and casting dates.
+Each source stores a different raw format, so each has its own staging model that maps it to one common set of columns. `stg_postings` combines them.
+
+| Model | Source format | Notes |
+|---|---|---|
+| `stg_postings__backfill` | Flat JSON records from the initial backfill batch | "Not Applicable" seniority becomes NULL |
+| `stg_postings__greenhouse` | Greenhouse API job objects | HTML descriptions converted to plain text by the `html_to_text` macro; `first_published` is the posted date |
+| `stg_postings` | All of the above, combined | To add a source, add a model with the same columns and list it here |
+
+Nothing is removed or interpreted in staging, apart from trimming text and casting types.
 
 **Grain:** one row per Bronze record (`source_id`, `batch_id`, `source_posting_id`).
 
@@ -36,6 +45,7 @@ Parses the JSON payload into typed, consistently named columns. Nothing is remov
 | 3. Privacy | Replace email addresses and Indian mobile numbers with `[email removed]` / `[phone removed]` | Personal data never reaches Gold or the search index (NFR-15) |
 | 4. Fingerprint | md5 of company name plus the description with whitespace normalised | The same text at the same company is a repost |
 | 5. Canonical | In each repost group, the earliest-posted row becomes canonical | Gold counts each real job once |
+| 6. Target role | Flag titles that are data engineering, analytics, ML or AI roles (`is_target_role`) | Some sources return every role at a company; Gold and the assistant use only target roles |
 
 Reposts are **flagged, not deleted** (`is_canonical`, `canonical_posting_key`, `copies_in_group`), so the duplicate rate can be measured and the data-quality experiment can compare indexes built with and without deduplication.
 
@@ -82,4 +92,12 @@ make bronze        # load raw files first
 make dbt-build     # build and test staging and Silver on DuckDB
 ```
 
-Results on the first batch: 2,000 postings, 1,816 unique after removing 184 reposts in 73 groups; every posting placed in a target city; contact details removed from 137 descriptions.
+Results on 2026-11-05, two sources:
+
+| | Backfill | Greenhouse |
+|---|---|---|
+| Postings in Silver | 2,000 | 628 |
+| Unique after reposts removed | 1,816 | 614 |
+| Target data/AI roles | 1,998 | 65 |
+
+Known gap: Silver resolves the city from a job's main location only. Greenhouse jobs whose main location is, say, "Remote", but which list a Hyderabad or Bengaluru office, are collected but not yet included.

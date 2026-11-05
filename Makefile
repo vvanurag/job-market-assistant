@@ -3,7 +3,7 @@ VENV   := .venv
 BIN    := $(VENV)/bin
 
 .DEFAULT_GOAL := help
-.PHONY: help setup lint format test doctor doctor-deep docs check bronze dbt-build dbt-build-snowflake
+.PHONY: help setup lint format test doctor doctor-deep docs check collect bronze dbt-build dbt-build-snowflake
 
 help: ## Show available commands
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "} {printf "  make %-12s %s\n", $$1, $$2}'
@@ -31,6 +31,9 @@ doctor: ## Check the local environment against the Phase 0 exit criteria
 
 doctor-deep: ## Like doctor, but also calls each model and API
 	$(BIN)/jobmarket doctor --deep
+
+collect: ## Collect today's postings from approved sources (Greenhouse)
+	$(BIN)/jobmarket collect greenhouse
 
 bronze: ## Load raw files into the Bronze layer, then show totals
 	$(BIN)/jobmarket bronze load

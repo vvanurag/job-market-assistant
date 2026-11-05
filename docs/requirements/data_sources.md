@@ -2,8 +2,8 @@
 
 | | |
 |---|---|
-| **Version** | 0.2 (draft) |
-| **Status** | In review; no source approved yet |
+| **Version** | 0.3 (draft) |
+| **Status** | In review; Greenhouse approved |
 | **Owner** | Anurag V V |
 | **Last updated** | 2026-11-05 |
 
@@ -30,7 +30,7 @@ Sources that require scraping pages in breach of their terms are excluded by def
 | Source | Access | Hyderabad / Bengaluru coverage | Strengths | Limitations | Priority | Status |
 |---|---|---|---|---|---|---|
 | **Adzuna API** | Official API; free developer key | India endpoint with location filtering | Structured fields, salary data where available, broad volume | Descriptions may be truncated; attribution likely required | Primary | To review |
-| **Greenhouse job board API** | Public, per-company endpoint | Companies with offices in either city that use Greenhouse | Full descriptions; stable IDs; direct from the employer | Needs a curated company list (section 3) | Primary | To review |
+| **Greenhouse job board API** | Public, per-company endpoint | Companies with offices in either city that use Greenhouse | Full descriptions; stable IDs; direct from the employer | Needs a curated company list (section 3) | Primary | **Approved** 2026-11-05 (section 7) |
 | **Lever postings API** | Public, per-company endpoint | Companies with offices in either city that use Lever | Full descriptions; stable IDs; direct from the employer | Needs a curated company list (section 3) | Primary | To review |
 | **Hacker News "Who is Hiring"** via the HN Algolia API | Public API | Low: few India-based roles | Real posts; good test of free-text extraction | Unstructured; monthly | Optional | To review |
 | **Remotive API** | Public API | Remote roles only | Full descriptions | Relevant only if Q6 includes remote roles | Optional, depends on Q6 | To review |
@@ -40,6 +40,8 @@ Using **employer career-page APIs** (Greenhouse and Lever) alongside an **aggreg
 ## 3. Target company list
 
 Greenhouse and Lever are queried per company, so the project keeps a versioned list of target employers with engineering offices in Hyderabad or Bengaluru. Each entry records the company name, careers platform, board identifier, cities and the date it was verified. The list starts with 20 to 40 companies and is reviewed monthly.
+
+The current list is [`config/greenhouse_boards.csv`](https://github.com/vvanurag/job-market-assistant/blob/main/config/greenhouse_boards.csv): 30 companies verified on 2026-11-05 by checking that each board returns jobs in Hyderabad or Bengaluru.
 
 ## 4. Location and salary conventions
 
@@ -85,3 +87,20 @@ Every source maps to this common shape in the Silver layer. Fields a source can'
 | `salary_currency`, `salary_period` | string | No | ISO 4217 currency code (usually `INR`); `year`, `month`, `day` or `hour`. LPA is converted to INR per year |
 | `url` | string | Yes | Link shown in citations |
 | `first_seen_at`, `last_seen_at` | timestamp | Yes | Set by the pipeline, not the source |
+
+## 7. Completed reviews
+
+### Greenhouse Job Board API
+
+| Check | Record |
+|---|---|
+| Terms of use URL and date read | <https://docs.greenhouse.io/job-board.html> (developer documentation), read 2026-11-05. The Greenhouse legal hub (<https://www.greenhouse.com/legal>) has no separate API terms |
+| Automated access permitted for this purpose | Yes. "Job Board data is publicly available, so authentication is not required for any GET endpoints." No restriction on third-party reading or personal analysis found |
+| Attribution requirements | None documented. Citations link to each job's `absolute_url` on the employer's own board |
+| Rate limits and request quotas | None documented. Self-imposed: one request per board per run, one second between boards, retries with backoff on 429 and 5xx |
+| Authentication and secret storage | None needed |
+| Can data be stored and indexed | Nothing prohibits it. Stored locally for personal, non-commercial analysis; raw data is not published |
+| Fields available | `id`, `title`, `location`, `content` (entity-encoded HTML), `absolute_url`, `first_published`, `updated_at`, `departments`, `offices`, `company_name`, `metadata` |
+| Personal data present in postings | Occasionally recruiter contact details in descriptions; removed in Silver (NFR-15) |
+| Not reviewed | The Master Subscription Agreement (a contract with employers, not API readers) and the privacy policy |
+| Reviewer and date | Anurag V V, 2026-11-05 |

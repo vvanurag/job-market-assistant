@@ -49,6 +49,33 @@ def version() -> None:
     typer.echo(__version__)
 
 
+collect_app = typer.Typer(help="Collect postings from approved sources into Bronze files.", no_args_is_help=True)
+app.add_typer(collect_app, name="collect")
+
+
+@collect_app.command("greenhouse")
+def collect_greenhouse(
+    batch: str = typer.Option(None, help="Batch ID; defaults to today's UTC date."),
+) -> None:
+    """Fetch jobs in target cities from every board in config/greenhouse_boards.csv."""
+    from datetime import datetime
+
+    from jobmarket.ingestion.greenhouse import collect, load_boards
+
+    batch_id = batch or datetime.now(UTC).strftime("%Y-%m-%d")
+    boards = load_boards()
+    typer.echo(f"Collecting {len(boards)} Greenhouse boards into batch {batch_id} ...")
+    results = collect(get_settings().bronze_root, batch_id, boards)
+    for r in results:
+        mark = typer.style("ok    ", fg=typer.colors.GREEN) if r.status == "ok" else typer.style("FAILED", fg="red")
+        typer.echo(f"  {mark} {r.company_name:<18} {r.jobs_kept:>4} kept of {r.jobs_total:>4}  {r.error or ''}")
+    kept = sum(r.jobs_kept for r in results)
+    failed = sum(r.status == "failed" for r in results)
+    typer.echo(f"\n{kept} jobs saved from {len(results) - failed} boards; {failed} boards failed.")
+    if failed == len(results):
+        raise typer.Exit(code=1)
+
+
 bronze_app = typer.Typer(help="Bronze layer: load and inspect raw records.", no_args_is_help=True)
 app.add_typer(bronze_app, name="bronze")
 

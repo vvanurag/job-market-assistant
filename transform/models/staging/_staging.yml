@@ -1,9 +1,23 @@
 version: 2
 
 models:
+  - name: stg_postings__backfill
+    description: The one-off backfill batch parsed into the common staging columns.
+
+  - name: stg_postings__greenhouse
+    description: >
+      Greenhouse Job Board API records parsed into the common staging columns.
+      HTML descriptions are converted to plain text; first_published is the posted date.
+    columns:
+      - name: description_raw
+        data_tests:
+          - not_null
+      - name: posted_date
+        data_tests: [not_null]
+
   - name: stg_postings
     description: >
-      Bronze postings with the JSON payload parsed into typed columns (FR-TRN-01).
+      Every source combined in one shape (FR-TRN-01).
       Grain: one row per (source_id, batch_id, source_posting_id), same as Bronze.
     data_tests:
       - unique:

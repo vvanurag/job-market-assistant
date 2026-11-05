@@ -8,7 +8,7 @@
       2. city_matches   resolve the location to Hyderabad or Bengaluru (FR-TRN-12)
       3. cleaned        remove emails and phone numbers from the text (NFR-15)
       4. fingerprinted  identify reposts: same company and same description text
-      5. final          link every repost to one canonical posting
+      5. final          link every repost to one canonical posting; flag target roles
 
     Rows are flagged, not deleted: Gold decides whether to use only canonical rows.
 #}
@@ -107,6 +107,7 @@ final as (
         description_text,
         url,
         search_keyword,
+        {{ matches('lower(title)', target_role_pattern()) }} as is_target_role,
         content_fingerprint,
         first_value(posting_key) over (
             partition by content_fingerprint
