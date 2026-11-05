@@ -61,6 +61,7 @@ nav:
   - Pipeline:
       - Bronze Layer: pipeline/bronze.md
       - Silver Layer: pipeline/silver.md
+      - Gold Layer: pipeline/gold.md
   - Development:
       - Setup: development/setup.md
       - Conventions: development/conventions.md

@@ -18,6 +18,14 @@ models:
     silver:
       +schema: silver
       +materialized: table
+    gold:
+      +schema: gold
+      +materialized: table
+
+vars:
+  # Calendar range for dim_date; covers every posting date seen so far, with headroom
+  date_spine_start: "2019-01-01"
+  date_spine_end: "2027-12-31"
 
 seeds:
   jobmarket:

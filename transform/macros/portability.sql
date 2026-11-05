@@ -68,3 +68,40 @@
 {% macro snowflake__matches_column(expression, pattern_expression) -%}
     regexp_instr({{ expression }}, {{ pattern_expression }}) > 0
 {%- endmacro %}
+
+
+{# date_spine(start, end): one row per calendar day, column "date_day" #}
+{% macro date_spine(start_date, end_date) -%}
+    {{ return(adapter.dispatch('date_spine', 'jobmarket')(start_date, end_date)) }}
+{%- endmacro %}
+
+{% macro default__date_spine(start_date, end_date) -%}
+    select cast(range as date) as date_day
+    from range(date '{{ start_date }}', date '{{ end_date }}' + interval 1 day, interval 1 day)
+{%- endmacro %}
+
+{% macro snowflake__date_spine(start_date, end_date) -%}
+    select dateadd(day, row_number() over (order by seq4()) - 1, '{{ start_date }}'::date) as date_day
+    from table(generator(rowcount => 20000))
+    qualify date_day <= '{{ end_date }}'::date
+{%- endmacro %}
+
+
+{# iso_day_of_week(date): 1 = Monday ... 7 = Sunday #}
+{% macro iso_day_of_week(expression) -%}
+    {{ return(adapter.dispatch('iso_day_of_week', 'jobmarket')(expression)) }}
+{%- endmacro %}
+
+{% macro default__iso_day_of_week(expression) -%}
+    isodow({{ expression }})
+{%- endmacro %}
+
+{% macro snowflake__iso_day_of_week(expression) -%}
+    dayofweekiso({{ expression }})
+{%- endmacro %}
+
+
+{# date_key(date): integer YYYYMMDD, the key of dim_date #}
+{% macro date_key(expression) -%}
+    (year({{ expression }}) * 10000 + month({{ expression }}) * 100 + day({{ expression }}))
+{%- endmacro %}

@@ -1,0 +1,84 @@
+version: 2
+
+models:
+  - name: fct_postings
+    description: >
+      One row per unique data/AI job in Hyderabad or Bengaluru: canonical postings only,
+      so reposts are counted once, and target roles only.
+    columns:
+      - name: posting_key
+        data_tests: [unique, not_null]
+      - name: company_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments: { to: ref('dim_company'), field: company_key }
+      - name: location_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments: { to: ref('dim_location'), field: location_key }
+      - name: posted_date_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments: { to: ref('dim_date'), field: date_key }
+      - name: posted_date_is_estimated
+        description: True when the source gave no publish date and the first-loaded date is used instead.
+        data_tests: [not_null]
+      - name: repost_count
+        description: How many other postings in Silver were reposts of this job.
+      - name: skill_count
+        description: Number of dictionary skills the posting mentions.
+
+  - name: fct_posting_skills
+    description: >
+      One row per (unique job, skill). Company, city and date keys are copied from
+      fct_postings so common questions need no extra joins.
+    data_tests:
+      - unique:
+          column_name: "posting_key || '|' || skill_key"
+    columns:
+      - name: posting_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments: { to: ref('fct_postings'), field: posting_key }
+      - name: skill_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments: { to: ref('dim_skill'), field: skill_key }
+
+  - name: dim_company
+    description: One row per company after name normalisation (FR-TRN-04).
+    columns:
+      - name: company_key
+        data_tests: [unique, not_null]
+      - name: normalized_name
+        data_tests: [unique, not_null]
+      - name: company_name
+        description: The most common original spelling, for display.
+      - name: spelling_variants
+        description: How many different original spellings were merged into this company.
+
+  - name: dim_skill
+    description: One row per skill in the dictionary.
+    columns:
+      - name: skill_key
+        data_tests: [unique, not_null]
+
+  - name: dim_location
+    description: One row per target city.
+    columns:
+      - name: location_key
+        data_tests: [unique, not_null]
+
+  - name: dim_date
+    description: One row per calendar day between the date_spine_start and date_spine_end variables.
+    columns:
+      - name: date_key
+        description: Integer YYYYMMDD.
+        data_tests: [unique, not_null]
+      - name: date_day
+        data_tests: [unique, not_null]
