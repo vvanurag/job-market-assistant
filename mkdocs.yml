@@ -1,6 +1,10 @@
 site_name: Job Market Assistant
 site_description: Data platform and RAG assistant for the data engineering and AI job market.
 site_author: Anurag V V
+site_url: https://vvanurag.github.io/job-market-assistant/
+repo_url: https://github.com/vvanurag/job-market-assistant
+repo_name: vvanurag/job-market-assistant
+edit_uri: edit/main/docs/
 
 theme:
   name: material
