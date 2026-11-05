@@ -62,6 +62,7 @@ nav:
       - Bronze Layer: pipeline/bronze.md
       - Silver Layer: pipeline/silver.md
       - Gold Layer: pipeline/gold.md
+      - Running on Snowflake: pipeline/snowflake.md
   - Development:
       - Setup: development/setup.md
       - Conventions: development/conventions.md

@@ -33,6 +33,7 @@ class Settings(BaseSettings):
     snowflake_password: SecretStr | None = None
     snowflake_private_key_path: Path | None = None
     snowflake_role: str = "JMA_TRANSFORM"
+    snowflake_ingest_role: str = "JMA_INGEST"  # loading Bronze uses the write-Bronze-only role (NFR-12)
     snowflake_warehouse: str = "JMA_WH"
     snowflake_database: str = "JOB_MARKET"
 

@@ -3,7 +3,7 @@ VENV   := .venv
 BIN    := $(VENV)/bin
 
 .DEFAULT_GOAL := help
-.PHONY: help setup lint format test doctor doctor-deep docs check collect bronze dbt-build dbt-build-snowflake
+.PHONY: help setup lint format test doctor doctor-deep docs check collect bronze bronze-snowflake compare dbt-build dbt-build-snowflake
 
 help: ## Show available commands
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "} {printf "  make %-12s %s\n", $$1, $$2}'
@@ -42,11 +42,17 @@ bronze: ## Load raw files into the Bronze layer, then show totals
 # dbt reads its settings from environment variables; load them from .env first.
 DBT = set -a && . ./.env && set +a && cd transform && ../$(BIN)/dbt
 
+bronze-snowflake: ## Load raw files into the Bronze layer in Snowflake (as JMA_INGEST)
+	$(BIN)/jobmarket bronze load --target snowflake
+
 dbt-build: ## Build and test Silver/Gold models on local DuckDB
 	$(DBT) build --profiles-dir . --target dev
 
 dbt-build-snowflake: ## Build and test Silver/Gold models on Snowflake
 	$(DBT) build --profiles-dir . --target snowflake
+
+compare: ## Check Silver and Gold are identical in DuckDB and Snowflake
+	$(BIN)/jobmarket compare
 
 docs: ## Serve the documentation site at http://127.0.0.1:8000
 	$(BIN)/mkdocs serve

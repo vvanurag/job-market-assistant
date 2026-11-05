@@ -44,6 +44,30 @@ def doctor(
 
 
 @app.command()
+def compare() -> None:
+    """Check that Silver and Gold are identical in DuckDB and Snowflake (NFR-24)."""
+    from jobmarket.portability import compare as compare_engines
+    from jobmarket.warehouse import duckdb_connect, snowflake_connect
+
+    settings = get_settings()
+    with duckdb_connect(settings, read_only=True) as local, snowflake_connect(settings) as cloud, cloud.cursor() as cur:
+        results = compare_engines(local, cur)
+
+    typer.echo(f"{'table':<28} {'DuckDB':>8} {'Snowflake':>10}  result")
+    for r in results:
+        verdict = (
+            typer.style("identical", fg=typer.colors.GREEN)
+            if r.identical
+            else typer.style(f"DIFFERENT ({r.only_in_a} only in DuckDB, {r.only_in_b} only in Snowflake)", fg="red")
+        )
+        typer.echo(f"{r.table:<28} {r.rows_a:>8} {r.rows_b:>10}  {verdict}")
+        for example in r.examples:
+            typer.echo(f"    {example}")
+    if not all(r.identical for r in results):
+        raise typer.Exit(code=1)
+
+
+@app.command()
 def version() -> None:
     """Print the package version."""
     typer.echo(__version__)
@@ -84,12 +108,20 @@ app.add_typer(bronze_app, name="bronze")
 def bronze_load(
     source: str = typer.Option(None, help="Only load this source."),
     batch: str = typer.Option(None, help="Only load this batch."),
+    target: str = typer.Option("duckdb", help="Warehouse to load: duckdb or snowflake."),
 ) -> None:
     """Load raw posting files into bronze.raw_postings (safe to re-run)."""
-    from jobmarket.bronze.loader import load_all
-
     settings = get_settings()
-    results = load_all(settings.duckdb_path, settings.bronze_root, source, batch)
+    if target == "duckdb":
+        from jobmarket.bronze.loader import load_all
+
+        results = load_all(settings.duckdb_path, settings.bronze_root, source, batch)
+    elif target == "snowflake":
+        from jobmarket.bronze.snowflake_loader import load_all as load_all_snowflake
+
+        results = load_all_snowflake(settings, settings.bronze_root, source, batch)
+    else:
+        raise typer.BadParameter("target must be duckdb or snowflake")
     if not results:
         typer.echo(f"No batches found under {settings.bronze_root}")
         raise typer.Exit(code=1)

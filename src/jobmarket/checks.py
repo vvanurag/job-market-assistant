@@ -92,22 +92,9 @@ def check_snowflake(settings: Settings) -> CheckResult:
     if not settings.snowflake_configured:
         return CheckResult("Snowflake", Status.SKIP, "not configured in .env")
     try:
-        import snowflake.connector
+        from jobmarket.warehouse import snowflake_connect
 
-        params: dict = {
-            "account": settings.snowflake_account,
-            "user": settings.snowflake_user,
-            "role": settings.snowflake_role,
-            "warehouse": settings.snowflake_warehouse,
-            "database": settings.snowflake_database,
-            "login_timeout": 30,
-        }
-        if settings.snowflake_private_key_path:
-            params["private_key_file"] = str(settings.snowflake_private_key_path.expanduser())
-        else:
-            params["password"] = settings.snowflake_password.get_secret_value()
-
-        with snowflake.connector.connect(**params) as con, con.cursor() as cur:
+        with snowflake_connect(settings) as con, con.cursor() as cur:
             cur.execute("select current_role(), current_warehouse(), current_database()")
             role, warehouse, database = cur.fetchone()
             cur.execute(f"show schemas in database {settings.snowflake_database}")
