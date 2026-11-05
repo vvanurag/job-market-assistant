@@ -3,7 +3,7 @@ VENV   := .venv
 BIN    := $(VENV)/bin
 
 .DEFAULT_GOAL := help
-.PHONY: help setup lint format test doctor doctor-deep docs check
+.PHONY: help setup lint format test doctor doctor-deep docs check bronze
 
 help: ## Show available commands
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "} {printf "  make %-12s %s\n", $$1, $$2}'
@@ -31,6 +31,10 @@ doctor: ## Check the local environment against the Phase 0 exit criteria
 
 doctor-deep: ## Like doctor, but also calls each model and API
 	$(BIN)/jobmarket doctor --deep
+
+bronze: ## Load raw files into the Bronze layer, then show totals
+	$(BIN)/jobmarket bronze load
+	$(BIN)/jobmarket bronze status
 
 docs: ## Serve the documentation site at http://127.0.0.1:8000
 	$(BIN)/mkdocs serve

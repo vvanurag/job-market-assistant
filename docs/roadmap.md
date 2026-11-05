@@ -17,7 +17,7 @@ The project is also a structured learning path, so each phase lists the skills i
 | Phase | Name | Delivers | Status |
 |---|---|---|---|
 | 0 | Foundations | Repository, environment, conventions | In progress |
-| 1 | Ingestion (Bronze) | Raw postings landing in the warehouse daily | Not started |
+| 1 | Ingestion (Bronze) | Raw postings landing in the warehouse daily | In progress |
 | 2 | Modeling (Silver and Gold) | Clean, deduplicated, historised, tested models | Not started |
 | 3 | Orchestration | Scheduled, monitored, alerting pipeline | Not started |
 | 4 | Streaming | Near-real-time path for new postings | Not started |

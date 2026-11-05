@@ -24,6 +24,9 @@ class Settings(BaseSettings):
     # Local development warehouse (ADR-0005)
     duckdb_path: Path = REPO_ROOT / "data" / "dev" / "jobmarket.duckdb"
 
+    # Raw files waiting to be loaded: <bronze_root>/<source_id>/<batch_id>/postings/*.json
+    bronze_root: Path = REPO_ROOT / "data" / "bronze"
+
     # Snowflake (ADR-0003)
     snowflake_account: str | None = None
     snowflake_user: str | None = None

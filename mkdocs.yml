@@ -58,6 +58,8 @@ nav:
       - Data Sources: requirements/data_sources.md
       - Evaluation Plan: requirements/evaluation_plan.md
   - Roadmap: roadmap.md
+  - Pipeline:
+      - Bronze Layer: pipeline/bronze.md
   - Development:
       - Setup: development/setup.md
       - Conventions: development/conventions.md
