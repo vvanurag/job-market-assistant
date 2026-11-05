@@ -1,13 +1,140 @@
 # Job Market Assistant
 
-A data platform and retrieval-augmented generation (RAG) assistant for the data engineering and AI job market in **Hyderabad and Bengaluru, India**.
-
-The system collects job postings from public sources every day, models them in a cloud data warehouse, and answers natural-language questions about them. It combines two kinds of answers:
-
-- **Analytical answers** from SQL over modeled warehouse tables, such as "Which skills grew fastest in data engineering postings over the last 90 days?"
-- **Semantic answers** from retrieval over posting text, such as "What do employers mean by 'strong Kafka experience'? Show three examples."
+Ask questions about data engineering and AI jobs in **Hyderabad and Bengaluru, India**, and get answers based on real job postings, with sources.
 
 > **Status:** Phase 0 (Foundations) in progress. See the [Roadmap](docs/roadmap.md).
+
+---
+
+## What it does
+
+The assistant answers questions such as:
+
+- "Which skills do most data engineer jobs ask for?"
+- "Which companies are hiring AI engineers in Bengaluru?"
+- "What do companies mean by 'strong Kafka experience'?"
+- "Which jobs fit my skills, and what am I missing?"
+
+Questions about **counts and trends** are answered with SQL over organised tables. Questions about **what postings say** are answered by finding the most relevant postings and having a language model summarise them. This second approach is called retrieval-augmented generation (RAG). Every answer cites the postings it is based on.
+
+## Why it exists
+
+To answer those questions well, you need everything a data engineer builds in practice: collecting data, cleaning it, storing it, organising it and serving it to an AI model. The project is a complete, working example of that, with an AI assistant as the result.
+
+Most RAG demos index a folder of documents and stop there. In practice, answer quality depends mostly on the data behind the model: whether it's deduplicated, current and well labelled. This project builds that foundation properly and **measures** how much each data-quality step improves the answers.
+
+## How it works
+
+Data moves through stages, much like a kitchen: raw groceries arrive, get washed and prepared, then cooked and served.
+
+| Stage | What happens | Kitchen analogy |
+|---|---|---|
+| **1. Collect** | Download job postings from public sources | Groceries delivered |
+| **2. Bronze** | Store postings exactly as received | Groceries in the fridge, unopened |
+| **3. Silver** | Remove duplicates, fix city names, strip personal data, find skills, track changes | Washed and chopped |
+| **4. Gold** | Arrange into tables that are easy to count and compare | Dishes ready to serve |
+| **5. Index** | Split posting text into passages and turn them into searchable vectors | Menu organised by flavour |
+| **6. Answer** | Route each question to SQL or search, then let a language model write a cited answer | The waiter takes the order and brings the dish |
+
+**Bronze, Silver and Gold** are the standard industry names for raw, cleaned and business-ready data (the *Medallion architecture*).
+
+### The full flow
+
+```mermaid
+flowchart LR
+    %% ---------- Sources and collection ----------
+    subgraph COLLECT["1 · COLLECT"]
+        direction TB
+        SRC["Public job sources<br/>job board APIs,<br/>company career pages"]
+        EXT["Python extractors<br/>download · paginate ·<br/>retry · log"]
+        KAFKA["Apache Kafka<br/>stream of new postings"]
+        SRC --> EXT
+        EXT -. near real time .-> KAFKA
+    end
+
+    %% ---------- Warehouse ----------
+    subgraph WAREHOUSE["WAREHOUSE · Snowflake (cloud) · DuckDB (laptop)"]
+        direction TB
+        BRONZE[("2 · BRONZE<br/>raw postings,<br/>exactly as received")]
+        SILVER[("3 · SILVER<br/>clean · deduplicate ·<br/>fix city names · remove<br/>emails and phones ·<br/>extract skills · track changes")]
+        GOLD[("4 · GOLD<br/>facts and dimensions:<br/>postings · companies ·<br/>skills · locations · dates")]
+        BRONZE -- "dbt (SQL)" --> SILVER
+        SILVER -- "dbt (SQL)" --> GOLD
+    end
+
+    %% ---------- Search index ----------
+    subgraph INDEX["5 · INDEX"]
+        direction TB
+        CHUNK["Split text<br/>into passages"]
+        EMBED["Embed passages<br/>Ollama · nomic-embed-text"]
+        VECTOR[("Vector index<br/>pgvector or Qdrant<br/>+ city, skills, date filters")]
+        CHUNK --> EMBED --> VECTOR
+    end
+
+    %% ---------- Answering ----------
+    subgraph ANSWER["6 · ANSWER"]
+        direction TB
+        API["FastAPI service<br/>/search · /ask"]
+        ROUTER{"Router<br/>count or meaning?"}
+        LLM["Language model<br/>Ollama · Gemini · Groq"]
+        API --> ROUTER
+    end
+
+    USER(["You"])
+
+    %% ---------- Main data flow ----------
+    EXT -- load --> BRONZE
+    KAFKA -- load --> BRONZE
+    SILVER -- "new or changed<br/>postings only" --> CHUNK
+
+    %% ---------- Question flow ----------
+    USER -- question --> API
+    ROUTER -- "counts and trends<br/>(SQL)" --> GOLD
+    ROUTER -- "what postings say<br/>(semantic search)" --> VECTOR
+    GOLD -- figures --> LLM
+    VECTOR -- "relevant passages" --> LLM
+    LLM -- "answer with<br/>cited postings" --> USER
+
+    %% ---------- Supporting tools ----------
+    AIRFLOW["Apache Airflow<br/>runs the pipeline daily,<br/>retries, alerts"]
+    EVAL["Evaluation<br/>50 test questions ·<br/>quality scores"]
+    CICD["GitHub Actions · Docker<br/>tests on every change ·<br/>one-command start"]
+
+    AIRFLOW -. schedules .-> EXT
+    AIRFLOW -. schedules .-> SILVER
+    AIRFLOW -. schedules .-> CHUNK
+    EVAL -. measures .-> API
+    CICD -. tests and packages .-> API
+
+    %% ---------- Styling ----------
+    classDef bronze fill:#cd7f32,stroke:#7a4a1c,color:#fff
+    classDef silver fill:#c0c0c0,stroke:#6b6b6b,color:#000
+    classDef gold fill:#e6c200,stroke:#8a7400,color:#000
+    classDef support fill:#eef2f7,stroke:#8a9bb0,color:#1f2d3d
+    class BRONZE bronze
+    class SILVER silver
+    class GOLD gold
+    class AIRFLOW,EVAL,CICD support
+```
+
+Solid arrows show data moving. Dotted arrows show supporting tools acting on the pipeline.
+
+## The tools
+
+| Tool | What it does here | Kitchen analogy | Decision |
+|---|---|---|---|
+| **Python** | The language for collectors, the API and tests | The chef's hands | — |
+| **DuckDB** | A small database on your laptop, for development | A home fridge | [ADR-0005](docs/decisions/0005-portable-warehouse-layer.md) |
+| **Snowflake** | A cloud data warehouse, as used by companies | A restaurant's walk-in freezer | [ADR-0003](docs/decisions/0003-snowflake-as-primary-warehouse.md) |
+| **dbt** | Turns SQL files into the Silver and Gold tables, with tests | The recipes | Planned |
+| **Apache Airflow** | Runs each step on a schedule and retries failures | The kitchen timetable | Planned |
+| **Apache Kafka** | Streams new postings in as they appear | A conveyor belt | Planned |
+| **pgvector or Qdrant** | Stores passages so they can be searched by meaning | The menu, organised by flavour | [ADR-0004](docs/decisions/0004-vector-store-selection.md) |
+| **Ollama** | Runs AI models on your own laptop: free and private | A home cook | [ADR-0006](docs/decisions/0006-llm-provider-strategy.md) |
+| **Gemini and Groq** | Hosted AI models: more powerful, free tiers | A hired chef | [ADR-0006](docs/decisions/0006-llm-provider-strategy.md) |
+| **FastAPI** | The web service you send questions to | The waiter | Planned |
+| **Docker** | Packages every service so it starts with one command | A lunchbox: everything travels together | Planned |
+| **GitHub Actions** | Tests every change automatically | A food-safety inspector | In place |
 
 ## Quick start
 
@@ -20,67 +147,6 @@ make doctor    # checks Python, Docker, DuckDB, Snowflake, Ollama and API keys
 
 The full guide, including Snowflake and API key setup, is in [Development Setup](docs/development/setup.md).
 
----
-
-## Why this project exists
-
-Most RAG demos index a folder of PDFs and stop there. In production, answer quality depends mostly on the data behind the model: whether it is deduplicated, fresh, well described by metadata and kept in sync as sources change. This project builds that data foundation properly and measures how much it improves the assistant's answers.
-
-## Planned architecture
-
-```mermaid
-flowchart LR
-    subgraph Sources
-        A1[Job board APIs]
-        A2[Company career-page APIs]
-        A3[Community hiring threads]
-    end
-
-    subgraph Ingestion
-        B1[Batch extractors<br/>daily]
-        B2[Stream producer<br/>near real time]
-    end
-
-    subgraph Warehouse["Warehouse (Medallion)"]
-        C1[Bronze<br/>raw JSON]
-        C2[Silver<br/>clean, deduplicated, history]
-        C3[Gold<br/>facts and dimensions]
-    end
-
-    subgraph Retrieval
-        D1[Chunking and<br/>embedding pipeline]
-        D2[Vector index<br/>with metadata]
-    end
-
-    subgraph Serving
-        E1[FastAPI service]
-        E2[Query router]
-        E3[LLM]
-    end
-
-    A1 & A2 & A3 --> B1 & B2
-    B1 & B2 --> C1 --> C2 --> C3
-    C2 --> D1 --> D2
-    E1 --> E2
-    E2 -- analytical --> C3
-    E2 -- semantic --> D2
-    E2 --> E3
-```
-
-## Planned technology
-
-| Concern | Choice | Decision record |
-|---|---|---|
-| Warehouse | Snowflake, with DuckDB as a portable second target | [ADR-0003](docs/decisions/0003-snowflake-as-primary-warehouse.md), [ADR-0005](docs/decisions/0005-portable-warehouse-layer.md) |
-| Transformation | dbt Core | Planned |
-| Orchestration | Apache Airflow (Astro CLI, Cosmos) | Planned |
-| Streaming | Apache Kafka | Planned |
-| Vector store | pgvector or Qdrant, to be decided | [ADR-0004](docs/decisions/0004-vector-store-selection.md) (proposed) |
-| Language models | Local models (Ollama), Google AI Studio (Gemini), Groq Cloud | [ADR-0006](docs/decisions/0006-llm-provider-strategy.md) |
-| API | FastAPI, run locally | Planned |
-| CI/CD | GitHub Actions | Planned |
-| Runtime | Python 3.11+, Docker Compose | Planned |
-
 ## Documentation
 
 | Document | Purpose |
@@ -92,9 +158,9 @@ flowchart LR
 | [Evaluation Plan](docs/requirements/evaluation_plan.md) | How answer quality is measured |
 | [Roadmap](docs/roadmap.md) | Delivery phases and exit criteria |
 | [Architecture Decisions](docs/decisions/index.md) | Record of significant technical decisions |
-| [Glossary](docs/glossary.md) | Terms used across the project |
 | [Development Setup](docs/development/setup.md) | Getting a working local environment |
 | [Conventions](docs/development/conventions.md) | Repository layout, code style, git and documentation rules |
+| [Glossary](docs/glossary.md) | Terms used across the project |
 
 To browse the documentation locally, run `make docs`.
 
