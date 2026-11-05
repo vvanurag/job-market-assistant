@@ -1,0 +1,9 @@
+/* Diagrams: show at natural size (readable text); scroll sideways only if wider than the page. */
+.md-typeset .mermaid {
+  overflow-x: auto;
+  text-align: center;
+}
+.md-typeset .mermaid svg {
+  max-width: none !important;
+  height: auto;
+}

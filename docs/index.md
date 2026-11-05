@@ -41,72 +41,52 @@ Data moves through stages, much like a kitchen: raw groceries arrive, get washed
 ### The full flow
 
 ```mermaid
-flowchart LR
-    %% ---------- Sources and collection ----------
+flowchart TB
+    SRC["Public job sources<br/>job boards · company career pages"]
+
     subgraph COLLECT["1 · COLLECT"]
-        direction TB
-        SRC["Public job sources<br/>job board APIs,<br/>company career pages"]
-        EXT["Python extractors<br/>download · paginate ·<br/>retry · log"]
-        KAFKA["Apache Kafka<br/>stream of new postings"]
-        SRC --> EXT
-        EXT -. near real time .-> KAFKA
+        EXT["Python extractors<br/>download · retry · log<br/><i>daily batch</i>"]
+        KAFKA["Apache Kafka<br/>new postings<br/><i>near real time</i>"]
     end
 
-    %% ---------- Warehouse ----------
     subgraph WAREHOUSE["WAREHOUSE · Snowflake (cloud) · DuckDB (laptop)"]
-        direction TB
-        BRONZE[("2 · BRONZE<br/>raw postings,<br/>exactly as received")]
-        SILVER[("3 · SILVER<br/>clean · deduplicate ·<br/>fix city names · remove<br/>emails and phones ·<br/>extract skills · track changes")]
-        GOLD[("4 · GOLD<br/>facts and dimensions:<br/>postings · companies ·<br/>skills · locations · dates")]
-        BRONZE -- "dbt (SQL)" --> SILVER
-        SILVER -- "dbt (SQL)" --> GOLD
+        BRONZE[("2 · BRONZE<br/>raw postings, as received")]
+        SILVER[("3 · SILVER<br/>deduplicate · fix city names<br/>remove emails and phones<br/>extract skills · track changes")]
+        GOLD[("4 · GOLD<br/>postings · companies<br/>skills · locations · dates")]
     end
 
-    %% ---------- Search index ----------
     subgraph INDEX["5 · INDEX"]
-        direction TB
-        CHUNK["Split text<br/>into passages"]
-        EMBED["Embed passages<br/>Ollama · nomic-embed-text"]
-        VECTOR[("Vector index<br/>pgvector or Qdrant<br/>+ city, skills, date filters")]
-        CHUNK --> EMBED --> VECTOR
+        PREP["Split into passages<br/>and embed them<br/><i>Ollama · nomic-embed-text</i>"]
+        VECTOR[("Vector index<br/>pgvector or Qdrant")]
     end
 
-    %% ---------- Answering ----------
     subgraph ANSWER["6 · ANSWER"]
-        direction TB
-        API["FastAPI service<br/>/search · /ask"]
-        ROUTER{"Router<br/>count or meaning?"}
-        LLM["Language model<br/>Ollama · Gemini · Groq"]
-        API --> ROUTER
+        ROUTER{"FastAPI service<br/>count or meaning?"}
+        LLM["Language model writes<br/>the answer with citations<br/><i>Ollama · Gemini · Groq</i>"]
     end
 
     USER(["You"])
 
-    %% ---------- Main data flow ----------
+    SRC --> EXT
+    SRC --> KAFKA
     EXT -- load --> BRONZE
     KAFKA -- load --> BRONZE
-    SILVER -- "new or changed<br/>postings only" --> CHUNK
+    BRONZE -- "dbt (SQL)" --> SILVER
+    SILVER -- "dbt (SQL)" --> GOLD
+    SILVER -- "new or changed<br/>postings" --> PREP
+    PREP --> VECTOR
+    GOLD -- "counts and trends<br/>(SQL)" --> ROUTER
+    VECTOR -- "what postings say<br/>(semantic search)" --> ROUTER
+    ROUTER --> LLM
+    LLM -- "cited answer" --> USER
+    USER -. question .-> ROUTER
 
-    %% ---------- Question flow ----------
-    USER -- question --> API
-    ROUTER -- "counts and trends<br/>(SQL)" --> GOLD
-    ROUTER -- "what postings say<br/>(semantic search)" --> VECTOR
-    GOLD -- figures --> LLM
-    VECTOR -- "relevant passages" --> LLM
-    LLM -- "answer with<br/>cited postings" --> USER
+    subgraph SUPPORT["SUPPORTING TOOLS · act on every stage"]
+        AIRFLOW["Apache Airflow<br/>schedules · retries · alerts"]
+        EVAL["Evaluation<br/>50 test questions · scores"]
+        CICD["GitHub Actions · Docker<br/>tests · one-command start"]
+    end
 
-    %% ---------- Supporting tools ----------
-    AIRFLOW["Apache Airflow<br/>runs the pipeline daily,<br/>retries, alerts"]
-    EVAL["Evaluation<br/>50 test questions ·<br/>quality scores"]
-    CICD["GitHub Actions · Docker<br/>tests on every change ·<br/>one-command start"]
-
-    AIRFLOW -. schedules .-> EXT
-    AIRFLOW -. schedules .-> SILVER
-    AIRFLOW -. schedules .-> CHUNK
-    EVAL -. measures .-> API
-    CICD -. tests and packages .-> API
-
-    %% ---------- Styling ----------
     classDef bronze fill:#cd7f32,stroke:#7a4a1c,color:#fff
     classDef silver fill:#c0c0c0,stroke:#6b6b6b,color:#000
     classDef gold fill:#e6c200,stroke:#8a7400,color:#000
@@ -117,7 +97,7 @@ flowchart LR
     class AIRFLOW,EVAL,CICD support
 ```
 
-Solid arrows show data moving. Dotted arrows show supporting tools acting on the pipeline.
+Read it from top to bottom: postings come in at the top and answers come out at the bottom. Solid arrows show data moving. The dotted arrow is your question going to the service. The supporting tools run, test and measure every stage.
 
 ## The tools
 
