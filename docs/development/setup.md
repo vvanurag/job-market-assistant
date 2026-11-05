@@ -90,15 +90,26 @@ set me = '"' || current_user() || '"';
 alter user identifier($me) set rsa_public_key = '<PASTE_KEY_HERE>';
 ```
 
-Use the name returned by `select current_user();` as `SNOWFLAKE_USER` in `.env`.
+### 5.3 Find your login name
+
+Key-pair login uses your **login name**, which can differ from your user name. For example, accounts created with an email address often have the email as the login name. Run:
+
+```sql
+set me = '"' || current_user() || '"';
+desc user identifier($me);
+select "property", "value" from table(result_scan(last_query_id(-1)))
+where "property" in ('NAME', 'LOGIN_NAME');
+```
+
+Use the `LOGIN_NAME` value as `SNOWFLAKE_USER` in `.env`.
 
 The private key stays outside the repository.
 
-### 5.3 Configure `.env`
+### 5.4 Configure `.env`
 
 ```ini
 SNOWFLAKE_ACCOUNT=<account identifier, e.g. orgname-accountname>
-SNOWFLAKE_USER=<your username>
+SNOWFLAKE_USER=<your LOGIN_NAME from 5.3>
 SNOWFLAKE_PRIVATE_KEY_PATH=~/.snowflake/jma_key.p8
 SNOWFLAKE_ROLE=JMA_TRANSFORM
 ```
@@ -142,6 +153,6 @@ Expected result once everything is configured:
 | `Docker: daemon not reachable` | Start OrbStack or Docker Desktop |
 | `Ollama: not reachable` | Start the Ollama app, or run `ollama serve` |
 | `Ollama: models missing` | Run the `ollama pull` command shown in the message |
-| `Snowflake: ... JWT token is invalid` | The public key isn't set on the user, or `SNOWFLAKE_USER` doesn't match it |
+| `Snowflake: ... JWT token is invalid` | `SNOWFLAKE_USER` must be the `LOGIN_NAME` (section 5.3), not the user name. Also check `RSA_PUBLIC_KEY_FP` in `desc user` matches your key |
 | `Snowflake: missing schemas` | Re-run `infra/snowflake/01_setup.sql`, or check `SNOWFLAKE_ROLE` has usage on the database |
 | Setup script: `User '...' does not exist or not authorized` | The user name didn't match the user object. The current script uses `current_user()` to avoid this; make sure you ran the latest version with **Run All** |
