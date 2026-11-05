@@ -48,3 +48,59 @@ seeds:
         data_tests: [not_null]
       - name: pattern
         data_tests: [not_null]
+
+  - name: seniority_rules
+    description: >
+      Ordered rules for inferring seniority (FR-TRN-06). A posting takes the first rule
+      (lowest rule_order) whose pattern matches its field: "title" is the job title,
+      "source" is the source's own level, used only where it names a single level.
+      Patterns follow the same rules as the skill dictionary: lowercase, no
+      backslashes, whole-word boundaries added by the model.
+    config:
+      column_types:
+        rule_order: integer
+        seniority: varchar
+        field: varchar
+        pattern: varchar
+    columns:
+      - name: rule_order
+        data_tests: [unique, not_null]
+      - name: seniority
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["intern", "junior", "mid", "senior", "lead", "manager"]
+      - name: field
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["title", "source"]
+      - name: pattern
+        data_tests: [not_null]
+
+  - name: work_mode_rules
+    description: >
+      Ordered rules for inferring work mode (FR-TRN-06). "title_location" is the title
+      and location together; "description" is the cleaned description. Phrases use
+      [[:space:]]+ between words because descriptions contain line breaks.
+    config:
+      column_types:
+        rule_order: integer
+        work_mode: varchar
+        field: varchar
+        pattern: varchar
+    columns:
+      - name: rule_order
+        data_tests: [unique, not_null]
+      - name: work_mode
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["remote", "hybrid", "on-site"]
+      - name: field
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["title_location", "description"]
+      - name: pattern
+        data_tests: [not_null]

@@ -1,0 +1,32 @@
+version: 2
+
+# Known examples for the seniority and work-mode rules (FR-TRN-06). When a rule in
+# seeds/seniority_rules.csv or seeds/work_mode_rules.csv changes, these must still pass.
+unit_tests:
+  - name: seniority_and_work_mode_from_known_examples
+    model: slv_posting_attributes
+    given:
+      - input: ref('slv_postings')
+        rows:
+          - { posting_key: title_senior,   title: "Senior Data Engineer",      seniority_raw: null,          location_raw: "Bengaluru", description_text: "5+ years of experience. Hybrid work model." }
+          - { posting_key: title_lead,     title: "Lead II - Data Engineering", seniority_raw: null,         location_raw: "Hyderabad", description_text: "Work mode: Remote" }
+          - { posting_key: title_mid,      title: "Data Engineer II",          seniority_raw: null,          location_raw: "Remote - Bengaluru, India", description_text: "Work from office 5 days a week" }
+          - { posting_key: assoc_director, title: "Associate Director, Data",  seniority_raw: null,          location_raw: "Hyderabad", description_text: "Location: Hyderabad (Hybrid)" }
+          - { posting_key: source_entry,   title: "Data Engineer",             seniority_raw: "Entry level", location_raw: "Bengaluru", description_text: "Experience: 3-5 years" }
+          - { posting_key: years_range,    title: "Data Engineer",             seniority_raw: null,          location_raw: "Bengaluru", description_text: "Requires 8-12 yrs of relevant experience; 3 days a week in the office." }
+          - { posting_key: experience_first, title: "AI Engineer",             seniority_raw: null,          location_raw: "Bengaluru", description_text: "Experience: 3–8 years" }
+          - { posting_key: company_age,    title: "Data Engineer",             seniority_raw: null,          location_raw: "Bengaluru", description_text: "Our 75 years of experience serving clients. We run hybrid cloud environments." }
+          - { posting_key: no_evidence,    title: "Data Engineer",             seniority_raw: null,          location_raw: "Bengaluru", description_text: "Build pipelines with remote teams." }
+      - input: ref('seniority_rules')
+      - input: ref('work_mode_rules')
+    expect:
+      rows:
+        - { posting_key: title_senior,     seniority: senior,  seniority_basis: title,      min_years_experience: 5,    work_mode: hybrid,  work_mode_basis: description }
+        - { posting_key: title_lead,       seniority: lead,    seniority_basis: title,      min_years_experience: null, work_mode: remote,  work_mode_basis: description }
+        - { posting_key: title_mid,        seniority: mid,     seniority_basis: title,      min_years_experience: null, work_mode: remote,  work_mode_basis: title_location }
+        - { posting_key: assoc_director,   seniority: manager, seniority_basis: title,      min_years_experience: null, work_mode: hybrid,  work_mode_basis: description }
+        - { posting_key: source_entry,     seniority: junior,  seniority_basis: source,     min_years_experience: 3,    work_mode: unknown, work_mode_basis: none }
+        - { posting_key: years_range,      seniority: lead,    seniority_basis: experience, min_years_experience: 8,    work_mode: hybrid,  work_mode_basis: description }
+        - { posting_key: experience_first, seniority: mid,     seniority_basis: experience, min_years_experience: 3,    work_mode: unknown, work_mode_basis: none }
+        - { posting_key: company_age,      seniority: unknown, seniority_basis: none,       min_years_experience: null, work_mode: unknown, work_mode_basis: none }
+        - { posting_key: no_evidence,      seniority: unknown, seniority_basis: none,       min_years_experience: null, work_mode: unknown, work_mode_basis: none }

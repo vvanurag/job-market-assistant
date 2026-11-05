@@ -34,6 +34,8 @@ erDiagram
         int posted_date_key FK
         varchar title
         varchar seniority
+        int min_years_experience
+        varchar work_mode
         varchar url
         int repost_count
         int skill_count
@@ -80,7 +82,7 @@ erDiagram
 
 | Table | Grain | Built from | Notes |
 |---|---|---|---|
-| `fct_postings` | One unique data/AI job | `slv_postings` where `is_canonical` and `is_target_role` | `posted_date` falls back to the first-loaded date when a source gives none, flagged by `posted_date_is_estimated` |
+| `fct_postings` | One unique data/AI job | `slv_postings` where `is_canonical` and `is_target_role`, plus `slv_posting_attributes` | `seniority` and `work_mode` are inferred, with `*_basis` columns saying how. `posted_date` falls back to the first-loaded date when a source gives none, flagged by `posted_date_is_estimated` |
 | `fct_posting_skills` | One (job, skill) pair | `fct_postings` × `slv_posting_skills` | Factless fact table: the row itself is the fact |
 | `dim_company` | One company | `slv_postings` | Names normalised so spellings like "Mercari India" and "Mercari" merge. `company_name` shows the most common original spelling |
 | `dim_skill` | One skill | `skills` seed | |
@@ -154,6 +156,6 @@ order by jobs desc;
 | Limitation | Effect | Resolution |
 |---|---|---|
 | Most postings come from one collection run | Weekly counts lean towards recent weeks, because the run collected mostly recent postings. They aren't yet a trend | Daily collection over several weeks (Phase 3) |
-| Seniority is often missing | `seniority` is empty for most jobs | Infer seniority from title and description (FR-TRN-06) |
+| Seniority and work mode are inferred | Seniority is `unknown` for 7% of jobs, and work mode for 85%; inferred levels can be one step off (see [Silver](silver.md#checking-accuracy)) | Filter or group on the `*_basis` columns when precision matters |
 | Same job across sources not yet matched | A job on both Greenhouse and the backfill counts twice | Cross-source matching (FR-TRN-03) |
 | Display name is the most common spelling | Some names keep suffixes such as "in India" | Optional display-name overrides |

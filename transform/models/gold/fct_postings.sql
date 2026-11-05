@@ -33,7 +33,11 @@ select
     p.source_id,
     p.source_posting_id,
     p.title,
-    p.seniority_raw                                   as seniority,
+    a.seniority,
+    a.seniority_basis,
+    a.min_years_experience,
+    a.work_mode,
+    a.work_mode_basis,
     p.employment_type,
     p.url,
     p.effective_posted_date                           as posted_date,
@@ -43,3 +47,4 @@ select
     p.loaded_at
 from postings as p
 left join skill_counts as s on s.posting_key = p.posting_key
+inner join {{ ref('slv_posting_attributes') }} as a on a.posting_key = p.posting_key

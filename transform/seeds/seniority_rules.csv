@@ -1,0 +1,10 @@
+rule_order,seniority,field,pattern
+10,manager,title,head|director|vice president|vp|chief|cto|cdo|manager
+20,intern,title,intern|internship|trainee|apprentice|fresher|graduate engineer
+30,lead,title,lead|principal|staff|architect|distinguished|iv
+40,senior,title,senior|sr|snr|iii
+50,junior,title,junior|jr|entry level|entry-level|associate|i|1
+60,mid,title,ii|2|mid|mid-level|intermediate
+70,intern,source,intern|internship
+80,junior,source,entry level|associate
+90,manager,source,director|executive

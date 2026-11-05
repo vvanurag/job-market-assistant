@@ -26,6 +26,26 @@ models:
       - name: posted_date_is_estimated
         description: True when the source gave no publish date and the first-loaded date is used instead.
         data_tests: [not_null]
+      - name: seniority
+        description: Inferred level (FR-TRN-06); see slv_posting_attributes for how. 'unknown' when there is no evidence.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["intern", "junior", "mid", "senior", "lead", "manager", "unknown"]
+      - name: seniority_basis
+        description: What decided the seniority — title, source, experience or none.
+      - name: min_years_experience
+        description: Minimum years of experience asked for, when the description states it.
+      - name: work_mode
+        description: Remote, hybrid or on-site, when the posting says so; otherwise 'unknown'.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["remote", "hybrid", "on-site", "unknown"]
+      - name: work_mode_basis
+        description: Where the work mode was found — title_location, description or none.
       - name: repost_count
         description: How many other postings in Silver were reposts of this job.
       - name: skill_count

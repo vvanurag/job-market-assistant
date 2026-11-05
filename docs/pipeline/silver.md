@@ -4,8 +4,8 @@ The Silver layer turns raw Bronze records into **clean, trustworthy rows**: type
 
 | | |
 |---|---|
-| **Requirements** | FR-ING-01 (two sources), FR-TRN-01 (typed columns), FR-TRN-05 (skills), FR-TRN-02 (latest version), FR-TRN-11 (grain and tests), FR-TRN-12 (target cities), NFR-15 (personal data removed), NFR-24 (portable SQL) |
-| **Models** | `transform/models/staging/`, `transform/models/silver/slv_postings.sql`, `transform/models/silver/slv_posting_skills.sql` |
+| **Requirements** | FR-ING-01 (two sources), FR-TRN-01 (typed columns), FR-TRN-05 (skills), FR-TRN-06 (seniority and work mode), FR-TRN-02 (latest version), FR-TRN-11 (grain and tests), FR-TRN-12 (target cities), NFR-15 (personal data removed), NFR-24 (portable SQL) |
+| **Models** | `transform/models/staging/`, `transform/models/silver/slv_postings.sql`, `transform/models/silver/slv_posting_skills.sql`, `transform/models/silver/slv_posting_attributes.sql` |
 | **Engine** | DuckDB locally; Snowflake through the same models ([ADR-0005](../decisions/0005-portable-warehouse-layer.md)) |
 
 ---
@@ -20,6 +20,8 @@ flowchart LR
     S --> P[("slv_postings<br/>table<br/>clean · located ·<br/>private · deduplicated")]
     K[/"skills<br/>seed (CSV)"/] --> PS
     P --> PS[("slv_posting_skills<br/>table<br/>skills per posting")]
+    R[/"seniority_rules ·<br/>work_mode_rules<br/>seeds (CSV)"/] --> PA
+    P --> PA[("slv_posting_attributes<br/>table<br/>seniority · work mode")]
 ```
 
 ### Staging views
@@ -56,6 +58,51 @@ Reposts are **flagged, not deleted** (`is_canonical`, `canonical_posting_key`, `
 **Grain:** one row per (`posting_key`, `skill_id`). It lists every skill from the skill dictionary that a posting mentions in its title or description.
 
 Matching is whole-word: the characters on either side of a match must not be letters or digits. So `sql` matches "SQL," and "SQL/NoSQL" but not "MySQL", and `java` doesn't match "JavaScript".
+
+### `slv_posting_attributes` (table)
+
+**Grain:** one row per `posting_key`. It holds each posting's **seniority** and **work mode** (FR-TRN-06), and records the evidence that decided each one, so any value can be explained.
+
+Most sources don't give a usable level: 66% of jobs had no seniority value, and most of the rest said only "Mid-Senior", which spans several levels. So seniority is inferred from evidence, strongest first:
+
+| Order | Evidence | Examples | Rules |
+|---|---|---|---|
+| 1 | Job title | "Senior …", "Lead II", "Engineer II", "Associate Director", "Intern" | `seeds/seniority_rules.csv`, field `title` |
+| 2 | The source's own level, only where it names one level | "Entry level", "Director" | `seeds/seniority_rules.csv`, field `source` |
+| 3 | Minimum years of experience in the description | "5+ years of experience", "Experience: 3–8 years" | Banded: 0–1 junior, 2–4 mid, 5–7 senior, 8–20 lead |
+| 4 | None of the above | | `unknown` |
+
+Title rules are ordered so the more specific word wins: "Associate Director" is a manager, not a junior, and "Lead II" is a lead, not a mid-level role. Years above 20 are ignored, because they nearly always describe the company ("75 years of experience serving clients").
+
+Work mode follows the same pattern: an explicit title or location ("Remote - Bengaluru"), then labelled phrases ("Work mode: Hybrid", "Location: Hyderabad (Hybrid)"), then other phrases ("3 days a week in the office", "fully remote"). Phrases are deliberately specific, so "hybrid cloud", "hybrid search" and "remote teams" don't count.
+
+**Result on 2026-11-05** (1,877 unique jobs):
+
+| Seniority | Bengaluru | Hyderabad | Total |
+|---|---|---|---|
+| junior | 59 | 46 | 105 |
+| mid | 184 | 119 | 303 |
+| senior | 447 | 317 | 764 |
+| lead | 274 | 227 | 501 |
+| manager | 41 | 30 | 71 |
+| unknown | 73 | 60 | 133 |
+
+| Work mode | Bengaluru | Hyderabad | Total |
+|---|---|---|---|
+| hybrid | 141 | 86 | 227 |
+| remote | 21 | 12 | 33 |
+| on-site | 18 | 8 | 26 |
+| unknown | 898 | 693 | 1,591 |
+
+Seniority is known for **93%** of jobs: 62% decided by the title, 3.5% by the source and 27% by years of experience. Work mode is known for only 15%. Most descriptions don't state it, and the rules prefer `unknown` to a guess.
+
+#### Checking accuracy
+
+Where a job has both a title level and a years-of-experience figure, the two can be compared (916 jobs). They fall in the same band **58%** of the time and within one band **96%** of the time. The disagreements are mostly one step up or down: in this market a "Senior" title often asks for 3–4 years, and many "Lead" roles ask for 5–7. That's why the title outranks the years.
+
+Median years asked for, by inferred level: junior 3, mid 3, senior 5, lead 8, manager 9.5. Junior roles asking for 3 years reflect titles such as "Associate", which in Indian IT usually means 2–4 years of experience.
+
+A dbt **unit test** (`models/silver/_silver_unit_tests.yml`) pins the rules down with known examples, such as "Associate Director", "Lead II", "8-12 yrs", "75 years of experience" and "hybrid cloud". It runs with every `make dbt-build`.
 
 ## Skill dictionary
 
@@ -100,6 +147,7 @@ Engine-specific functions are wrapped in macros in `transform/macros/portability
 | `json_str(col, path)` | `json_extract_string(col, '$.path')` | `col:path::varchar` |
 | `replace_all(expr, pattern, repl)` | `regexp_replace(..., 'g')` | `regexp_replace(...)` |
 | `matches(expr, pattern)` | `regexp_matches(...)` | `regexp_instr(...) > 0` |
+| `extract_match(expr, pattern)` | `nullif(regexp_extract(..., 0), '')` | `regexp_substr(...)` |
 
 Regex patterns avoid backslashes (`[.]` instead of `\.`), because the two engines treat backslashes in string literals differently.
 
@@ -116,6 +164,8 @@ Regex patterns avoid backslashes (`[.]` instead of `\.`), because the two engine
 | `assert_one_canonical_per_repost_group` | Each repost group has exactly one canonical row |
 | `unique` on `slv_posting_skills` (posting, skill) | A skill is listed once per posting |
 | `relationships` on `slv_posting_skills` | Every row points at a real posting and a real skill |
+| `accepted_values` on seniority, work mode and their rule seeds | Only the documented levels and modes |
+| Unit test `seniority_and_work_mode_from_known_examples` | The rules give the expected answer for known titles and phrases |
 
 ## Running it
 

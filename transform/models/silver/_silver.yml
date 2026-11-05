@@ -71,3 +71,45 @@ models:
                 field: skill_id
       - name: extraction_method
         description: How the skill was found. Currently always "dictionary".
+
+  - name: slv_posting_attributes
+    description: >
+      Seniority and work mode inferred for each posting (FR-TRN-06), with the evidence
+      that decided each value. Grain: one row per posting_key.
+    columns:
+      - name: posting_key
+        data_tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_postings')
+                field: posting_key
+      - name: seniority
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["intern", "junior", "mid", "senior", "lead", "manager", "unknown"]
+      - name: seniority_basis
+        description: What decided the seniority — the title, the source's own level, years of experience, or nothing.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["title", "source", "experience", "none"]
+      - name: min_years_experience
+        description: Minimum years of experience the description asks for (0–20), or NULL if none was found.
+      - name: experience_phrase
+        description: The description text the years were read from, for checking.
+      - name: work_mode
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["remote", "hybrid", "on-site", "unknown"]
+      - name: work_mode_basis
+        description: What decided the work mode — the title or location, the description, or nothing.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["title_location", "description", "none"]

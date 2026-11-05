@@ -105,3 +105,17 @@
 {% macro date_key(expression) -%}
     (year({{ expression }}) * 10000 + month({{ expression }}) * 100 + day({{ expression }}))
 {%- endmacro %}
+
+
+{# extract_match(expression, pattern): the first text matching the regex, or NULL #}
+{% macro extract_match(expression, pattern) -%}
+    {{ return(adapter.dispatch('extract_match', 'jobmarket')(expression, pattern)) }}
+{%- endmacro %}
+
+{% macro default__extract_match(expression, pattern) -%}
+    nullif(regexp_extract({{ expression }}, '{{ pattern }}', 0), '')
+{%- endmacro %}
+
+{% macro snowflake__extract_match(expression, pattern) -%}
+    regexp_substr({{ expression }}, '{{ pattern }}')
+{%- endmacro %}

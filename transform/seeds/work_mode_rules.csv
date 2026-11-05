@@ -1,0 +1,10 @@
+rule_order,work_mode,field,pattern
+10,remote,title_location,remote
+20,hybrid,title_location,hybrid
+30,on-site,title_location,on-?site|in-office|wfo|work from office
+40,remote,description,(work[[:space:]]+(mode|model|arrangements?|type|location|style|place)|workplace([[:space:]]+type)?|location([[:space:]]+type)?|job[[:space:]]+type)[[:space:]]*(:|-)?[[:space:]]*[(]?[[:space:]]*remote
+50,hybrid,description,(work[[:space:]]+(mode|model|arrangements?|type|location|style|place)|workplace([[:space:]]+type)?|location([[:space:]]+type)?|job[[:space:]]+type)[[:space:]]*(:|-)?[[:space:]]*[(]?[[:space:]]*hybrid
+60,on-site,description,(work[[:space:]]+(mode|model|arrangements?|type|location|style|place)|workplace([[:space:]]+type)?|location([[:space:]]+type)?|job[[:space:]]+type)[[:space:]]*(:|-)?[[:space:]]*[(]?[[:space:]]*(on-?site|in-office|office-based|wfo|work[[:space:]]+from[[:space:]]+office)
+70,hybrid,description,(twice|two[[:space:]]+days?|three[[:space:]]+days?|thrice)[[:space:]]+(a|per|each|in[[:space:]]+a)[[:space:]]+week|[(][[:space:]]*hybrid|hybrid[[:space:]]+(work|working|role|mode|position|setup|arrangement|schedule|policy|workplace|model[[:space:]]+of)|[1-4][[:space:]]+days?([[:space:]]*(/|a|per|each|in[[:space:]]+a)[[:space:]]*week)?[[:space:]]+((work[[:space:]]+)?(in|at|from)[[:space:]]+(the[[:space:]]+|our[[:space:]]+)?office|on-?site)|(work[[:space:]]+from|in)[[:space:]]+(the[[:space:]]+)?office[[:space:]]+(for[[:space:]]+)?[1-4][[:space:]]+days?
+80,remote,description,[(][[:space:]]*remote[[:space:]]*[)]|(fully|100%|completely|permanently)[[:space:]]+(remote|work[[:space:]]+from[[:space:]]+home)|remote[[:space:]]+(first|role|position|job|opportunity)|remote-first
+90,on-site,description,[(][[:space:]]*on-?site[[:space:]]*[)]|work[[:space:]]+from[[:space:]]+(the[[:space:]]+)?office|wfo|(fully|100%)[[:space:]]+(on-?site|in-office|office-based)|on-?site[[:space:]]+(role|position|job|only)|5[[:space:]]+days?([[:space:]]*(/|a|per|each|in[[:space:]]+a)[[:space:]]*week)?[[:space:]]+((work[[:space:]]+)?(in|at|from)[[:space:]]+(the[[:space:]]+|our[[:space:]]+)?office|on-?site)
