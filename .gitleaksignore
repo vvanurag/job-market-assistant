@@ -1,3 +1,3 @@
-# Known false positives (gitleaks fingerprints: commit:file:rule:line).
-# A deliberately fake key in a test that checks secrets are never printed.
-6866030384a9a0e8fca157ad1a105e99979b0ebe:tests/test_settings.py:generic-api-key:36
+# Reviewed false positives, by gitleaks fingerprint (commit:file:rule:line).
+# md5("s|1"), a test posting key in a dbt unit test, not a secret.
+c2eea97b73faccdeb5b2e708f305ebd51c3ea94f:transform/models/silver/_silver_unit_tests.yml:generic-api-key:51
