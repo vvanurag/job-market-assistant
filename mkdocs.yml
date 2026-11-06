@@ -51,6 +51,8 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - User's Guide: guide.md
+  - Project Story: story.md
   - Requirements:
       - Product Requirements: requirements/product_requirements.md
       - Functional Requirements: requirements/functional_requirements.md

@@ -48,6 +48,8 @@ Data moves through stages, much like a kitchen: raw groceries arrive, get washed
 
 Read it from top to bottom: postings come in at the top and answers come out at the bottom. Solid arrows show data moving. The dotted arrow is your question going to the service. The supporting tools run, test and measure every stage.
 
+New here? Read the **[User's Guide](guide.md)** for a full walkthrough, or **[The Story of the Project](story.md)** for how it was built.
+
 ## The tools
 
 | Tool | What it does here | Kitchen analogy | Decision |
