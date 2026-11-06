@@ -5,7 +5,7 @@
 
     Steps
       1. latest         keep the most recent delivery of each posting (FR-TRN-02)
-      2. city_matches   resolve the location to Hyderabad or Bengaluru (FR-TRN-12)
+      2. city_matches   resolve the location to Hyderabad, Bengaluru or Remote (India) (FR-TRN-12)
       3. cleaned        remove emails and phone numbers from the text (NFR-15)
       4. fingerprinted  identify reposts: same company and same description text
       5. final          link every repost to one canonical posting; flag target roles
@@ -39,11 +39,15 @@ city_matches as (
         a.match_level,
         row_number() over (
             partition by l.source_id, l.source_posting_id
-            order by case a.match_level when 'city' then 1 when 'area' then 2 else 3 end, a.alias
+            order by case a.match_level when 'city' then 1 when 'area' then 2 when 'state' then 3 else 4 end, a.alias
         ) as match_rank
     from latest as l
     inner join {{ ref('city_aliases') }} as a
-        on contains(lower(l.location_raw), a.alias)
+        -- whole words only, so "remote - india" doesn't match "Remote - Indiana"
+        on {{ matches_column(
+            'lower(l.location_raw)',
+            "'(^|[^a-z])' || replace(replace(a.alias, '(', '[(]'), ')', '[)]') || '([^a-z]|$)'"
+        ) }}
 
 ),
 

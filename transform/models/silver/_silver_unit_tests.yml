@@ -30,3 +30,28 @@ unit_tests:
         - { posting_key: experience_first, seniority: mid,     seniority_basis: experience, min_years_experience: 3,    work_mode: unknown, work_mode_basis: none }
         - { posting_key: company_age,      seniority: unknown, seniority_basis: none,       min_years_experience: null, work_mode: unknown, work_mode_basis: none }
         - { posting_key: no_evidence,      seniority: unknown, seniority_basis: none,       min_years_experience: null, work_mode: unknown, work_mode_basis: none }
+
+  - name: history_tracks_changes_closure_and_reopening
+    description: >
+      One posting over five runs: returned, returned with a new title, missing,
+      missing (closed after 2 missed runs), returned again (reopened).
+    model: slv_posting_history
+    overrides:
+      vars: { closed_after_missed_runs: 2 }
+    given:
+      - input: ref('stg_postings')
+        rows:
+          - { source_id: s, source_posting_id: "1", batch_id: b1, loaded_at: "2026-01-01 00:00:00", title: Data Engineer,        location_raw: Hyderabad, description_raw: d }
+          - { source_id: s, source_posting_id: "1", batch_id: b2, loaded_at: "2026-01-02 00:00:00", title: Senior Data Engineer, location_raw: Hyderabad, description_raw: d }
+          - { source_id: s, source_posting_id: "2", batch_id: b3, loaded_at: "2026-01-03 00:00:00", title: Other,                location_raw: Hyderabad, description_raw: d }
+          - { source_id: s, source_posting_id: "2", batch_id: b4, loaded_at: "2026-01-04 00:00:00", title: Other,                location_raw: Hyderabad, description_raw: d }
+          - { source_id: s, source_posting_id: "1", batch_id: b5, loaded_at: "2026-01-05 00:00:00", title: Senior Data Engineer, location_raw: Hyderabad, description_raw: d }
+      - input: ref('slv_postings')
+        rows:
+          - { posting_key: "29cabef36df5e090917c29ff6c1891bc" }  # md5("s|1")
+    expect:
+      rows:
+        - { version_number: 1, status: open,   title: Data Engineer,        valid_from: "2026-01-01 00:00:00", valid_to: "2026-01-02 00:00:00", is_current: false }
+        - { version_number: 2, status: open,   title: Senior Data Engineer, valid_from: "2026-01-02 00:00:00", valid_to: "2026-01-04 00:00:00", is_current: false }
+        - { version_number: 3, status: closed, title: Senior Data Engineer, valid_from: "2026-01-04 00:00:00", valid_to: "2026-01-05 00:00:00", is_current: false }
+        - { version_number: 4, status: open,   title: Senior Data Engineer, valid_from: "2026-01-05 00:00:00", valid_to: null,                  is_current: true }

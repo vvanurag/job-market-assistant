@@ -5,7 +5,7 @@ models:
     description: >
       Cleaned postings, one row per posting per source. Location resolved to a target
       city, personal contact details removed, and reposts linked to one canonical
-      posting. Postings outside Hyderabad and Bengaluru are excluded (FR-TRN-12).
+      posting. Postings outside Hyderabad, Bengaluru and remote-in-India are excluded (FR-TRN-12, Q6).
     columns:
       - name: posting_key
         description: Surrogate key, md5(source_id | source_posting_id).
@@ -15,13 +15,13 @@ models:
           - not_null
           - accepted_values:
               arguments:
-                values: ["Hyderabad", "Bengaluru"]
+                values: ["Hyderabad", "Bengaluru", "Remote (India)"]
       - name: city_match_level
-        description: How the city was found — city name, an area of the city, or the state only.
+        description: How the location was found — city name, an area of the city, the state only, or a remote role open to India (preferred in that order).
         data_tests:
           - accepted_values:
               arguments:
-                values: ["city", "area", "state"]
+                values: ["city", "area", "state", "remote"]
       - name: description_text
         description: Description with email addresses and phone numbers removed (NFR-15).
         data_tests: [not_null]
@@ -113,3 +113,68 @@ models:
           - accepted_values:
               arguments:
                 values: ["title_location", "description", "none"]
+
+  - name: slv_posting_history
+    description: >
+      Slowly changing dimension Type 2 history of each posting's status, title, location
+      and description (FR-TRN-08). A posting is 'closed' after closed_after_missed_runs
+      consecutive runs of its source without it, and reopens if it comes back
+      (FR-TRN-09). Grain: one row per (posting_key, version_number).
+    data_tests:
+      - unique:
+          column_name: "posting_key || '|' || cast(version_number as varchar)"
+    columns:
+      - name: posting_version_key
+        data_tests: [unique, not_null]
+      - name: posting_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_postings')
+                field: posting_key
+      - name: status
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["open", "closed"]
+      - name: valid_from
+        description: Start of the run in which this version was first observed.
+        data_tests: [not_null]
+      - name: valid_to
+        description: Start of the next version; NULL for the current version.
+      - name: last_returned_at
+        description: Start of the last run in this version in which the source returned the posting.
+      - name: is_current
+        data_tests: [not_null]
+
+  - name: slv_posting_jobs
+    description: >
+      Links each posting to one job (FR-TRN-03): reposts and the same role on different
+      sources share a job_key, which is the posting_key of the job's representative
+      posting. Grain: one row per posting_key.
+    columns:
+      - name: posting_key
+        data_tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_postings')
+                field: posting_key
+      - name: job_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_postings')
+                field: posting_key
+      - name: linked_as
+        description: representative (shown for the job), repost (same text, any source), or cross_source (matched by the cross-source rule).
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["representative", "repost", "cross_source"]
+      - name: sources_in_job
+        description: Number of different sources the job was found on.

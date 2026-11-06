@@ -97,3 +97,13 @@ def test_rerunning_a_batch_does_not_duplicate_files(tmp_path):
 @pytest.mark.parametrize("location", ["Bengaluru, Karnataka, India", "Bangalore", "Hyderabad, Telangana", "Gachibowli"])
 def test_city_aliases_match_common_spellings(location):
     assert greenhouse.city_pattern().search(location)
+
+
+@pytest.mark.parametrize("location", ["Remote - India", "Remote, India, APAC", "India (Remote)"])
+def test_remote_roles_open_to_india_are_kept(location):
+    assert greenhouse.city_pattern().search(location)
+
+
+@pytest.mark.parametrize("location", ["Remote - Indiana, USA", "Remote - Berlin", "Indianapolis"])
+def test_aliases_match_whole_words_only(location):
+    assert not greenhouse.city_pattern().search(location)

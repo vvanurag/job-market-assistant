@@ -26,3 +26,11 @@ def test_differences_are_counted_both_ways_with_examples():
 
 def test_duplicate_rows_are_compared_as_counts():
     assert not compare_rows("t", [("a",), ("a",)], [("a",)]).identical
+
+
+def test_timestamps_compare_in_utc_whatever_the_session_timezone():
+    from datetime import UTC, timedelta, timezone
+
+    ist = timezone(timedelta(hours=5, minutes=30))
+    assert normalise(datetime(2026, 11, 6, 6, 0, tzinfo=ist)) == normalise(datetime(2026, 11, 6, 0, 30, tzinfo=UTC))
+    assert normalise(datetime(2026, 11, 6, 0, 30, tzinfo=UTC)) == "2026-11-06T00:30:00"

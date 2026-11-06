@@ -16,9 +16,9 @@ The project is also a structured learning path, so each phase lists the skills i
 
 | Phase | Name | Delivers | Topics covered | Status |
 |---|---|---|---|---|
-| 0 | Foundations | Repository, environment, conventions | Python basics, virtual environments, Git and GitHub, Docker, Snowflake access control | In progress |
-| 1 | Ingestion (Bronze) | Raw postings landing in the warehouse daily | ELT, REST APIs, retries, idempotent loading, Medallion Bronze | In progress |
-| 2 | Modeling (Silver and Gold) | Clean, deduplicated, historised, tested models | **SQL and data modeling**, window functions, dimensional modeling, slowly changing dimensions, Medallion Silver and Gold, dbt and data tests | In progress |
+| 0 | Foundations | Repository, environment, conventions | Python basics, virtual environments, Git and GitHub, Docker, Snowflake access control | Complete |
+| 1 | Ingestion (Bronze) | Raw postings landing in the warehouse daily | ELT, REST APIs, retries, idempotent loading, Medallion Bronze | Complete |
+| 2 | Modeling (Silver and Gold) | Clean, deduplicated, historised, tested models | **SQL and data modeling**, window functions, dimensional modeling, slowly changing dimensions, Medallion Silver and Gold, dbt and data tests | Complete |
 | 3 | Orchestration | Scheduled, monitored, alerting pipeline | Apache Airflow, scheduling, monitoring, SLAs and SLOs | Not started |
 | 4 | Streaming | Near-real-time path for new postings | Apache Kafka, Lambda vs Kappa architecture | Not started |
 | 5 | Retrieval index | Chunked, embedded, filterable index kept in sync | Data engineering for RAG, chunking, embeddings, semantic and hybrid search, ETL | Not started |

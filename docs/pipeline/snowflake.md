@@ -43,24 +43,29 @@ Reading the files as text rather than as JSON is deliberate. It's what makes the
 
 `make compare` reads the meaningful columns of every Silver and Gold table from both engines and compares them row by row: keys, cities, flags, fingerprints, counts and dates.
 
-Result on 2026-11-05:
+Result on 2026-11-06 (two collection runs):
 
 | Table | DuckDB | Snowflake | Result |
 |---|---|---|---|
-| Bronze fingerprints | 2,648 | 2,648 | identical |
-| `silver.slv_postings` | 2,628 | 2,628 | identical |
-| `silver.slv_posting_skills` | 31,606 | 31,606 | identical |
-| `silver.slv_posting_attributes` | 2,628 | 2,628 | identical |
-| `gold.fct_postings` | 1,877 | 1,877 | identical |
-| `gold.fct_posting_skills` | 26,343 | 26,343 | identical |
+| Bronze fingerprints | 3,324 | 3,324 | identical |
+| `silver.slv_postings` | 2,652 | 2,652 | identical |
+| `silver.slv_posting_skills` | 31,731 | 31,731 | identical |
+| `silver.slv_posting_attributes` | 2,652 | 2,652 | identical |
+| `silver.slv_posting_history` | 2,659 | 2,659 | identical |
+| `silver.slv_posting_jobs` | 2,652 | 2,652 | identical |
+| `gold.fct_postings` | 1,872 | 1,872 | identical |
+| `gold.fct_posting_skills` | 26,257 | 26,257 | identical |
 | `gold.dim_company` | 805 | 805 | identical |
 | `gold.dim_skill` | 128 | 128 | identical |
-| `gold.dim_location` | 2 | 2 | identical |
+| `gold.dim_location` | 3 | 3 | identical |
+| `gold.dim_source` | 2 | 2 | identical |
 | `gold.dim_date` | 3,287 | 3,287 | identical |
 
 The Silver `content_fingerprint` is computed from descriptions **after** HTML decoding and personal-data removal. Matching fingerprints therefore show that the `html_to_text`, `redact_pii` and `replace_all` macros produce identical text on both engines. Likewise, `slv_posting_attributes` is compared including `experience_phrase`, the exact text the years of experience were read from, so the `extract_match` macro is shown to return the same match on both engines.
 
-`dbt build` passes on both engines: 87 data tests and 1 unit test. A Snowflake build takes about 17 seconds on an X-Small warehouse.
+`dbt build` passes on both engines (136 nodes, including unit tests).
+
+`valid_from` and `valid_to` in the history are each warehouse's own load times, so they differ by design. The comparison checks the run numbers they come from instead. A Snowflake build takes about 17 seconds on an X-Small warehouse.
 
 ## What this means for the Snowflake decision
 

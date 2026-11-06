@@ -5,7 +5,8 @@ seeds:
     description: >
       Maps text found in posting locations to a canonical target city (FR-TRN-12).
       match_level ranks how specific the match is: a city name beats an area name,
-      which beats a state-only location such as "Telangana, India".
+      which beats a state-only location such as "Telangana, India", which beats a remote
+      role open to candidates in India (open question Q6).
     config:
       column_types:
         alias: varchar
@@ -20,12 +21,12 @@ seeds:
           - not_null
           - accepted_values:
               arguments:
-                values: ["Hyderabad", "Bengaluru"]
+                values: ["Hyderabad", "Bengaluru", "Remote (India)"]
       - name: match_level
         data_tests:
           - accepted_values:
               arguments:
-                values: ["city", "area", "state"]
+                values: ["city", "area", "state", "remote"]
 
   - name: skills
     description: >
@@ -104,3 +105,16 @@ seeds:
                 values: ["title_location", "description"]
       - name: pattern
         data_tests: [not_null]
+
+  - name: sources
+    description: >
+      Recurring sources and their details, for dim_source. A source missing from this
+      list is treated as the one-off initial backfill.
+    columns:
+      - name: source_id
+        data_tests: [unique, not_null]
+      - name: collection
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["daily", "one-off"]

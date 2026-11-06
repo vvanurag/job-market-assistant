@@ -4,8 +4,8 @@ The Silver layer turns raw Bronze records into **clean, trustworthy rows**: type
 
 | | |
 |---|---|
-| **Requirements** | FR-ING-01 (two sources), FR-TRN-01 (typed columns), FR-TRN-05 (skills), FR-TRN-06 (seniority and work mode), FR-TRN-02 (latest version), FR-TRN-11 (grain and tests), FR-TRN-12 (target cities), NFR-15 (personal data removed), NFR-24 (portable SQL) |
-| **Models** | `transform/models/staging/`, `transform/models/silver/slv_postings.sql`, `transform/models/silver/slv_posting_skills.sql`, `transform/models/silver/slv_posting_attributes.sql` |
+| **Requirements** | FR-ING-01 (two sources), FR-TRN-01 (typed columns), FR-TRN-05 (skills), FR-TRN-03 (cross-source matching), FR-TRN-06 (seniority and work mode), FR-TRN-08/09 (history and closed postings), FR-TRN-02 (latest version), FR-TRN-11 (grain and tests), FR-TRN-12 (target cities), NFR-15 (personal data removed), NFR-24 (portable SQL) |
+| **Models** | `transform/models/staging/`, `transform/models/silver/slv_postings.sql`, `transform/models/silver/slv_posting_skills.sql`, `transform/models/silver/slv_posting_attributes.sql`, `slv_posting_history.sql`, `slv_posting_jobs.sql` |
 | **Engine** | DuckDB locally; Snowflake through the same models ([ADR-0005](../decisions/0005-portable-warehouse-layer.md)) |
 
 ---
@@ -22,6 +22,9 @@ flowchart LR
     P --> PS[("slv_posting_skills<br/>table<br/>skills per posting")]
     R[/"seniority_rules ·<br/>work_mode_rules<br/>seeds (CSV)"/] --> PA
     P --> PA[("slv_posting_attributes<br/>table<br/>seniority · work mode")]
+    S --> PH[("slv_posting_history<br/>table<br/>SCD2 versions · open/closed")]
+    P --> PH
+    P --> PJ[("slv_posting_jobs<br/>table<br/>one job across reposts and sources")]
 ```
 
 ### Staging views
@@ -45,7 +48,7 @@ Nothing is removed or interpreted in staging, apart from trimming text and casti
 | Step | What it does | Why |
 |---|---|---|
 | 1. Latest version | If a posting arrived in several batches, keep the most recent | One current row per posting (FR-TRN-02) |
-| 2. City | Match the location text against `city_aliases`, preferring a city name over an area name over a state | Every row belongs to Hyderabad or Bengaluru; others are excluded (FR-TRN-12) |
+| 2. City | Match the location text against `city_aliases` as whole words, preferring a city name, then an area, then a state, then a remote role open to India | Every row belongs to Hyderabad, Bengaluru or Remote (India); others are excluded (FR-TRN-12, Q6). Whole words, so "Remote - India" matches but "Remote - Indiana, USA" doesn't |
 | 3. Privacy | Replace email addresses and Indian mobile numbers with `[email removed]` / `[phone removed]` | Personal data never reaches Gold or the search index (NFR-15) |
 | 4. Fingerprint | md5 of company name plus the description with whitespace normalised | The same text at the same company is a repost |
 | 5. Canonical | In each repost group, the earliest-posted row becomes canonical | Gold counts each real job once |
@@ -103,6 +106,37 @@ Where a job has both a title level and a years-of-experience figure, the two can
 Median years asked for, by inferred level: junior 3, mid 3, senior 5, lead 8, manager 9.5. Junior roles asking for 3 years reflect titles such as "Associate", which in Indian IT usually means 2–4 years of experience.
 
 A dbt **unit test** (`models/silver/_silver_unit_tests.yml`) pins the rules down with known examples, such as "Associate Director", "Lead II", "8-12 yrs", "75 years of experience" and "hybrid cloud". It runs with every `make dbt-build`.
+
+### `slv_posting_history` (table)
+
+**Grain:** one row per (`posting_key`, `version_number`). This is a **slowly changing dimension Type 2** (FR-TRN-08): each row is one version of a posting, valid from `valid_from` until `valid_to`, and the current version has `is_current = true`.
+
+It is built from every Bronze delivery, not from dbt snapshots. Rebuilding it from scratch therefore gives the same history, and it comes out the same on DuckDB and Snowflake.
+
+| Step | What it does |
+|---|---|
+| 1. Runs | Number each source's collection runs (batches) in order |
+| 2. Grid | Pair every posting with every run of its source since it was first seen |
+| 3. Status | Missing for `closed_after_missed_runs` consecutive runs (default 2, in `dbt_project.yml`) means **closed** (FR-TRN-09). A posting that comes back is **open** again |
+| 4. Versions | A new version starts when status, title, location or description changes |
+
+Closing after two missed runs rather than one avoids closing a posting because of a single failed or partial run.
+
+The one-off backfill has a single run, so its postings stay `open` as of that run: their status can't be re-checked. `dim_source.collection` says which sources are re-checked (`daily`) and which aren't (`one-off`).
+
+A unit test (`history_tracks_changes_closure_and_reopening`) walks one posting through a title change, two missed runs (closed) and its return (reopened).
+
+### `slv_posting_jobs` (table)
+
+**Grain:** one row per `posting_key`. It links every posting to one **job** (FR-TRN-03), so a role is counted once, however many times and wherever it was posted.
+
+1. **Reposts.** Postings with the same company and description text are already grouped in `slv_postings`.
+2. **Cross-source copies.** Two postings from different sources are the same job when all of these are equal: the company (normalised name), the city, the title (ignoring case and punctuation), and the **first and last 1,000 letters** of the description, ignoring everything that isn't a letter. Comparing letters only removes formatting differences between sources: HTML, bullets and line breaks. Matches are one-to-one.
+3. **Representative.** Each job is shown by one posting. A recurring source is preferred, because its open/closed status is re-checked every run.
+
+The title is part of the rule on purpose. Some employers reuse one description for several levels: Databricks posts "Senior" and "Staff" roles with identical text, and those are two jobs.
+
+**Measured precision** (2026-11-06): the rule linked **10** pairs, and all 10 were checked by hand and are the same job (**precision 10/10**). Among the pairs with the same company and city, and the same or a nearly identical title, one real match was missed: the company is "InMobi" on one source and "InMobi Advertising" on the other (**recall 10/11** on the reviewed candidates). Aliases for company names would close that gap.
 
 ## Skill dictionary
 
@@ -165,6 +199,8 @@ Regex patterns avoid backslashes (`[.]` instead of `\.`), because the two engine
 | `unique` on `slv_posting_skills` (posting, skill) | A skill is listed once per posting |
 | `relationships` on `slv_posting_skills` | Every row points at a real posting and a real skill |
 | `accepted_values` on seniority, work mode and their rule seeds | Only the documented levels and modes |
+| `assert_one_representative_per_job` | Every job has exactly one representative posting |
+| Unit test `history_tracks_changes_closure_and_reopening` | Versions, closing after missed runs, and reopening |
 | Unit test `seniority_and_work_mode_from_known_examples` | The rules give the expected answer for known titles and phrases |
 
 ## Running it

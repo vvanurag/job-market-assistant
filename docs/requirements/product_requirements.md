@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | **Document** | Product Requirements Document (PRD) |
-| **Version** | 0.2 (draft) |
+| **Version** | 0.3 (draft) |
 | **Status** | In review |
 | **Owner** | Anurag V V |
 | **Last updated** | 2026-11-05 |
@@ -13,6 +13,7 @@
 | Version | Date | Changes |
 |---|---|---|
 | 0.1 | 2026-11-05 | First draft |
+| 0.3 | 2026-11-06 | Answered Q5 (option C) and Q6 (remote roles in India included). |
 | 0.2 | 2026-11-05 | Answered Q1–Q4: geography set to Hyderabad and Bengaluru, LLM options shortlisted, warehouse kept portable, local-only demos. Added Q6, R7, R8 and Bengaluru/Hyderabad example questions. |
 
 ---
@@ -51,7 +52,7 @@ The following are out of scope for version 1:
 - Multiple user accounts, sign-up or billing.
 - A mobile application.
 - Hosting the API on a cloud service. Version 1 runs on the owner's machine.
-- Locations other than Hyderabad and Bengaluru (remote roles are pending open question Q6).
+- Locations other than Hyderabad, Bengaluru and remote roles open to candidates in India (Q6).
 - Predicting salaries or hiring outcomes with machine learning models.
 - Coverage of roles outside data engineering, analytics engineering, machine learning and AI engineering.
 
@@ -151,8 +152,8 @@ These questions define what "useful" means. They seed the [evaluation set](evalu
 | Q2 | Which LLM provider and monthly budget? | Partly answered | Shortlist: local models, Google AI Studio (Gemini), Groq Cloud. Final choice from Phase 7 evaluation. Budget: free tiers during development; a paid budget is set only if evaluation justifies it. See [ADR-0006](../decisions/0006-llm-provider-strategy.md). |
 | Q3 | How will Snowflake continue after the trial? | Deferred | Decided later. The design keeps any choice cheap to make ([ADR-0005](../decisions/0005-portable-warehouse-layer.md)); verified on 2026-11-05: identical results on DuckDB and Snowflake ([Running on Snowflake](../pipeline/snowflake.md)). |
 | Q4 | Where is the API hosted for demos? | Answered | On the owner's machine |
-| Q5 | Should the resume stay local, or may it be sent to an LLM provider? | Open, needed by Phase 6 | Options: (A) local only; (B) send the full resume to an API; (C) extract skills locally and send only an anonymous skill profile. C is recommended, with A as a strict-privacy mode. |
-| Q6 | Should remote roles open to candidates in India be included alongside Hyderabad and Bengaluru roles? | Open, needed by Phase 1 | — |
+| Q5 | Should the resume stay local, or may it be sent to an LLM provider? | Answered (2026-11-06) | The owner doesn't require resume privacy and left the choice open. **Option C** is used: skills are extracted locally with the skill dictionary, and only the skill list goes to a model. The dictionary already extracts skills reliably without a model, so sending the full text would add cost and risk for no gain. NFR-10 is kept. |
+| Q6 | Should remote roles open to candidates in India be included alongside Hyderabad and Bengaluru roles? | Answered (2026-11-06) | Yes. They form a third location, **Remote (India)**. A posting naming a target city stays in that city. |
 
 ## 11. Release criteria for version 1
 

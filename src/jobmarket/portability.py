@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from collections import Counter
 from dataclasses import dataclass, field
-from datetime import date, datetime
+from datetime import UTC, date, datetime
 from decimal import Decimal
 
 # table -> columns compared. Free text is left out: it's derived from the same Bronze
@@ -35,6 +35,19 @@ COMPARISONS: dict[str, list[str]] = {
         "work_mode",
         "work_mode_basis",
     ],
+    "silver.slv_posting_history": [
+        "posting_key",
+        "version_number",
+        "status",
+        "title",
+        "description_hash",
+        # valid_from/valid_to are each warehouse's own load times, so they differ by
+        # design; the run numbers they come from must match.
+        "from_run_number",
+        "to_run_number",
+        "is_current",
+    ],
+    "silver.slv_posting_jobs": ["posting_key", "job_key", "linked_as", "postings_in_job", "sources_in_job"],
     "gold.fct_postings": [
         "posting_key",
         "company_key",
@@ -44,11 +57,15 @@ COMPARISONS: dict[str, list[str]] = {
         "skill_count",
         "seniority",
         "work_mode",
+        "status",
+        "source_key",
+        "sources_in_job",
     ],
     "gold.fct_posting_skills": ["posting_key", "skill_key", "company_key", "location_key", "posted_date_key"],
     "gold.dim_company": ["company_key", "normalized_name", "spelling_variants"],
     "gold.dim_skill": ["skill_key", "skill_name", "category"],
-    "gold.dim_location": ["location_key", "city", "state"],
+    "gold.dim_location": ["location_key", "city", "state", "is_remote"],
+    "gold.dim_source": ["source_key", "source_name", "collection"],
     "gold.dim_date": ["date_key", "date_day", "day_of_week", "week_start", "is_weekend"],
 }
 
@@ -74,6 +91,8 @@ def normalise(value) -> str:
     if isinstance(value, bool):
         return "true" if value else "false"
     if isinstance(value, datetime):
+        if value.tzinfo is not None:
+            value = value.astimezone(UTC).replace(tzinfo=None)
         return value.date().isoformat() if value.time() == datetime.min.time() else value.isoformat()
     if isinstance(value, date):
         return value.isoformat()

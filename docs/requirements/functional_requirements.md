@@ -68,7 +68,7 @@ flowchart LR
 | FR-TRN-05 | The system must extract skills from posting text into canonical skills using a maintained skill dictionary with aliases. | M | US-01, US-09 | 2 |
 | FR-TRN-06 | The system should classify each posting's seniority (for example junior, mid, senior, lead) and remote status (remote, hybrid, on-site). | S | US-03 | 2 |
 | FR-TRN-07 | The system should parse published salaries, including LPA ranges such as "12–18 LPA", into minimum, maximum, currency and period, stored as INR per year. It must not convert or mix currencies without recording it. | C | US-04 | 2 |
-| FR-TRN-12 | The system must resolve each posting's location to the canonical target cities (Hyderabad, Bengaluru) using a maintained alias table, and exclude postings that match neither city (subject to open question Q6 on remote roles). | M | US-03 | 2 |
+| FR-TRN-12 | The system must resolve each posting's location to a canonical target location (Hyderabad, Bengaluru, or Remote (India) for remote roles open to candidates in India, per Q6) using a maintained alias table, and exclude postings that match none. | M | US-03 | 2 |
 | FR-TRN-08 | The system must keep the history of tracked posting attributes (status, title, salary, location) as slowly changing dimension Type 2 records. | M | US-10 | 2 |
 | FR-TRN-09 | The system must mark a posting as closed when it is no longer returned by its source for a configured number of consecutive runs. | M | US-10 | 2 |
 | FR-TRN-10 | The Gold layer must provide, at minimum: `fct_postings` (one row per posting), `fct_posting_skills` (one row per posting and skill), `dim_company`, `dim_skill`, `dim_location`, `dim_date` and `dim_source`. | M | US-01 to US-04 | 2 |
@@ -116,7 +116,7 @@ flowchart LR
 | FR-QA-06 | The system should accept a resume (PDF or text), extract skills from it, and use them for matching and gap analysis. | S | US-08, US-09 | 6 |
 | FR-QA-07 | The system may support follow-up questions within a session. | C | — | 6 |
 | FR-QA-08 | Language model and embedding calls must go through one internal interface, so that local models, Google AI Studio and Groq Cloud can be switched by configuration without code changes ([ADR-0006](../decisions/0006-llm-provider-strategy.md)). | M | — | 6 |
-| FR-QA-09 | Resume handling must follow the option chosen for open question Q5. Until Q5 is answered, the resume is processed only by local models. | M | US-08, US-09 | 6 |
+| FR-QA-09 | Resume handling must follow the option chosen for open question Q5 (option C: skills are extracted locally and only the skill list is sent to a model). | M | US-08, US-09 | 6 |
 
 ## 9. API (FR-API)
 

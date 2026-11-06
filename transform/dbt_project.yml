@@ -26,6 +26,8 @@ vars:
   # Calendar range for dim_date; covers every posting date seen so far, with headroom
   date_spine_start: "2019-01-01"
   date_spine_end: "2027-12-31"
+  # A posting is closed after this many consecutive runs of its source without it (FR-TRN-09).
+  closed_after_missed_runs: 2
 
 seeds:
   jobmarket:

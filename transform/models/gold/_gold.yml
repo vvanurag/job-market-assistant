@@ -3,8 +3,8 @@ version: 2
 models:
   - name: fct_postings
     description: >
-      One row per unique data/AI job in Hyderabad or Bengaluru: canonical postings only,
-      so reposts are counted once, and target roles only.
+      One row per unique data/AI job in Hyderabad, Bengaluru or remote in India, target
+      roles only. Reposts and cross-source copies are counted once (FR-TRN-03).
     columns:
       - name: posting_key
         data_tests: [unique, not_null]
@@ -23,6 +23,25 @@ models:
           - not_null
           - relationships:
               arguments: { to: ref('dim_date'), field: date_key }
+      - name: source_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments: { to: ref('dim_source'), field: source_key }
+      - name: status
+        description: open or closed, from the current version in slv_posting_history (FR-TRN-09).
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["open", "closed"]
+      - name: first_seen_at
+        description: When the posting was first collected.
+        data_tests: [not_null]
+      - name: last_seen_at
+        description: When a source last returned the posting.
+      - name: version_count
+        description: Number of history versions; more than 1 means it changed or closed.
       - name: posted_date_is_estimated
         description: True when the source gave no publish date and the first-loaded date is used instead.
         data_tests: [not_null]
@@ -47,7 +66,9 @@ models:
       - name: work_mode_basis
         description: Where the work mode was found — title_location, description or none.
       - name: repost_count
-        description: How many other postings in Silver were reposts of this job.
+        description: How many other postings (reposts, or copies on other sources) are the same job.
+      - name: sources_in_job
+        description: Number of sources the job was found on.
       - name: skill_count
         description: Number of dictionary skills the posting mentions.
 
@@ -82,6 +103,17 @@ models:
       - name: spelling_variants
         description: How many different original spellings were merged into this company.
 
+  - name: dim_source
+    description: One row per source of postings (FR-TRN-10).
+    columns:
+      - name: source_key
+        data_tests: [unique, not_null]
+      - name: collection
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["daily", "one-off"]
+
   - name: dim_skill
     description: One row per skill in the dictionary.
     columns:
@@ -89,7 +121,7 @@ models:
         data_tests: [unique, not_null]
 
   - name: dim_location
-    description: One row per target city.
+    description: One row per target location — Hyderabad, Bengaluru and Remote (India).
     columns:
       - name: location_key
         data_tests: [unique, not_null]

@@ -9,7 +9,7 @@
 
 This register lists candidate sources and the checks each must pass before use. A source moves to **Approved** only after its terms of use have been read and recorded below (NFR-14).
 
-**Target geography:** Hyderabad and Bengaluru, India. Whether remote roles open to India-based candidates are included is open question Q6.
+**Target geography:** Hyderabad and Bengaluru, India, plus remote roles open to candidates in India (Q6, answered 2026-11-06).
 
 ---
 
@@ -33,7 +33,7 @@ Sources that require scraping pages in breach of their terms are excluded by def
 | **Greenhouse job board API** | Public, per-company endpoint | Companies with offices in either city that use Greenhouse | Full descriptions; stable IDs; direct from the employer | Needs a curated company list (section 3) | Primary | **Approved** 2026-11-05 (section 7) |
 | **Lever postings API** | Public, per-company endpoint | Companies with offices in either city that use Lever | Full descriptions; stable IDs; direct from the employer | Needs a curated company list (section 3) | Primary | To review |
 | **Hacker News "Who is Hiring"** via the HN Algolia API | Public API | Low: few India-based roles | Real posts; good test of free-text extraction | Unstructured; monthly | Optional | To review |
-| **Remotive API** | Public API | Remote roles only | Full descriptions | Relevant only if Q6 includes remote roles | Optional, depends on Q6 | To review |
+| **Remotive API** | Public API | Remote roles only | Full descriptions | Relevant now that Q6 includes remote roles | Optional | To review |
 | ~~Arbeitnow API~~ | Public API | Europe only | — | Outside target geography | Dropped | Rejected |
 Using **employer career-page APIs** (Greenhouse and Lever) alongside an **aggregator** (Adzuna) deliberately creates overlap. The same role will often appear in both, which gives cross-source deduplication (FR-TRN-03) real work to do.
 

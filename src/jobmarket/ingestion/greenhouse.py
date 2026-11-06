@@ -65,7 +65,9 @@ def city_pattern(path: Path = CITY_ALIASES_FILE) -> re.Pattern[str]:
     """One regex built from the same alias list the Silver layer uses, so both agree."""
     with path.open(newline="") as f:
         aliases = sorted({r["alias"].strip().lower() for r in csv.DictReader(f)}, key=len, reverse=True)
-    return re.compile("|".join(re.escape(a) for a in aliases), re.IGNORECASE)
+    alternatives = "|".join(re.escape(a) for a in aliases)
+    # Whole words only, like the Silver model: "remote - india" must not match "Remote - Indiana".
+    return re.compile(f"(?<![a-z])(?:{alternatives})(?![a-z])", re.IGNORECASE)
 
 
 def job_locations(job: dict) -> list[str]:
