@@ -6,10 +6,10 @@ Status against the [version 1 release criteria](../requirements/product_requirem
 |---|---|
 | 1. All **Must** user stories meet their acceptance criteria | **Met** (table below) |
 | 2. All **Must** non-functional requirements meet their targets for 14 consecutive days | **Not yet.** Every Must target is met or built, but the 14-day window starts with daily scheduled runs |
-| 3. The evaluation set meets the thresholds | **Met** by the accepted run; the human check of the LLM judge is pending |
+| 3. The evaluation set meets the thresholds | **Met** by the accepted run. The owner waived the human check of the LLM judge (2026-11-06), so the judge-scored metrics (groundedness, citation accuracy) haven't been verified by a person |
 | 4. The data-quality experiment has been run and published | **Met**: [results](results.md#data-quality-experiment) |
 
-**What remains:** run the Airflow DAG daily for 14 days (turn on `jobmarket_daily`), and review the 20% judge sample in `eval/review/v2_groq_human_review.md`.
+**What remains:** run the Airflow DAG daily for 14 days (turn on `jobmarket_daily`).
 
 ## Must user stories
 

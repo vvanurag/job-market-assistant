@@ -60,7 +60,7 @@ Because postings change daily, the evaluation runs against a **frozen snapshot**
 1. Build or refresh the frozen snapshot.
 2. Run every question through the API with the configuration under test.
 3. Score automatically where possible (routing, analytical accuracy, recall, MRR, duplicate and stale rates).
-4. Score groundedness and citation accuracy with an LLM judge, and have a person review a random 20% sample to check the judge.
+4. Score groundedness and citation accuracy with an LLM judge, and have a person review a random 20% sample to check the judge. (For the version 1 baseline, the owner waived this review on 2026-11-06.)
 5. Store results with the configuration: commit, embedding model, LLM, chunking settings, prompt version and snapshot date.
 6. Compare with the last accepted run and report the differences.
 

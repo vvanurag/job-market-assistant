@@ -1,5 +1,7 @@
 # Human review: 20% sample of judged answers
 
+> **Status:** waived by the owner on 2026-11-06. Kept so anyone can check the LLM judge.
+
 Run `v2_groq_nomic` (groq:openai/gpt-oss-120b). Sample of 5 of 27 judged answers, drawn with seed 20261106.
 
 For each answer, check every statement against the cited sources and fill in the two lines at the end.
