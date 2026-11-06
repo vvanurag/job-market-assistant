@@ -119,3 +119,17 @@
 {% macro snowflake__extract_match(expression, pattern) -%}
     regexp_substr({{ expression }}, '{{ pattern }}')
 {%- endmacro %}
+
+
+{# string_agg_sorted(expression, separator): aggregate text values in order #}
+{% macro string_agg_sorted(expression, separator) -%}
+    {{ return(adapter.dispatch('string_agg_sorted', 'jobmarket')(expression, separator)) }}
+{%- endmacro %}
+
+{% macro default__string_agg_sorted(expression, separator) -%}
+    string_agg({{ expression }}, '{{ separator }}' order by {{ expression }})
+{%- endmacro %}
+
+{% macro snowflake__string_agg_sorted(expression, separator) -%}
+    listagg({{ expression }}, '{{ separator }}') within group (order by {{ expression }})
+{%- endmacro %}

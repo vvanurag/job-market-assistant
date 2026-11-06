@@ -1,0 +1,23 @@
+# Local runtime services (NFR-23). Start with:  docker compose up -d
+# Image versions are pinned; change them deliberately.
+
+services:
+  vectordb:
+    image: pgvector/pgvector:0.8.0-pg17
+    container_name: jma-vectordb
+    environment:
+      POSTGRES_USER: jobmarket
+      POSTGRES_PASSWORD: ${VECTORDB_PASSWORD:-jobmarket-local}
+      POSTGRES_DB: jobmarket
+    ports:
+      - "5433:5432"   # 5433 on the host, so it doesn't clash with a local Postgres
+    volumes:
+      - vectordb-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jobmarket -d jobmarket"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  vectordb-data:

@@ -46,6 +46,21 @@ class Settings(BaseSettings):
     gemini_api_key: SecretStr | None = None
     groq_api_key: SecretStr | None = None
 
+    # Which model answers questions and which embeds text (FR-QA-08); see jobmarket/llm.py
+    llm_provider: str = "groq"
+    llm_model: str | None = None  # None means the provider's default in llm.DEFAULT_CHAT_MODELS
+    embedding_model: str = "ollama:nomic-embed-text"
+
+    # Where the API and the index read Gold from: "duckdb" (local) or "snowflake" (role JMA_SERVE)
+    serving_warehouse: str = "duckdb"
+    snowflake_serve_role: str = "JMA_SERVE"
+
+    # Vector store (ADR-0004), started by docker compose
+    vectordb_dsn: SecretStr = SecretStr("postgresql://jobmarket:jobmarket-local@localhost:5433/jobmarket")
+
+    # API key clients send in the X-API-Key header (FR-API-05)
+    api_key: SecretStr | None = None
+
     @property
     def snowflake_configured(self) -> bool:
         has_auth = bool(self.snowflake_private_key_path) or bool(

@@ -134,3 +134,22 @@ models:
         data_tests: [unique, not_null]
       - name: date_day
         data_tests: [unique, not_null]
+
+  - name: posting_documents
+    description: >
+      One row per unique job with its cleaned description and index metadata
+      (FR-IDX-02). Source for the retrieval index and the API's posting details.
+    columns:
+      - name: posting_key
+        data_tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments: { to: ref('fct_postings'), field: posting_key }
+      - name: description_text
+        data_tests: [not_null]
+      - name: document_hash
+        description: Changes only when embedded text changes (FR-IDX-04).
+        data_tests: [not_null]
+      - name: skills
+        description: Skill names separated by "|".

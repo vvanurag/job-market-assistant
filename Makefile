@@ -3,7 +3,7 @@ VENV   := .venv
 BIN    := $(VENV)/bin
 
 .DEFAULT_GOAL := help
-.PHONY: help setup lint format test doctor doctor-deep docs check collect bronze bronze-snowflake compare dbt-build dbt-build-snowflake
+.PHONY: help setup lint format test doctor doctor-deep docs check collect bronze bronze-snowflake compare dbt-build dbt-build-snowflake up down index
 
 help: ## Show available commands
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "} {printf "  make %-12s %s\n", $$1, $$2}'
@@ -59,3 +59,12 @@ docs: ## Serve the documentation site at http://127.0.0.1:8000
 
 check: lint test ## Run everything CI runs
 	$(BIN)/mkdocs build --strict --quiet
+
+up: ## Start local services (vector database) in Docker
+	docker compose up -d --wait vectordb
+
+down: ## Stop local services (data is kept)
+	docker compose down
+
+index: ## Build or refresh the retrieval index from Gold
+	$(BIN)/jobmarket index build

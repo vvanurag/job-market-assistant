@@ -41,3 +41,28 @@ def snowflake_connect(settings: Settings, role: str | None = None):
     else:
         params["password"] = settings.snowflake_password.get_secret_value()
     return snowflake.connector.connect(**params)
+
+
+def read_gold(settings: Settings, query: str, params: list | None = None) -> list[dict]:
+    """Run a read-only query against Gold on the serving warehouse; rows as dicts.
+
+    DuckDB opens the file read-only; Snowflake connects as the read-Gold-only role
+    (NFR-12). Column names are lowercase on both engines.
+    """
+    if settings.serving_warehouse == "snowflake":
+        con = snowflake_connect(settings, role=settings.snowflake_serve_role)
+        try:
+            cur = con.cursor()
+            # queries use DuckDB's "?" placeholders; the Snowflake connector's default is "%s"
+            cur.execute(query.replace("?", "%s") if params else query, params or None)
+            names = [d[0].lower() for d in cur.description]
+            return [dict(zip(names, row, strict=True)) for row in cur.fetchall()]
+        finally:
+            con.close()
+    con = duckdb_connect(settings, read_only=True)
+    try:
+        cur = con.execute(query, params or [])
+        names = [d[0].lower() for d in cur.description]
+        return [dict(zip(names, row, strict=True)) for row in cur.fetchall()]
+    finally:
+        con.close()

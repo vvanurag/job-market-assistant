@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import UTC
+from typing import Annotated
 
 import typer
 
@@ -157,3 +158,57 @@ def bronze_status() -> None:
 
 if __name__ == "__main__":
     app()
+
+
+index_app = typer.Typer(help="Retrieval index: build it from Gold and search it.", no_args_is_help=True)
+app.add_typer(index_app, name="index")
+
+
+@index_app.command("build")
+def index_build(
+    embedding_model: str = typer.Option(None, help="e.g. ollama:nomic-embed-text; defaults to EMBEDDING_MODEL."),
+    limit: int = typer.Option(None, help="Index only the first N jobs (for quick tests)."),
+) -> None:
+    """Embed new or changed jobs and refresh the rest (FR-IDX-04)."""
+    from jobmarket.index.build import build_index
+    from jobmarket.llm import get_embedder
+
+    settings = get_settings()
+    embedder = get_embedder(embedding_model, settings)
+    typer.echo(f"Building index for {embedder.name} from {settings.serving_warehouse} Gold ...")
+    r = build_index(settings, embedder, limit=limit, progress=typer.echo)
+    typer.echo(
+        f"Build {r.build_id} ({r.schema}): {r.postings_in_gold} jobs in Gold; {r.embedded} embedded "
+        f"({r.chunks_written} chunks), {r.updated} refreshed, {r.removed} removed in {r.seconds:.0f}s."
+    )
+
+
+@index_app.command("search")
+def index_search(
+    query: str,
+    city: Annotated[
+        list[str] | None, typer.Option(help="Hyderabad, Bengaluru or 'Remote (India)'; repeatable.")
+    ] = None,
+    work_mode: Annotated[list[str] | None, typer.Option(help="remote, hybrid or on-site; repeatable.")] = None,
+    skill: Annotated[list[str] | None, typer.Option(help="Skill that must be present, e.g. dbt; repeatable.")] = None,
+    company: str = typer.Option(None),
+    mode: str = typer.Option("hybrid", help="hybrid, vector or keyword."),
+    limit: int = typer.Option(5),
+    embedding_model: str = typer.Option(None),
+) -> None:
+    """Search the index from the terminal."""
+    from jobmarket.index import store
+    from jobmarket.llm import get_embedder
+
+    settings = get_settings()
+    embedder = get_embedder(embedding_model, settings)
+    filters = store.Filters(cities=city or [], work_modes=work_mode or [], skills_all=skill or [], company=company)
+    with store.connect(settings.vectordb_dsn.get_secret_value()) as con:
+        hits = store.search(
+            con, store.schema_for(embedder.name), query, embedder.embed_query(query), filters, limit, mode
+        )
+    for h in hits:
+        snippet = " ".join(h.text.split("\n", 2)[-1].split())[:160]
+        typer.echo(
+            f"{h.score:.4f}  {h.title} — {h.company_name} ({h.city}, {h.work_mode})\n        [{h.section}] {snippet}"
+        )

@@ -63,6 +63,7 @@ nav:
       - Silver Layer: pipeline/silver.md
       - Gold Layer: pipeline/gold.md
       - Running on Snowflake: pipeline/snowflake.md
+      - Retrieval index: pipeline/retrieval_index.md
   - Development:
       - Setup: development/setup.md
       - Conventions: development/conventions.md
@@ -74,5 +75,6 @@ nav:
       - "ADR-0004: Vector store": decisions/0004-vector-store-selection.md
       - "ADR-0005: Portable warehouse": decisions/0005-portable-warehouse-layer.md
       - "ADR-0006: LLM providers": decisions/0006-llm-provider-strategy.md
+      - "ADR-0007: Chunking": decisions/0007-chunking-strategy.md
       - Template: decisions/template.md
   - Glossary: glossary.md
