@@ -1,8 +1,28 @@
 # Job Market Assistant
 
-Ask questions about data engineering and AI jobs in **Hyderabad and Bengaluru, India**, and get answers based on real job postings, with sources.
+Ask questions about data engineering and AI jobs in **Hyderabad, Bengaluru and remote roles open to candidates in India**, and get answers based on real job postings, with sources.
 
-> **Status:** Phase 0 (Foundations) in progress. See the [Roadmap](roadmap.md).
+> **Status:** Phases 0–8 complete. Version 1 needs 14 days of daily runs; see [Release Readiness](evaluation/release.md).
+
+<div class="grid cards" markdown>
+
+-   :material-book-open-page-variant:{ .lg .middle } **User's Guide**
+
+    ---
+
+    What the project does, how the system and pipeline work, how to use it, and lessons for a beginner data engineer, with diagrams throughout.
+
+    [:octicons-arrow-right-24: Read the guide](guide.md)
+
+-   :material-script-text-outline:{ .lg .middle } **The Story of the Project**
+
+    ---
+
+    How it was built, chapter by chapter: the decisions, the dead ends and the bugs, from the first idea to a measured system.
+
+    [:octicons-arrow-right-24: Read the story](story.md)
+
+</div>
 
 ---
 
@@ -47,8 +67,6 @@ Data moves through stages, much like a kitchen: raw groceries arrive, get washed
 ```
 
 Read it from top to bottom: postings come in at the top and answers come out at the bottom. Solid arrows show data moving. The dotted arrow is your question going to the service. The supporting tools run, test and measure every stage.
-
-New here? Read the **[User's Guide](guide.md)** for a full walkthrough, or **[The Story of the Project](story.md)** for how it was built.
 
 ## The tools
 
