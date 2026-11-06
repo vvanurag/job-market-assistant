@@ -1,0 +1,2168 @@
+{
+ "run_id": "v2_ollama_gemma2_nomic",
+ "config": {
+  "llm": "ollama:gemma2:9b",
+  "embedding": "ollama:nomic-embed-text",
+  "judge": "gemini:gemini-3.5-flash-lite",
+  "chunker_version": "sections-v2",
+  "prompt_version": "v2",
+  "commit": "42ec1f1-dirty",
+  "snapshot": {
+   "jobs": 1872,
+   "last_seen_at": "2026-11-05 19:43:08.205412-05:00",
+   "warehouse": "duckdb"
+  }
+ },
+ "summary": {
+  "questions": 54,
+  "routing_accuracy": 0.776,
+  "analytical_accuracy": 0.625,
+  "recall_at_5": 0.809,
+  "mrr": 0.915,
+  "duplicate_at_5": 0.0,
+  "stale_at_5": 0.0,
+  "citations_relevant": 0.898,
+  "citation_accuracy": 0.885,
+  "groundedness": 0.899,
+  "correct_refusal_rate": 1,
+  "false_refusal_rate": 0.047,
+  "resume_skill_precision": 1.0,
+  "resume_skill_recall": 1.0,
+  "latency_p50_ms": 7605,
+  "latency_p95_ms": 13894,
+  "tokens_per_question": 2376
+ },
+ "rows": [
+  {
+   "id": "EV-001",
+   "category": "analytical_counts",
+   "question": "Which 10 skills are most requested across all jobs?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 4614,
+   "input_tokens": 1188,
+   "output_tokens": 45,
+   "answer": "Top skills across 1,872 jobs: Python (1456), SQL (1155), AWS (969), Azure (933), CI/CD (921). Filters: all jobs. Posted dates 2020-03-13 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "top_skills",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     },
+     "skill": null,
+     "group_by": "none",
+     "grain": "week",
+     "limit": 10
+    },
+    "search": null,
+    "reason": "This is a pure skills ranking request."
+   },
+   "analytical_correct": true
+  },
+  {
+   "id": "EV-002",
+   "category": "analytical_counts",
+   "question": "What are the most in-demand skills for data engineer roles?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 2046,
+   "input_tokens": 1189,
+   "output_tokens": 58,
+   "answer": "Top skills across 638 jobs: SQL (541), Python (508), ETL and ELT (421), Data modeling (416), Apache Spark (396). Filters: title contains: data engineer. Posted dates 2025-04-04 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "top_skills",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [
+       "data engineer"
+      ],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     },
+     "skill": null,
+     "group_by": "none",
+     "grain": "week",
+     "limit": 10
+    },
+    "search": null,
+    "reason": "This is a pure skills ranking request."
+   },
+   "analytical_correct": true
+  },
+  {
+   "id": "EV-003",
+   "category": "analytical_counts",
+   "question": "How many data and AI jobs are there in Hyderabad?",
+   "expected_route": "analytical",
+   "route": "semantic",
+   "route_correct": false,
+   "latency_ms": 5211,
+   "input_tokens": 2819,
+   "output_tokens": 110,
+   "answer": "At least 7 data and AI jobs are listed in Hyderabad.",
+   "refused": false,
+   "citations": [
+    "f980821663a62e723e8c373f4ffce6b1",
+    "a9c94849e60004e2604af5a284c164a1",
+    "94d6b1a1acd8fb69fc00006f88d28d9d",
+    "f0f415ed0657a5c73785b4e56cf40af0",
+    "4b45a2b60e8171406f75f856fd494eb5",
+    "6649cbc107d3ef06c0cc91b725c559be",
+    "34680cd618f51ffa21bd5d438890d765",
+    "dd5d78d9ae4f5d9c0c60c3814e8c32e4"
+   ],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "How many data and AI jobs are there in Hyderabad?",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "router output invalid"
+   },
+   "analytical_correct": false,
+   "groundedness": 1.0,
+   "citation_accuracy": 1.0
+  },
+  {
+   "id": "EV-004",
+   "category": "analytical_counts",
+   "question": "Is demand for Databricks higher in Hyderabad or Bengaluru?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 2461,
+   "input_tokens": 1188,
+   "output_tokens": 71,
+   "answer": "Bengaluru: 1,068 jobs (100.0% of its jobs); Hyderabad: 799 jobs (100.0% of its jobs). Filters: city: Hyderabad, Bengaluru. Posted dates 2020-03-13 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "compare_cities",
+     "filters": {
+      "cities": [
+       "Hyderabad",
+       "Bengaluru"
+      ],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     },
+     "skill": null,
+     "group_by": "none",
+     "grain": "week",
+     "limit": 10
+    },
+    "search": null,
+    "reason": "Comparing job counts by city"
+   },
+   "analytical_correct": false
+  },
+  {
+   "id": "EV-005",
+   "category": "analytical_counts",
+   "question": "Which companies have the most data and AI job openings?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 2196,
+   "input_tokens": 1187,
+   "output_tokens": 66,
+   "answer": "Companies with the most jobs (of 1,872): Infosys (51), Accenture in India (43), Deloitte (29), Tata Consultancy Services (28), Amgen (24). Filters: all jobs. Posted dates 2020-03-13 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "top_companies",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     },
+     "skill": null,
+     "group_by": "none",
+     "grain": "week",
+     "limit": 10
+    },
+    "search": null,
+    "reason": "This is a count question about companies."
+   },
+   "analytical_correct": true
+  },
+  {
+   "id": "EV-006",
+   "category": "analytical_counts",
+   "question": "How many remote roles are there?",
+   "expected_route": "analytical",
+   "route": "semantic",
+   "route_correct": false,
+   "latency_ms": 5417,
+   "input_tokens": 3016,
+   "output_tokens": 111,
+   "answer": "There are 3 remote roles: [1], [2],",
+   "refused": false,
+   "citations": [
+    "6a377dcaab61da5c01d2ce51901daea0",
+    "8d7b8848e2698822c32f8bb41cff2c9a"
+   ],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "How many remote roles are there?",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "router output invalid"
+   },
+   "analytical_correct": false,
+   "groundedness": 1.0,
+   "citation_accuracy": 1.0
+  },
+  {
+   "id": "EV-007",
+   "category": "analytical_counts",
+   "question": "How are jobs in Bengaluru split by seniority?",
+   "expected_route": "analytical",
+   "route": "semantic",
+   "route_correct": false,
+   "latency_ms": 4798,
+   "input_tokens": 2503,
+   "output_tokens": 75,
+   "answer": "I don't have enough information in the collected job postings to answer that.",
+   "refused": true,
+   "citations": [],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "How are jobs in Bengaluru split by seniority?",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "router output invalid"
+   },
+   "analytical_correct": false
+  },
+  {
+   "id": "EV-008",
+   "category": "analytical_counts",
+   "question": "How many jobs mention both dbt and Snowflake?",
+   "expected_route": "analytical",
+   "route": "combined",
+   "route_correct": false,
+   "latency_ms": 5806,
+   "input_tokens": 2937,
+   "output_tokens": 107,
+   "answer": "Analytics results state 155 jobs match the filters.",
+   "refused": false,
+   "citations": [
+    "6e96e08cb7252f352f914db0f3edc597"
+   ],
+   "plan": {
+    "route": "combined",
+    "metric_request": {
+     "metric": "count_jobs",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [
+       "dbt",
+       "Snowflake"
+      ],
+      "posted_within_days": null,
+      "open_only": false
+     },
+     "skill": null,
+     "group_by": "none",
+     "grain": "week",
+     "limit": 10
+    },
+    "search": {
+     "query": "dbt Snowflake",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [
+       "dbt",
+       "Snowflake"
+      ],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "Needs both a count and examples"
+   },
+   "analytical_correct": true,
+   "groundedness": 0.0,
+   "citation_accuracy": 0.0
+  },
+  {
+   "id": "EV-009",
+   "category": "analytical_counts",
+   "question": "What are the top 5 skills for machine learning engineer roles in Bengaluru?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 3135,
+   "input_tokens": 1191,
+   "output_tokens": 81,
+   "answer": "Top skills across 63 jobs: Python (56), PyTorch (41), LLMs (39), TensorFlow (33), AI agents (31). Filters: city: Bengaluru; title contains: machine learning engineer. Posted dates 2025-08-12 to 2026-11-04.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "top_skills",
+     "filters": {
+      "cities": [
+       "Bengaluru"
+      ],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [
+       "machine learning engineer"
+      ],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     },
+     "skill": null,
+     "group_by": "none",
+     "grain": "week",
+     "limit": 5
+    },
+    "search": null,
+    "reason": "Top skills are a count and ranking"
+   },
+   "analytical_correct": true
+  },
+  {
+   "id": "EV-010",
+   "category": "analytical_counts",
+   "question": "How many hybrid jobs are there in each city?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 2137,
+   "input_tokens": 1186,
+   "output_tokens": 62,
+   "answer": "225 jobs, by city: Bengaluru: 139, Hyderabad: 86. Filters: work mode: hybrid. Posted dates 2026-05-27 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "count_jobs",
+     "filters": {
+      "cities": [],
+      "work_modes": [
+       "hybrid"
+      ],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     },
+     "skill": null,
+     "group_by": "city",
+     "grain": "week",
+     "limit": 10
+    },
+    "search": null,
+    "reason": "Counting jobs by city and work mode is a metric request."
+   },
+   "analytical_correct": true
+  },
+  {
+   "id": "EV-011",
+   "category": "analytical_trends",
+   "question": "How has demand for dbt changed month by month?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 2131,
+   "input_tokens": 1187,
+   "output_tokens": 63,
+   "answer": "243 of 1,872 jobs mention dbt, across 10 months. Busiest month: 2026-10-01. Filters: all jobs. Posted dates 2020-03-13 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "skill_trend",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     },
+     "skill": "dbt",
+     "group_by": "none",
+     "grain": "month",
+     "limit": 50
+    },
+    "search": null,
+    "reason": "Needs a trend over time."
+   },
+   "analytical_correct": true
+  },
+  {
+   "id": "EV-012",
+   "category": "analytical_trends",
+   "question": "How many jobs mentioning Kafka were posted each month?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 2058,
+   "input_tokens": 1186,
+   "output_tokens": 60,
+   "answer": "330 of 1,872 jobs mention Apache Kafka, across 14 months. Busiest month: 2026-10-01. Filters: all jobs. Posted dates 2020-03-13 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "skill_trend",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     },
+     "skill": "Apache Kafka",
+     "group_by": "none",
+     "grain": "month",
+     "limit": 10
+    },
+    "search": null,
+    "reason": "Needs a count over time."
+   },
+   "analytical_correct": true
+  },
+  {
+   "id": "EV-013",
+   "category": "analytical_trends",
+   "question": "How many jobs were posted each week in Bengaluru?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 1961,
+   "input_tokens": 1186,
+   "output_tokens": 56,
+   "answer": "1,872 jobs, by week: 2020-03-09: 1, 2020-11-30: 1, 2021-11-01: 1, 2021-11-08: 1, 2023-07-31: 1, 2024-08-19: 1, 2024-09-23: 2, 2025-01-27: 1. Filters: all jobs. Posted dates 2020-03-13 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "count_jobs",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     },
+     "skill": null,
+     "group_by": "week",
+     "grain": "week",
+     "limit": 10
+    },
+    "search": null,
+    "reason": "Counting jobs by week in Bengaluru is a metric request."
+   },
+   "analytical_correct": false
+  },
+  {
+   "id": "EV-014",
+   "category": "analytical_trends",
+   "question": "How many analytics engineer roles were posted each month?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 2175,
+   "input_tokens": 1186,
+   "output_tokens": 65,
+   "answer": "30 jobs match. Filters: title contains: analytics engineer. Posted dates 2026-06-22 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "count_jobs",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [
+       "analytics engineer"
+      ],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     },
+     "skill": null,
+     "group_by": "none",
+     "grain": "month",
+     "limit": 10
+    },
+    "search": null,
+    "reason": "Counting jobs by month is a metric request."
+   },
+   "analytical_correct": false
+  },
+  {
+   "id": "EV-015",
+   "category": "analytical_trends",
+   "question": "Show the monthly trend of jobs that mention LLMs.",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 2135,
+   "input_tokens": 1187,
+   "output_tokens": 62,
+   "answer": "694 of 1,872 jobs mention LLMs, across 16 months. Busiest month: 2026-10-01. Filters: all jobs. Posted dates 2020-03-13 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "skill_trend",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     },
+     "skill": "LLMs",
+     "group_by": "none",
+     "grain": "month",
+     "limit": 10
+    },
+    "search": null,
+    "reason": "Needs a count trend over time."
+   },
+   "analytical_correct": true
+  },
+  {
+   "id": "EV-016",
+   "category": "analytical_trends",
+   "question": "How many jobs were posted in the last 30 days?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 1909,
+   "input_tokens": 1189,
+   "output_tokens": 53,
+   "answer": "1,446 jobs match. Filters: posted in the last 30 days. Posted dates 2026-10-06 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "count_jobs",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": 30,
+      "open_only": false
+     },
+     "skill": null,
+     "group_by": "none",
+     "grain": "week",
+     "limit": 10
+    },
+    "search": null,
+    "reason": "Counting jobs posted recently is a metric request."
+   },
+   "analytical_correct": true
+  },
+  {
+   "id": "EV-017",
+   "category": "semantic_explain",
+   "question": "What do employers mean by strong Kafka experience? Give three examples.",
+   "expected_route": "semantic",
+   "route": "semantic",
+   "route_correct": true,
+   "latency_ms": 7673,
+   "input_tokens": 2607,
+   "output_tokens": 196,
+   "answer": "Employers look for Data Engineers with strong Kafka experience who can:\n\n* **Design, develop, and maintain Kafka-based data ingestion and streaming pipelines** [[1], [2], [3], [4], [5]].\n* **Understand Kafka architecture, event streaming concepts, and implementation** [[1], [2]].\n* **Work with Kafka producers, consumers, topics, partitions, consumer groups, and offset management** [[1], [2]].\n* **Optimize Kafka for streaming performance and fault tolerance** [[1], [2]].",
+   "refused": false,
+   "citations": [
+    "610a22ea3849cd0208e6d035b3f2a98b",
+    "87b4b52e0714c060580116043d00a139",
+    "c171cbba76f2353ab2c715579d12fd58",
+    "e64862cbae15176cc9ce5b27781974ee",
+    "fa73c79754e11cade82fe6fbdff6a037"
+   ],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "strong Kafka experience",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "The question asks for the meaning of a phrase in job postings."
+   },
+   "relevant_jobs": 330,
+   "recall_at_5": 1.0,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 1.0,
+   "groundedness": 1.0,
+   "citation_accuracy": 1.0
+  },
+  {
+   "id": "EV-018",
+   "category": "semantic_explain",
+   "question": "What does hands-on Databricks experience usually involve in these postings?",
+   "expected_route": "semantic",
+   "route": "semantic",
+   "route_correct": true,
+   "latency_ms": 18419,
+   "input_tokens": 2842,
+   "output_tokens": 582,
+   "answer": "Hands-on Databricks experience usually involves:\n\n* Building solutions on Databricks in enterprise environments [1]\n*  Hands-on Spark/PySpark expertise [2]\n*  Setting up and maintaining Databricks for ML: workspaces, clusters, instance pools, cluster policies, Repos, and runtime versions [3]\n*  Building CI/CD to promote notebooks, jobs, workflows, and models across development, staging, and production environments using Git and GitHub Actions, Jenkins, or Azure DevOps, with Databricks Asset Bundles or the Jobs and Repos APIs [3]\n*  Tracking, packaging, registering, and deploying models with MLflow on Databricks, including batch scoring and model serving jobs [3]\n*  Building Databricks Workflows for training, retraining, evaluation, and inference, with task dependencies, retries, and alerts [3]\n*  Supporting classification and forecasting as Python and Spark jobs on Databricks [3]\n*  Tuning cluster size, autoscaling, Spark settings, and Delta Lake reads and writes so jobs stay reliable and cost-efficient [3]\n*  Converting Data Scientist notebooks into production pipelines with clear inputs, outputs, and fixed dependencies [3]\n*  Setting up catalogs, schemas, storage credentials, external locations and volumes for landing zones and medallion layers across dev, test and prod [4]\n*  Defining the grant model with account-level groups synced from Microsoft Entra ID; configuring service principals for jobs and CI/CD [4]\n*  Working with Azure network teams on private endpoints for ADLS and Network Connectivity Configurations for serverless compute [4]\n*  Implementing row-level or column-level security (RLS/CLS) in Databricks Unity Catalog [5]\n*  Familiarity with Databricks Genie (AI/BI) or comparable self-service analytics tooling [5]\n*  Experience with CI/CD for data pipelines (Databricks Asset Bundles, GitHub Actions, Azure DevOps, or similar) [5]\n*  Familiarity with Power BI or other BI tools consuming governed Gold-layer data [5]\n*  Experience with API-based integration (REST/webhook patterns) and file-based integration (EDI, flat file, CSV) with validation controls [5]",
+   "refused": false,
+   "citations": [
+    "57f9f3440be2633cfa0d3ad906c361fb",
+    "69158d9ff8743a5521795e423ef8afeb",
+    "a5c8b5614acbaa52b243d0ce22b1e176",
+    "93c469ab14db44a95761ec5a9b3fa1d9",
+    "cc88a2ab23b46cfe35475eebd8604dac"
+   ],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "What does hands-on Databricks experience usually involve in these postings?",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "router output invalid"
+   },
+   "relevant_jobs": 623,
+   "recall_at_5": 1.0,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 1.0,
+   "groundedness": 1.0,
+   "citation_accuracy": 1.0
+  },
+  {
+   "id": "EV-019",
+   "category": "semantic_explain",
+   "question": "What do job postings expect from candidates who know dbt?",
+   "expected_route": "semantic",
+   "route": "semantic",
+   "route_correct": true,
+   "latency_ms": 8701,
+   "input_tokens": 3146,
+   "output_tokens": 167,
+   "answer": "Candidates should have 7+ years of experience in Data Engineering / ETL / DW, with 2+ years working with dbt (Core or Cloud). They need strong SQL skills, especially on Snowflake or another modern cloud DW. Experience with dbt concepts: models, tests, sources, seeds, snapshots, macros, exposures is required. Prior experience with Informatica (developer-level understanding of mappings/workflows) is highly desirable. Understanding of CI/CD practices and integrating dbt into automated pipelines is also important. [1]",
+   "refused": false,
+   "citations": [
+    "2a04f099062ae5bff3a388204847ab5d"
+   ],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "dbt",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "This question asks about what postings say about dbt knowledge."
+   },
+   "relevant_jobs": 243,
+   "recall_at_5": 1.0,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 1.0,
+   "groundedness": 1.0,
+   "citation_accuracy": 1.0
+  },
+  {
+   "id": "EV-020",
+   "category": "semantic_explain",
+   "question": "What do employers mean by experience building RAG pipelines?",
+   "expected_route": "semantic",
+   "route": "semantic",
+   "route_correct": true,
+   "latency_ms": 8764,
+   "input_tokens": 2734,
+   "output_tokens": 119,
+   "answer": "Employers mean experience building RAG pipelines as having hands-on experience in document ingestion, embeddings, vector search, chunking strategies, and retrieval optimization. [1], [2], [3], [4]",
+   "refused": false,
+   "citations": [
+    "63053df41cb212c620c8d7cfbf149dd8",
+    "a1b84e0720906bd5842728c615a5b69a",
+    "189dd1131232c19082cc58a1b7ce31f0",
+    "de60bbc4fa6b7d5f7b773e4ec9dc7949"
+   ],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "experience building RAG pipelines",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "This question asks for the meaning of a phrase in job postings."
+   },
+   "relevant_jobs": 528,
+   "recall_at_5": 1.0,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 1.0,
+   "groundedness": 1.0,
+   "citation_accuracy": 1.0
+  },
+  {
+   "id": "EV-021",
+   "category": "semantic_explain",
+   "question": "What kind of Airflow experience are employers asking for?",
+   "expected_route": "semantic",
+   "route": "semantic",
+   "route_correct": true,
+   "latency_ms": 12659,
+   "input_tokens": 2866,
+   "output_tokens": 235,
+   "answer": "Employers seek Data Engineers with expert-level Apache Airflow experience, including:\n\n* **Deep understanding:** Scheduler internals, executor types, XComs, Connections, Variables, pools, and the TaskFlow API.\n* **Production experience:** Deploying and operating Airflow on Kubernetes (pod templates, resource tuning, persistent volume claims, Helm chart management, and upgrades).\n* **DAG Development:** Strong Python skills for DAG authoring (dynamic task mapping, custom operators and sensors, cross-DAG triggers, parameterized pipelines, and test coverage).\n* **ETL/ELT Pipelines:** Demonstrated experience building batch and incremental pipelines at scale, understanding transformation logic, data quality validation, and lineage capture.\n\n[1], [2], [3]",
+   "refused": false,
+   "citations": [
+    "812a4b05b9bd8359c5d0574c0679c6a2",
+    "9148f087d062f53a1d3ba0edff2531b9",
+    "056a0ecf24a304eb11e0288d11ac578f"
+   ],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "Airflow",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "This question asks about the meaning of Airflow experience in job postings."
+   },
+   "relevant_jobs": 400,
+   "recall_at_5": 1.0,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 1.0,
+   "groundedness": 0.75,
+   "citation_accuracy": 0.667
+  },
+  {
+   "id": "EV-022",
+   "category": "semantic_explain",
+   "question": "What do postings mean when they ask for data modeling skills?",
+   "expected_route": "semantic",
+   "route": "semantic",
+   "route_correct": true,
+   "latency_ms": 8965,
+   "input_tokens": 2941,
+   "output_tokens": 135,
+   "answer": "Data modeling skills involve designing and implementing data models that represent business information. This includes creating conceptual, logical, and physical data models, aligning them with business needs, and ensuring data consistency and quality.  [1], [2], [3], [4], [5]",
+   "refused": false,
+   "citations": [
+    "cec76c5f18a1acb831d9b152b881960e",
+    "9999a912c6e83629a7988577dd37b906",
+    "523900cb96127c6d7bf89054c0b6f59c",
+    "d5c93941bedfccf39b68d9354ed2b608",
+    "a4eb8040a380236d525821e3d4323ed5"
+   ],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "data modeling",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "This question asks for the meaning of a phrase in job postings."
+   },
+   "relevant_jobs": 782,
+   "recall_at_5": 1.0,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 1.0,
+   "groundedness": 1.0,
+   "citation_accuracy": 1.0
+  },
+  {
+   "id": "EV-023",
+   "category": "semantic_explain",
+   "question": "What are employers looking for in experience with AI agents?",
+   "expected_route": "semantic",
+   "route": "semantic",
+   "route_correct": true,
+   "latency_ms": 13894,
+   "input_tokens": 2973,
+   "output_tokens": 380,
+   "answer": "Employers are looking for experience with:\n\n* Designing, developing, and deploying AI agents\n* Building agentic workflows using frameworks like Azure AI Foundry Agent Service, AWS Bedrock AgentCore, LangGraph, Strands Agents SDK, Semantic Kernel, and AutoGen\n* Implementing tool/function calling, memory, state management, checkpointing, multi-agent orchestration, and agent-to-agent workflows\n* Integrating enterprise tools, APIs, databases, knowledge bases, and automation systems\n* Designing and implementing RAG Retrieval-Augmented Generation solutions\n* Developing guardrails, prompt evaluation, content safety controls, tracing, and observability for AI Agent solutions\n* Optimizing AI Agent performance, cost, latency, reliability, and user experience\n* Translating business requirements into AI solutions\n* Evaluating and optimizing LLM performance, response quality, reliability, latency, cost, and safety\n* Building and optimizing agentic AI systems (e.g., autonomous agents, multi-agent frameworks, LLM-powered agents, MCP, RAG, Agent Skills, Context Engineering, Agent Memory)\n* Integrating agentic AI solutions with existing enterprise platforms and workflows\n* Holding live phone and web conversations \u2014 streaming speech recognition, reasoning and tool calls, and speech synthesis in real time\n* Building an evaluation system that proves each agent works before every release\n* Moving use cases from a demo to a reliable, observable service that clients trust with their customers",
+   "refused": false,
+   "citations": [
+    "e001fbb2ed7bc5431ea20a340c103612",
+    "e430d17767e3321540be238a4d175f1a",
+    "7eb14eb102e36c3d24292ac08115d5e7",
+    "e4aa809a57aafcbbdd266872027cb497",
+    "d1fccbfa59f7312497a870d861c04b0d",
+    "cf2fe0d9c06599aaeb0267e91b3e1e08"
+   ],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "AI agents",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "This question asks about what postings say about AI agents."
+   },
+   "relevant_jobs": 629,
+   "recall_at_5": 1.0,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 1.0,
+   "groundedness": 1.0,
+   "citation_accuracy": 1.0
+  },
+  {
+   "id": "EV-024",
+   "category": "semantic_explain",
+   "question": "What does MLOps experience mean in these postings?",
+   "expected_route": "semantic",
+   "route": "semantic",
+   "route_correct": true,
+   "latency_ms": 11205,
+   "input_tokens": 2899,
+   "output_tokens": 292,
+   "answer": "MLOps experience means having skills in designing, building, and operating scalable, reliable, and secure machine learning platforms and pipelines. This includes experience with:\n\n* **ML lifecycle management:**  Feature engineering, model training, deployment, monitoring, retraining, and governance [[1], [2], [3], [4], [5], [6], [7]]\n* **MLOps tools:** MLflow, Kubernetes, Docker, Apache Airflow, Databricks, Delta Lake, and more [[1], [2], [3], [4], [5], [6]]\n* **Cloud platforms:** Azure, AWS, GCP [[1], [2], [3], [4], [5], [6]]\n* **CI/CD pipelines:**  Building and managing automated workflows for ML model development and deployment [[4], [6]]\n* **Model monitoring and observability:** Tracking model performance, detecting drift, and ensuring reliability [6]",
+   "refused": false,
+   "citations": [
+    "e6a09f91a511086ee258d0b2a50cf445",
+    "3112d6469a276ec9b8c07075105ef3f5",
+    "d3cf26a2d8553b23e83487fd2e66a93d",
+    "b539747fa8ef59b023b2650672b7ede7",
+    "257e79137ef87b1ed44df0de5b17aff4",
+    "ebf62fc7a474c2f1a06e22d5337ab5b6",
+    "b6c1ef06b8cb94ff260007fc8dcecb2f"
+   ],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "MLOps experience",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "The user wants to know what postings say about MLOps experience."
+   },
+   "relevant_jobs": 344,
+   "recall_at_5": 0.8,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 0.857,
+   "groundedness": 1.0,
+   "citation_accuracy": 1.0
+  },
+  {
+   "id": "EV-025",
+   "category": "semantic_filtered",
+   "question": "Hybrid roles in Hyderabad that mention dbt and Snowflake.",
+   "expected_route": "semantic",
+   "route": "combined",
+   "route_correct": false,
+   "latency_ms": 10454,
+   "input_tokens": 2882,
+   "output_tokens": 189,
+   "answer": "[1] and [2] list Senior Data Engineer (Snowflake) and Lead Data Engineer (Snowflake) roles at Blumetra Solutions in Hyderabad that are hybrid and mention dbt and Snowflake.",
+   "refused": false,
+   "citations": [
+    "cb2a65ffd9c0e0b386b1cf1efc4ffafe",
+    "0587feb0a8bf7400a893e307154e7fe9"
+   ],
+   "plan": {
+    "route": "combined",
+    "metric_request": {
+     "metric": "count_jobs",
+     "filters": {
+      "cities": [],
+      "work_modes": [
+       "hybrid"
+      ],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [
+       "dbt",
+       "Snowflake"
+      ],
+      "posted_within_days": null,
+      "open_only": false
+     },
+     "skill": null,
+     "group_by": "none",
+     "grain": "week",
+     "limit": 10
+    },
+    "search": {
+     "query": "dbt Snowflake hybrid Hyderabad",
+     "filters": {
+      "cities": [],
+      "work_modes": [
+       "hybrid"
+      ],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [
+       "dbt",
+       "Snowflake"
+      ],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "Needs both a count and examples from postings."
+   },
+   "relevant_jobs": 7,
+   "recall_at_5": 0.6,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 1.0,
+   "groundedness": 1.0,
+   "citation_accuracy": 1.0
+  },
+  {
+   "id": "EV-026",
+   "category": "semantic_filtered",
+   "question": "Show me remote data engineering roles that use Python.",
+   "expected_route": "semantic",
+   "route": "combined",
+   "route_correct": false,
+   "latency_ms": 14682,
+   "input_tokens": 2486,
+   "output_tokens": 382,
+   "answer": "Here are some remote data engineering roles that use Python:\n\n* **Data Engineer (4+ Years) | Remote | Immediate to 15 days Joiners only \u2014 YMinds.AI [1]**\n    *  Strong hands-on expertise in Python, PySpark, SQL, and cloud platforms such as AWS, Azure, or GCP.\n* **Senior Data Engineer, Modern Data Stack and AI Pipelines \u2014 Qfyre TechLabs [2]**\n    *  This role description doesn't explicitly mention Python.\n* **Data Engineer \u2014 Dreampath Services [3]**\n    * Strong expertise in Snowflake, SQL, Python, and dbt.\n* **Data Engineer \u2014 Tribute Technology [4]**\n    * This role description doesn't explicitly mention Python.\n* **Azure Data Engineer Remote \u2014 VMC Soft Technologies, Inc [5]**\n    * This role description doesn't explicitly mention Python.\n* **Senior Data Engineer \u2014 Kitopi [6]**\n    * This role description doesn't explicitly mention Python.",
+   "refused": false,
+   "citations": [
+    "fdbb5bbc083300a900417d9415c91703",
+    "9492c7179736545082e0cbfb5840febf",
+    "f9e7da8447309a1c16b46080e7f75c9a",
+    "f8ca1c87c31913f2ab93e0a9d76b286a",
+    "41311b497e36601150f781be7198f76c",
+    "8ba115b4650a46fa01faec8b1d79f5a9"
+   ],
+   "plan": {
+    "route": "combined",
+    "metric_request": {
+     "metric": "count_jobs",
+     "filters": {
+      "cities": [],
+      "work_modes": [
+       "remote"
+      ],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [
+       "Python"
+      ],
+      "posted_within_days": null,
+      "open_only": true
+     },
+     "skill": null,
+     "group_by": "none",
+     "grain": "week",
+     "limit": 10
+    },
+    "search": {
+     "query": "data engineering",
+     "filters": {
+      "cities": [],
+      "work_modes": [
+       "remote"
+      ],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [
+       "Python"
+      ],
+      "posted_within_days": null,
+      "open_only": true
+     }
+    },
+    "reason": "Counting remote Python data engineering jobs and showing examples."
+   },
+   "relevant_jobs": 30,
+   "recall_at_5": 1.0,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 1.0,
+   "groundedness": 1.0,
+   "citation_accuracy": 1.0
+  },
+  {
+   "id": "EV-027",
+   "category": "semantic_filtered",
+   "question": "Senior data engineer roles in Bengaluru that need Apache Spark.",
+   "expected_route": "semantic",
+   "route": "semantic",
+   "route_correct": true,
+   "latency_ms": 13890,
+   "input_tokens": 2611,
+   "output_tokens": 343,
+   "answer": "Multiple sources list Senior Data Engineer roles in Bengaluru that require Apache Spark. \n\n* [1] states the ideal candidate will have strong experience working with Apache Spark/PySpark.\n* [2] lists 'Hands-on experience with Apache Spark' as a requirement.\n* [3] says the role will process TB scale of data every day with Apache Spark.\n* [4] states 'Expert-level in Apache Spark, including runtime internals, performance tuning, and optimization' is required.\n* [5] lists 'Strong hands-on experience with Apache Spark and Scala' as a requirement.\n* [6] lists 'Strong hands-on experience with Apache Spark' as a requirement.\n* [7] states 'Build high-performance data pipelines using Apache Spark and Python' is a key responsibility.",
+   "refused": false,
+   "citations": [
+    "372521513a2681c1c35fd04a7e6627a5",
+    "18ea2e2a9bcb9d64cc41a3907f5ed28a",
+    "4f499b3c16a47ff90166cdd42419d43b",
+    "d78226a2266fe07c058b56edad2110c2",
+    "e62b00179c6b1f471ed026b2a4a72da1",
+    "5967607b06235c46734757ae93b7e3ec",
+    "f7589ff4d32119c54fa6fc4b6955bc8e"
+   ],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "Senior data engineer roles in Bengaluru that need Apache Spark.",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "router output invalid"
+   },
+   "relevant_jobs": 195,
+   "recall_at_5": 0.8,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 0.857,
+   "groundedness": 1.0,
+   "citation_accuracy": 1.0
+  },
+  {
+   "id": "EV-028",
+   "category": "semantic_filtered",
+   "question": "Lead-level roles in Hyderabad that work with Azure.",
+   "expected_route": "semantic",
+   "route": "semantic",
+   "route_correct": true,
+   "latency_ms": 14882,
+   "input_tokens": 2294,
+   "output_tokens": 342,
+   "answer": "Here are some lead-level roles in Hyderabad that work with Azure:\n\n* **Lead Azure Data Engineer \u2014 Brace Infotech Private Limited** [1]: Requires familiarity with cloud-native architecture (Azure ecosystem) and DevOps/DataOps practices.\n* **LEAD DATA ENGINEER - Azure Databricks \u2014 Happiest Minds Technologies** [2]:  Designs, develops, and maintains scalable data pipelines using Azure Databricks and Azure Data Factory.\n* **Lead Data Engineer \u2014 NationsBenefits** [3]: Builds and optimizes scalable ETL/ELT pipelines using Azure Databricks, PySpark, and Delta Lake.",
+   "refused": false,
+   "citations": [
+    "8e945306e469ab6cd702ce5ea31e45ac",
+    "dea6094b1bd9297161cad35e031c5808",
+    "871b4c8a6d065a3f873d78e41f73b438"
+   ],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "Lead-level roles in Hyderabad that work with Azure.",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "router output invalid"
+   },
+   "relevant_jobs": 127,
+   "recall_at_5": 0.8,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 1.0,
+   "groundedness": 1.0,
+   "citation_accuracy": 1.0
+  },
+  {
+   "id": "EV-029",
+   "category": "semantic_filtered",
+   "question": "Which Bengaluru jobs mention LangChain?",
+   "expected_route": "semantic",
+   "route": "semantic",
+   "route_correct": true,
+   "latency_ms": 7887,
+   "input_tokens": 3002,
+   "output_tokens": 173,
+   "answer": "The following Bengaluru jobs mention LangChain: \n\n* AI Engineer \u2013 Agentic AI | Bedrock, LangChain & LangGraph \u2014 Synechron\n* AI Engineer \u2013 Agentic AI & Multi-Agent Systems | AWS Bedrock, LangChain & LangGraph \u2014 Synechron\n* AI Engineer with LLM \u2014 Recex.co\n* Gen AI Consultant \u2014 Infosys\n* AI Engineer (Gen AI, Gcp/ snowflake/aws) \u2014 Infosys",
+   "refused": false,
+   "citations": [
+    "a45a704c05f1f0414777006105676020",
+    "7eb14eb102e36c3d24292ac08115d5e7",
+    "1769c6170ef094aa9f805c51c45a1ab3",
+    "660ec56b3c17771b1d8101e3e5196e28",
+    "c6223cf8933ad5d72556f2df043162ca"
+   ],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "LangChain",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "Finding specific postings mentioning LangChain"
+   },
+   "relevant_jobs": 166,
+   "recall_at_5": 1.0,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 1.0,
+   "groundedness": 1.0,
+   "citation_accuracy": 1.0
+  },
+  {
+   "id": "EV-030",
+   "category": "semantic_filtered",
+   "question": "Junior or entry-level data roles in Hyderabad.",
+   "expected_route": "semantic",
+   "route": "semantic",
+   "route_correct": true,
+   "latency_ms": 7605,
+   "input_tokens": 2601,
+   "output_tokens": 128,
+   "answer": "Several sources list Hyderabad as the location for data roles.  \n\n[1] lists a Senior Engineer, Data role. \n\n[2] lists an ML & Agentic AI Engineering - Lead Programmer Analyst role.",
+   "refused": false,
+   "citations": [
+    "ba0a78f5f6400ca0e90ad6675b40edd8",
+    "092af11219cc67e231b1d26c79fefe18"
+   ],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "Junior or entry-level data roles in Hyderabad.",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "router output invalid"
+   },
+   "relevant_jobs": 46,
+   "recall_at_5": 0.2,
+   "mrr": 0.5,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 0.0,
+   "groundedness": 1.0,
+   "citation_accuracy": 1.0
+  },
+  {
+   "id": "EV-031",
+   "category": "semantic_filtered",
+   "question": "On-site roles in Bengaluru that need SQL.",
+   "expected_route": "semantic",
+   "route": "combined",
+   "route_correct": false,
+   "latency_ms": 12200,
+   "input_tokens": 2758,
+   "output_tokens": 252,
+   "answer": "Six on-site roles in Bengaluru need SQL: \n\n* Sr. Data Engineer \u2014 Mopid [1]\n* TE-1521- Data Engineer \u2014 Softobiz [2]\n* Data Architect \u2014 ExxonMobil India Careers [3]\n* Staff Data Engineer \u2014 Palo Alto Networks [4]\n* Data Engineer \u2014 Zyoin Group [5]\n* Data Engineer \u2014 Tibil Solutions [6]",
+   "refused": false,
+   "citations": [
+    "5f9a1db9e3e34233d0e7785eb0e7e3ce",
+    "7a4c73c39d5fc71240bad7cc5f88d64e",
+    "194d65b56b1dbf995891f8da21aa60e9",
+    "fc91b009df9f58f8c98778d97f3d03ef",
+    "a4265eff8ffdd676f391c4784c11939c",
+    "a285d772bd30eaf5e946f6f23b56324b"
+   ],
+   "plan": {
+    "route": "combined",
+    "metric_request": {
+     "metric": "count_jobs",
+     "filters": {
+      "cities": [],
+      "work_modes": [
+       "on-site"
+      ],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [
+       "SQL"
+      ],
+      "posted_within_days": null,
+      "open_only": false
+     },
+     "skill": null,
+     "group_by": "none",
+     "grain": "week",
+     "limit": 10
+    },
+    "search": {
+     "query": "SQL",
+     "filters": {
+      "cities": [],
+      "work_modes": [
+       "on-site"
+      ],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [
+       "SQL"
+      ],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "Needs a count and examples from postings."
+   },
+   "relevant_jobs": 11,
+   "recall_at_5": 0.8,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 0.833,
+   "groundedness": 0.833,
+   "citation_accuracy": 0.833
+  },
+  {
+   "id": "EV-032",
+   "category": "semantic_filtered",
+   "question": "Remote roles open to candidates anywhere in India, with no fixed city.",
+   "expected_route": "semantic",
+   "route": "semantic",
+   "route_correct": true,
+   "latency_ms": 8002,
+   "input_tokens": 2774,
+   "output_tokens": 63,
+   "answer": "I don't have enough information in the collected job postings to answer that.",
+   "refused": true,
+   "citations": [],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "What do employers mean by strong Kafka experience?",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "The question asks for the meaning of a phrase in job postings."
+   },
+   "relevant_jobs": 5,
+   "recall_at_5": 0.0,
+   "mrr": 0.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": null
+  },
+  {
+   "id": "EV-033",
+   "category": "company",
+   "question": "What does Databricks look for in engineers?",
+   "expected_route": "semantic",
+   "route": "semantic",
+   "route_correct": true,
+   "latency_ms": 11507,
+   "input_tokens": 3542,
+   "output_tokens": 210,
+   "answer": "Databricks looks for engineers with strong communication skills, ability to collaborate across teams, and experience with ML or LLM systems is a plus. [[1], [2], [4]]\n\nThey also value engineers who can lead through influence, have a passion for mentoring, and are able to deliver complex, high-impact projects. [2]\n\nFor data platform engineers, Databricks seeks a passion for data infrastructure and enabling others by making their data easier to access. [3]\n\nFinally, they look for engineers with excellent troubleshooting skills across distributed systems and a strong ownership mindset. [5]",
+   "refused": false,
+   "citations": [
+    "ff76d463bc8a06a82f37dba3e664580e",
+    "9ef5ec963281b9fdd3928fc4e2c6036d",
+    "37c15b9b549e85d44d323579f548fa50",
+    "763457fb0c21f13a616bb10b4aab804a",
+    "d9a20735ed0d96aa917b85234ab0bde7"
+   ],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "Databricks",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": "Databricks",
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "Finding what a company looks for is semantic."
+   },
+   "relevant_jobs": 15,
+   "recall_at_5": 1.0,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 1.0,
+   "groundedness": 0.75,
+   "citation_accuracy": 0.8
+  },
+  {
+   "id": "EV-034",
+   "category": "company",
+   "question": "What skills does Zscaler ask for in its AI and data roles?",
+   "expected_route": "semantic",
+   "route": "semantic",
+   "route_correct": true,
+   "latency_ms": 11328,
+   "input_tokens": 3149,
+   "output_tokens": 214,
+   "answer": "The provided job postings mention the following skills for AI and data roles:\n\n* **Signal specification:** [1]\n* **Analytical solutions or processes:** [1]\n* **AI technologies and workflows:** [1]\n* **Multiple signal types:** [1]\n* **CRM platforms (Salesforce or Dynamics):** [1]\n* **Designing, building, and shipping production applications:** [2]\n* **Processing billions of events across big data, AI, and distributed systems:** [2]\n* **Advanced frameworks (LangGraph, multi-agent systems, prompt engineering, state-of-the-art agent orchestration patterns):** [2]",
+   "refused": false,
+   "citations": [
+    "fa9a060a62229375d47b196c5c96a19c",
+    "6b2b285715a02bd8122c368ec3f66260"
+   ],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "What skills does Zscaler ask for in its AI and data roles?",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "router output invalid"
+   },
+   "relevant_jobs": 4,
+   "recall_at_5": 1.0,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 1.0,
+   "groundedness": 1.0,
+   "citation_accuracy": 1.0
+  },
+  {
+   "id": "EV-035",
+   "category": "company",
+   "question": "What kind of data roles is Okta hiring for?",
+   "expected_route": "semantic",
+   "route": "semantic",
+   "route_correct": true,
+   "latency_ms": 10525,
+   "input_tokens": 3066,
+   "output_tokens": 97,
+   "answer": "Okta is hiring for Senior Data Analyst, Staff Data Analyst, People Analytics, and Senior Data Engineer roles. [1], [2], [3]",
+   "refused": false,
+   "citations": [
+    "06d0ba454d6eca8b831339186342d9f8",
+    "1be1a9a9db238f360de5503ad4e67c6c",
+    "967528d30529a35b0f404af395949ed8"
+   ],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "Okta",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "Finding what a company looks for is semantic."
+   },
+   "relevant_jobs": 4,
+   "recall_at_5": 1.0,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 1.0,
+   "groundedness": 1.0,
+   "citation_accuracy": 1.0
+  },
+  {
+   "id": "EV-036",
+   "category": "company",
+   "question": "What does Coinbase expect from its data and ML engineers?",
+   "expected_route": "semantic",
+   "route": "semantic",
+   "route_correct": true,
+   "latency_ms": 12468,
+   "input_tokens": 3135,
+   "output_tokens": 213,
+   "answer": "Coinbase expects its data and ML engineers to have 2+ years of experience in machine learning and software engineering, with experience shipping production-grade ML services. They should have hands-on experience building with modern AI architectures such as LLMs and deep learning, and familiarity with tools such as LangGraph, LangSmith, Google ADK, Vertex AI, or AWS Bedrock. Strong proficiency in Python and the ability to write clean, maintainable, well-tested production code is also required.  They should have working knowledge in at least one domain such as NLP, information retrieval, computer vision, or statistical modeling.  Finally, they should be able to write technical design documents and communicate ML system designs clearly to cross-functional stakeholders.",
+   "refused": false,
+   "citations": [
+    "a3c51c5b2f7b9cb8889a2cc41011d94b",
+    "4728f58f9e4e20d7b31533c3ef8e01a2"
+   ],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "What does Coinbase expect from its data and ML engineers?",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "router output invalid"
+   },
+   "relevant_jobs": 4,
+   "recall_at_5": 1.0,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 1.0,
+   "groundedness": 0.833,
+   "citation_accuracy": 0.5
+  },
+  {
+   "id": "EV-037",
+   "category": "company",
+   "question": "What is Amgen looking for in data and AI candidates?",
+   "expected_route": "semantic",
+   "route": "semantic",
+   "route_correct": true,
+   "latency_ms": 8361,
+   "input_tokens": 2552,
+   "output_tokens": 161,
+   "answer": "Amgen seeks data and AI candidates who can:\n* Design, build, and manage data\n* Analyze data for actionable insights\n* Create reports and support data governance\n* Visualize information to ensure reliable and efficient data management\n* Translate business requirements into machine learning use cases\n* Implement the latest algorithms and approaches for machine learning\n* Provide technical oversight and guidance to other data analytics team members.",
+   "refused": false,
+   "citations": [
+    "3968461dd876e40c786a84f974240fa9",
+    "9a985bbd29c25b2037613ab4340d7f6f",
+    "597ea361a5de31275d4d46052313a001"
+   ],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "What is Amgen looking for in data and AI candidates?",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "router output invalid"
+   },
+   "relevant_jobs": 24,
+   "recall_at_5": 1.0,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 1.0,
+   "groundedness": 0.714,
+   "citation_accuracy": 0.667
+  },
+  {
+   "id": "EV-038",
+   "category": "resume",
+   "latency_ms": 51,
+   "skill_precision": 1.0,
+   "skill_recall": 1.0,
+   "matches": 10,
+   "filters_respected": true,
+   "reasons_exact": true
+  },
+  {
+   "id": "EV-039",
+   "category": "resume",
+   "latency_ms": 12,
+   "skill_precision": 1.0,
+   "skill_recall": 1.0,
+   "matches": 10,
+   "filters_respected": true,
+   "reasons_exact": true
+  },
+  {
+   "id": "EV-040",
+   "category": "resume",
+   "latency_ms": 29,
+   "skill_precision": 1.0,
+   "skill_recall": 1.0,
+   "matches": 10,
+   "filters_respected": true,
+   "reasons_exact": true
+  },
+  {
+   "id": "EV-041",
+   "category": "resume",
+   "latency_ms": 9,
+   "skill_precision": 1.0,
+   "skill_recall": 1.0,
+   "matches": 10,
+   "filters_respected": true,
+   "reasons_exact": true
+  },
+  {
+   "id": "EV-042",
+   "category": "resume",
+   "latency_ms": 39,
+   "skill_precision": 1.0,
+   "skill_recall": 1.0,
+   "matches": 10,
+   "filters_respected": true,
+   "reasons_exact": true
+  },
+  {
+   "id": "EV-043",
+   "category": "freshness",
+   "question": "Open Kafka roles posted in the last 14 days.",
+   "expected_route": "semantic",
+   "route": "combined",
+   "route_correct": false,
+   "latency_ms": 7162,
+   "input_tokens": 2004,
+   "output_tokens": 170,
+   "answer": "2 jobs match the criteria. [1] and [2] both mention Apache Kafka and are posted remotely.",
+   "refused": false,
+   "citations": [
+    "15a4314fe1dbfa5fddfade4197140fb0",
+    "9734c3b4bb8328dbc392c6c4e35a5e7b"
+   ],
+   "plan": {
+    "route": "combined",
+    "metric_request": {
+     "metric": "count_jobs",
+     "filters": {
+      "cities": [],
+      "work_modes": [
+       "remote"
+      ],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [
+       "Apache Kafka"
+      ],
+      "posted_within_days": 14,
+      "open_only": false
+     },
+     "skill": null,
+     "group_by": "none",
+     "grain": "week",
+     "limit": 10
+    },
+    "search": {
+     "query": "Kafka",
+     "filters": {
+      "cities": [],
+      "work_modes": [
+       "remote"
+      ],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [
+       "Apache Kafka"
+      ],
+      "posted_within_days": 14,
+      "open_only": false
+     }
+    },
+    "reason": "Needs both a count and examples from postings."
+   },
+   "relevant_jobs": 175,
+   "recall_at_5": 0.4,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 1.0,
+   "groundedness": 1.0,
+   "citation_accuracy": 1.0
+  },
+  {
+   "id": "EV-044",
+   "category": "freshness",
+   "question": "Which data engineering roles in Hyderabad were posted this week?",
+   "expected_route": "semantic",
+   "route": "semantic",
+   "route_correct": true,
+   "latency_ms": 9067,
+   "input_tokens": 2477,
+   "output_tokens": 252,
+   "answer": "The following data engineering roles in Hyderabad were posted this week:\n\n* Data Engineer \u2014 Persistent Systems [1]\n* Data Engineer \u2014 Anblicks [2]\n* Manager, Data Engineering \u2014 Vanguard India [3]\n* Data Engineer, Specialist \u2014 Vanguard India [4]\n* Data Engineer, Specialist \u2014 Vanguard India [5]",
+   "refused": false,
+   "citations": [
+    "4e0b8c9f3ba8e76b464dff4353c23f61",
+    "033411321484bcd7079f5a50467e0b22",
+    "30ab150944c9d953fe469bfefe4a16cc",
+    "c4316b5ebaa9448968b8af55db7c4881",
+    "7473cfe5cfba46c51e42b24b42ecd146"
+   ],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "Which data engineering roles in Hyderabad were posted this week?",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "router output invalid"
+   },
+   "relevant_jobs": 86,
+   "recall_at_5": 0.4,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 0.8,
+   "groundedness": 0.8,
+   "citation_accuracy": 0.8
+  },
+  {
+   "id": "EV-045",
+   "category": "freshness",
+   "question": "Is the Senior Data Engineer role at Okta still open?",
+   "expected_route": "semantic",
+   "route": "semantic",
+   "route_correct": true,
+   "latency_ms": 6541,
+   "input_tokens": 3078,
+   "output_tokens": 88,
+   "answer": "The Senior Data Engineer \u2014 Okta job posting at [1] states the role is open.",
+   "refused": false,
+   "citations": [
+    "6d3444fa8e777c79d12f74032ff91254"
+   ],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "Senior Data Engineer Okta",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": "Okta",
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": true
+     }
+    },
+    "reason": "Checking if a specific job is open"
+   },
+   "relevant_jobs": 2,
+   "recall_at_5": 1.0,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 1.0,
+   "groundedness": 1.0,
+   "citation_accuracy": 1.0
+  },
+  {
+   "id": "EV-046",
+   "category": "freshness",
+   "question": "Recently posted remote AI roles, from the last 30 days.",
+   "expected_route": "semantic",
+   "route": "combined",
+   "route_correct": false,
+   "latency_ms": 8703,
+   "input_tokens": 2863,
+   "output_tokens": 218,
+   "answer": "4 jobs match. Filters: work mode: remote; title contains: AI; posted in the last 30 days. Posted dates 2026-10-12 to 2026-11-04.",
+   "refused": false,
+   "citations": [
+    "b5ad90517ffbd761dc6cdaea8812f327",
+    "269e8a8bc76a1c2ccddcb6768c82027d",
+    "eb603a1d05193f712ba28d8de7a01598",
+    "d08761dd2f882be82d3390c0e5a09a5e",
+    "c5bc437a19a2025f192b1d3a82a35ac2"
+   ],
+   "plan": {
+    "route": "combined",
+    "metric_request": {
+     "metric": "count_jobs",
+     "filters": {
+      "cities": [],
+      "work_modes": [
+       "remote"
+      ],
+      "seniorities": [],
+      "role_keywords": [
+       "AI"
+      ],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": 30,
+      "open_only": false
+     },
+     "skill": null,
+     "group_by": "none",
+     "grain": "week",
+     "limit": 10
+    },
+    "search": {
+     "query": "AI roles",
+     "filters": {
+      "cities": [],
+      "work_modes": [
+       "remote"
+      ],
+      "seniorities": [],
+      "role_keywords": [
+       "AI"
+      ],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": 30,
+      "open_only": false
+     }
+    },
+    "reason": "Needs both a count and examples of recent remote AI roles."
+   },
+   "relevant_jobs": 9,
+   "recall_at_5": 0.8,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 0.8,
+   "groundedness": 0.833,
+   "citation_accuracy": 1.0
+  },
+  {
+   "id": "EV-047",
+   "category": "unanswerable",
+   "question": "What is the average salary for prompt engineers on Mars?",
+   "expected_route": "unanswerable",
+   "route": "unanswerable",
+   "route_correct": true,
+   "latency_ms": 5312,
+   "input_tokens": 1187,
+   "output_tokens": 50,
+   "answer": "I don't have enough information in the collected job postings to answer that. Salary data is not available in the dataset, and the question refers to a location outside of the dataset's scope.",
+   "refused": true,
+   "citations": [],
+   "plan": {
+    "route": "unanswerable",
+    "metric_request": null,
+    "search": null,
+    "reason": "Salary data is not available in the dataset, and the question refers to a location outside of the dataset's scope."
+   }
+  },
+  {
+   "id": "EV-048",
+   "category": "unanswerable",
+   "question": "What salary do senior data engineers in Hyderabad earn?",
+   "expected_route": "unanswerable",
+   "route": "unanswerable",
+   "route_correct": true,
+   "latency_ms": 1439,
+   "input_tokens": 1186,
+   "output_tokens": 35,
+   "answer": "I don't have enough information in the collected job postings to answer that. No salary data is available in the dataset.",
+   "refused": true,
+   "citations": [],
+   "plan": {
+    "route": "unanswerable",
+    "metric_request": null,
+    "search": null,
+    "reason": "No salary data is available in the dataset."
+   }
+  },
+  {
+   "id": "EV-049",
+   "category": "unanswerable",
+   "question": "How many data engineering jobs are there in London?",
+   "expected_route": "unanswerable",
+   "route": "unanswerable",
+   "route_correct": true,
+   "latency_ms": 1595,
+   "input_tokens": 1186,
+   "output_tokens": 41,
+   "answer": "I don't have enough information in the collected job postings to answer that. Data is only for Hyderabad, Bengaluru, and remote roles open to India.",
+   "refused": true,
+   "citations": [],
+   "plan": {
+    "route": "unanswerable",
+    "metric_request": null,
+    "search": null,
+    "reason": "Data is only for Hyderabad, Bengaluru, and remote roles open to India."
+   }
+  },
+  {
+   "id": "EV-050",
+   "category": "unanswerable",
+   "question": "Will demand for data engineers grow by 2030?",
+   "expected_route": "unanswerable",
+   "route": "unanswerable",
+   "route_correct": true,
+   "latency_ms": 1586,
+   "input_tokens": 1189,
+   "output_tokens": 42,
+   "answer": "I don't have enough information in the collected job postings to answer that. This question is about future predictions, which are outside the scope of this data.",
+   "refused": true,
+   "citations": [],
+   "plan": {
+    "route": "unanswerable",
+    "metric_request": null,
+    "search": null,
+    "reason": "This question is about future predictions, which are outside the scope of this data."
+   }
+  },
+  {
+   "id": "EV-051",
+   "category": "unanswerable",
+   "question": "What is the capital of France?",
+   "expected_route": "unanswerable",
+   "route": "unanswerable",
+   "route_correct": true,
+   "latency_ms": 1462,
+   "input_tokens": 1183,
+   "output_tokens": 38,
+   "answer": "I don't have enough information in the collected job postings to answer that. This is a geography question, not about the job postings.",
+   "refused": true,
+   "citations": [],
+   "plan": {
+    "route": "unanswerable",
+    "metric_request": null,
+    "search": null,
+    "reason": "This is a geography question, not about the job postings."
+   }
+  },
+  {
+   "id": "EV-052",
+   "category": "unanswerable",
+   "question": "Write me a poem about Apache Kafka.",
+   "expected_route": "unanswerable",
+   "route": "unanswerable",
+   "route_correct": true,
+   "latency_ms": 1486,
+   "input_tokens": 1184,
+   "output_tokens": 39,
+   "answer": "I don't have enough information in the collected job postings to answer that. This is a creative writing request, not a job market query.",
+   "refused": true,
+   "citations": [],
+   "plan": {
+    "route": "unanswerable",
+    "metric_request": null,
+    "search": null,
+    "reason": "This is a creative writing request, not a job market query."
+   }
+  },
+  {
+   "id": "EV-053",
+   "category": "combined",
+   "question": "How many remote roles mention LangChain, and what are some examples?",
+   "expected_route": "combined",
+   "route": "semantic",
+   "route_correct": false,
+   "latency_ms": 10476,
+   "input_tokens": 3019,
+   "output_tokens": 312,
+   "answer": "There are at least 3 remote roles that mention LangChain. \n\n* **Senior AI/LLM Engineer (Python) - Remote \u2014 Kake**:  Familiarity with prompt engineering best practices and agentic workflows. Experience with distributed systems, streaming (e.g., Kafka), or large-scale applications. Background in machine learning fundamentals (e.g., scikit-learn, PyTorch, or TensorFlow). Comfortable working flexible hours to overlap with distributed teams across different time zones. \n* **AI Engineer \u2014 algoleap**: LangChain \u2014 Chains, memory, custom tools \u2014 solid foundational knowledge. \n* **AI Engineer with LLM \u2014 Recex.co**: Framework Utilization (Langchain/LangGraph): Architect and develop complex LLM-driven workflows, chains, multi-agent systems, and graphs using frameworks like Langchain and LangGraph.",
+   "refused": false,
+   "citations": [
+    "1769c6170ef094aa9f805c51c45a1ab3",
+    "a45a704c05f1f0414777006105676020",
+    "7eb14eb102e36c3d24292ac08115d5e7",
+    "aa7332d1951ba2b14667c639ca7ebdd7",
+    "30bc38d96612e5d77c75fd51c92c81b5"
+   ],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "How many remote roles mention LangChain, and what are some examples?",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "router output invalid"
+   },
+   "relevant_jobs": 4,
+   "recall_at_5": 0.25,
+   "mrr": 0.2,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 0.2,
+   "groundedness": 0.75,
+   "citation_accuracy": 0.4
+  },
+  {
+   "id": "EV-054",
+   "category": "combined",
+   "question": "How many jobs mention Apache Iceberg, and what do those postings say about it?",
+   "expected_route": "combined",
+   "route": "semantic",
+   "route_correct": false,
+   "latency_ms": 13816,
+   "input_tokens": 2795,
+   "output_tokens": 399,
+   "answer": "4 job postings mention Apache Iceberg. \n\n* [1] Snowflake Data Engineer - Ads \u2014 Apple:  Apache Iceberg is a must \u2014 design and manage unified, open-format storage that can be queried directly in Snowflake with warehouse-level performance. Manage Snowflake Iceberg Tables in the AWS cloud. \n* [2] Data Engineer II \u2014 Schneider Electric:  Lakehouse solutions using Apache Iceberg and Redshift. \n* [3] Senior Data Engineer \u2014 NTT DATA North America: Apache Iceberg Engineering Implement approved Iceberg table standards. Develop/configure Iceberg tables and Spark\u2192Iceberg processing. \n* [4] Senior Developer, Data Engineer \u2014 ICE: Design and maintain a lakehouse architecture using Apache Iceberg as the primary table format, following a Bronze, Silver, and Gold medallion structure. Schema evolution, partitioning strategies, and time-travel queries will be regular concerns, not edge cases. Use Databricks to manage cluster compute, Delta Lake workflows, Unity Catalog, and scheduled jobs. You will keep things cost-efficient, well-organised, and easy for others to navigate. Build and maintain dbt projects that sit alongside the Airflow orchestration layer. Models, tests, snapshots, and macros should be well-structured and documented. Test failures and freshness checks should surface where people can act on them.",
+   "refused": false,
+   "citations": [
+    "162af123e04792118be68207987f923d",
+    "87e6c1eb5c7ff1e0043259ca4e10bf66",
+    "5c3d0fe4e5049253793b18cd4c5a8c50",
+    "812a4b05b9bd8359c5d0574c0679c6a2"
+   ],
+   "plan": {
+    "route": "semantic",
+    "metric_request": null,
+    "search": {
+     "query": "How many jobs mention Apache Iceberg, and what do those postings say about it?",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     }
+    },
+    "reason": "router output invalid"
+   },
+   "relevant_jobs": 90,
+   "recall_at_5": 1.0,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "citations_relevant": 1.0,
+   "groundedness": 0.8,
+   "citation_accuracy": 1.0
+  }
+ ]
+}

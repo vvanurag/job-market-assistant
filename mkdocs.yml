@@ -67,8 +67,12 @@ nav:
   - Operations:
       - Orchestration: operations/orchestration.md
       - Streaming: operations/streaming.md
+      - Delivery: operations/delivery.md
   - Serving:
       - API: serving/api.md
+  - Evaluation:
+      - Results: evaluation/results.md
+      - Release readiness: evaluation/release.md
   - Development:
       - Setup: development/setup.md
       - Conventions: development/conventions.md
@@ -84,5 +88,6 @@ nav:
       - "ADR-0008: Metrics layer": decisions/0008-metrics-layer-not-text-to-sql.md
       - "ADR-0009: Lambda streaming": decisions/0009-lambda-architecture-for-streaming.md
       - "ADR-0010: dbt in Airflow": decisions/0010-dbt-in-airflow.md
+      - "ADR-0011: Model selection": decisions/0011-model-selection.md
       - Template: decisions/template.md
   - Glossary: glossary.md

@@ -55,14 +55,14 @@ Read it from top to bottom: postings come in at the top and answers come out at 
 | **Python** | The language for collectors, the API and tests | The chef's hands | — |
 | **DuckDB** | A small database on your laptop, for development | A home fridge | [ADR-0005](decisions/0005-portable-warehouse-layer.md) |
 | **Snowflake** | A cloud data warehouse, as used by companies | A restaurant's walk-in freezer | [ADR-0003](decisions/0003-snowflake-as-primary-warehouse.md) |
-| **dbt** | Turns SQL files into the Silver and Gold tables, with tests | The recipes | Planned |
-| **Apache Airflow** | Runs each step on a schedule and retries failures | The kitchen timetable | Planned |
-| **Apache Kafka** | Streams new postings in as they appear | A conveyor belt | Planned |
-| **pgvector or Qdrant** | Stores passages so they can be searched by meaning | The menu, organised by flavour | [ADR-0004](decisions/0004-vector-store-selection.md) |
+| **dbt** | Turns SQL files into the Silver and Gold tables, with tests | The recipes | [Silver](pipeline/silver.md), [Gold](pipeline/gold.md) |
+| **Apache Airflow** | Runs each step on a schedule and retries failures | The kitchen timetable | [ADR-0010](decisions/0010-dbt-in-airflow.md) |
+| **Apache Kafka** | Streams new postings in as they appear | A conveyor belt | [ADR-0009](decisions/0009-lambda-architecture-for-streaming.md) |
+| **pgvector** (PostgreSQL) | Stores passages so they can be searched by meaning | The menu, organised by flavour | [ADR-0004](decisions/0004-vector-store-selection.md) |
 | **Ollama** | Runs AI models on your own laptop: free and private | A home cook | [ADR-0006](decisions/0006-llm-provider-strategy.md) |
 | **Gemini and Groq** | Hosted AI models: more powerful, free tiers | A hired chef | [ADR-0006](decisions/0006-llm-provider-strategy.md) |
-| **FastAPI** | The web service you send questions to | The waiter | Planned |
-| **Docker** | Packages every service so it starts with one command | A lunchbox: everything travels together | Planned |
+| **FastAPI** | The web service you send questions to | The waiter | [ADR-0008](decisions/0008-metrics-layer-not-text-to-sql.md), [API](serving/api.md) |
+| **Docker** | Packages every service so it starts with one command | A lunchbox: everything travels together | [Delivery](operations/delivery.md) |
 | **GitHub Actions** | Tests every change automatically | A food-safety inspector | In place |
 
 ## Quick start

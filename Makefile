@@ -3,7 +3,7 @@ VENV   := .venv
 BIN    := $(VENV)/bin
 
 .DEFAULT_GOAL := help
-.PHONY: help setup lint format test doctor doctor-deep docs check collect bronze bronze-snowflake compare dbt-build dbt-build-snowflake up down index api
+.PHONY: help setup lint format test doctor doctor-deep docs check collect bronze bronze-snowflake compare dbt-build dbt-build-snowflake up down index api demo eval status
 
 help: ## Show available commands
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "} {printf "  make %-12s %s\n", $$1, $$2}'
@@ -71,3 +71,12 @@ index: ## Build or refresh the retrieval index from Gold
 
 api: ## Run the API locally on http://localhost:8000 (docs at /docs)
 	$(BIN)/uvicorn jobmarket.api.app:app --port 8000 --reload
+
+demo: ## Start every service (vector DB, API, Airflow, Kafka) in Docker
+	docker compose up -d --build
+
+eval: ## Run the evaluation set and compare with the accepted run
+	$(BIN)/jobmarket eval run --pace 25
+
+status: ## Open the health view in the browser
+	@. ./.env && open "http://localhost:8000/status?key=$$API_KEY"

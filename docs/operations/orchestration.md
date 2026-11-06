@@ -56,6 +56,8 @@ Set `ALERT_WEBHOOK_URL` in `.env` to a private [ntfy.sh](https://ntfy.sh) topic,
 
 ## Notes
 
+- **Snowflake in the pipeline (optional).** Set `JOBMARKET_DAG_SNOWFLAKE: "true"` in the `airflow` service's environment and the DAG also loads Bronze into Snowflake and builds dbt there, as `JMA_INGEST` and `JMA_TRANSFORM`. It's off by default, to save trial credits.
+
 - The container mounts the repository at `/opt/jobmarket`, so it reads the same `.env`, data folder and code as your terminal. It overrides only what differs inside Docker: the Ollama and database addresses, and the Snowflake key path (`~/.snowflake` is mounted read-only).
 - DuckDB allows one writer at a time. While the pipeline's dbt tasks run (a few minutes), the API and other local tools can't open the DuckDB file. Serving from Snowflake (`SERVING_WAREHOUSE=snowflake`) avoids this.
 - NFR-01 is measured over 7 consecutive days of scheduled runs, so it can only be confirmed after a week of operation.

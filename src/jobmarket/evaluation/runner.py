@@ -241,12 +241,35 @@ def evaluate_question(
             else None
         )
     if judge_llm and result.citations and not row["refused"]:
-        by_key = {}
-        for h in result.retrieved:
-            by_key.setdefault(h.posting_key, []).append(h.text)
-        sources = ["\n...\n".join(by_key.get(c.posting_key, [])) for c in result.citations]
-        row.update(judge(judge_llm, result.answer, sources))
+        row.update(judge(judge_llm, result.answer, judge_sources(result.retrieved, row["citations"])))
     return row
+
+
+def judge_sources(hits, cited_keys: list[str]) -> list[str]:
+    """Each cited posting exactly as the answering model saw it: metadata header and excerpts."""
+    block, numbered = assistant._sources_block(hits)
+    by_key = {h.posting_key: sid for sid, h in numbered.items()}
+    parts = {sid: text for sid, text in (chunk.split("] ", 1) for chunk in ("\n" + block).split("\n[")[1:])}
+    return [parts.get(by_key.get(k, ""), "")[len("") :] for k in cited_keys]
+
+
+def rejudge(settings: Settings, embedder: Embedder, judge_llm: LLM, run_id: str, progress=print) -> dict:
+    """Re-score groundedness and citation accuracy of a stored run with the current judge
+    inputs. Retrieval is repeated from each row's stored plan (deterministic for an
+    unchanged index), so the answers themselves are not regenerated."""
+    path = RESULTS_DIR / f"{run_id}.json"
+    data = json.loads(path.read_text())
+    for row in data["rows"]:
+        if not row.get("citations") or row.get("refused") or not (row.get("plan") or {}).get("search"):
+            continue
+        plan = assistant.SearchPlan.model_validate(row["plan"]["search"])
+        hits = assistant.retrieve(settings, embedder, plan)
+        row.update(judge(judge_llm, row["answer"], judge_sources(hits, row["citations"])))
+        progress(f"{row['id']} groundedness {row.get('groundedness')} citations {row.get('citation_accuracy')}")
+    data["summary"] = summarise(data["rows"])
+    data["config"]["judge_inputs"] = "metadata header + excerpts"
+    path.write_text(json.dumps(data, indent=1, default=str))
+    return data
 
 
 def summarise(rows: list[dict]) -> dict:

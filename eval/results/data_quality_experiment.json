@@ -1,0 +1,1150 @@
+{
+ "baseline_run": "baseline_groq_nomic.json",
+ "embedding": "ollama:nomic-embed-text",
+ "summary": {
+  "A": {
+   "recall_at_5": 0.617,
+   "mrr": 0.802,
+   "duplicate_at_5": 0.096,
+   "stale_at_5": 0.0,
+   "recall_at_5_filtered_questions": 0.529
+  },
+  "B": {
+   "recall_at_5": 0.639,
+   "mrr": 0.765,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "recall_at_5_filtered_questions": 0.494
+  },
+  "C": {
+   "recall_at_5": 0.639,
+   "mrr": 0.765,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "recall_at_5_filtered_questions": 0.494
+  },
+  "D": {
+   "recall_at_5": 0.941,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "recall_at_5_filtered_questions": 0.929
+  },
+  "E": {
+   "recall_at_5": 0.948,
+   "mrr": 1.0,
+   "duplicate_at_5": 0.0,
+   "stale_at_5": 0.0,
+   "recall_at_5_filtered_questions": 0.929
+  }
+ },
+ "questions": {
+  "EV-017": {
+   "category": "semantic_explain",
+   "query": "strong Kafka experience",
+   "scores": {
+    "A": {
+     "relevant_jobs": 330,
+     "recall_at_5": 0.8,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.2,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 330,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 330,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 330,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 330,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-018": {
+   "category": "semantic_explain",
+   "query": "Databricks hands-on experience",
+   "scores": {
+    "A": {
+     "relevant_jobs": 623,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 623,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 623,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 623,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 623,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-019": {
+   "category": "semantic_explain",
+   "query": "dbt expectations",
+   "scores": {
+    "A": {
+     "relevant_jobs": 243,
+     "recall_at_5": 0.8,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.2,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 243,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 243,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 243,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 243,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-020": {
+   "category": "semantic_explain",
+   "query": "experience building RAG pipelines",
+   "scores": {
+    "A": {
+     "relevant_jobs": 528,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 528,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 528,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 528,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 528,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-021": {
+   "category": "semantic_explain",
+   "query": "Airflow experience",
+   "scores": {
+    "A": {
+     "relevant_jobs": 400,
+     "recall_at_5": 0.4,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.6,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 400,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 400,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 400,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 400,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-022": {
+   "category": "semantic_explain",
+   "query": "data modeling",
+   "scores": {
+    "A": {
+     "relevant_jobs": 782,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 782,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 782,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 782,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 782,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-023": {
+   "category": "semantic_explain",
+   "query": "experience with AI agents",
+   "scores": {
+    "A": {
+     "relevant_jobs": 629,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 629,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 629,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 629,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 629,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-024": {
+   "category": "semantic_explain",
+   "query": "MLOps experience",
+   "scores": {
+    "A": {
+     "relevant_jobs": 344,
+     "recall_at_5": 0.6,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 344,
+     "recall_at_5": 0.6,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 344,
+     "recall_at_5": 0.6,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 344,
+     "recall_at_5": 0.6,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 344,
+     "recall_at_5": 0.8,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-025": {
+   "category": "semantic_filtered",
+   "query": "Hybrid roles in Hyderabad that mention dbt and Snowflake",
+   "scores": {
+    "A": {
+     "relevant_jobs": 7,
+     "recall_at_5": 0.4,
+     "mrr": 0.333,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 7,
+     "recall_at_5": 0.4,
+     "mrr": 0.333,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 7,
+     "recall_at_5": 0.4,
+     "mrr": 0.333,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 7,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 7,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-026": {
+   "category": "semantic_filtered",
+   "query": "remote data engineering roles Python",
+   "scores": {
+    "A": {
+     "relevant_jobs": 30,
+     "recall_at_5": 0.2,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.2,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 30,
+     "recall_at_5": 0.2,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 30,
+     "recall_at_5": 0.2,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 30,
+     "recall_at_5": 0.6,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 30,
+     "recall_at_5": 0.6,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-027": {
+   "category": "semantic_filtered",
+   "query": "senior data engineer Apache Spark Bengaluru",
+   "scores": {
+    "A": {
+     "relevant_jobs": 195,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 195,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 195,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 195,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 195,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-028": {
+   "category": "semantic_filtered",
+   "query": "lead level roles Hyderabad Azure",
+   "scores": {
+    "A": {
+     "relevant_jobs": 127,
+     "recall_at_5": 0.8,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.2,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 127,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 127,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 127,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 127,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-029": {
+   "category": "semantic_filtered",
+   "query": "LangChain",
+   "scores": {
+    "A": {
+     "relevant_jobs": 166,
+     "recall_at_5": 0.8,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 166,
+     "recall_at_5": 0.8,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 166,
+     "recall_at_5": 0.8,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 166,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 166,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-030": {
+   "category": "semantic_filtered",
+   "query": "data roles junior OR entry-level Hyderabad",
+   "scores": {
+    "A": {
+     "relevant_jobs": 46,
+     "recall_at_5": 0.2,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 46,
+     "recall_at_5": 0.2,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 46,
+     "recall_at_5": 0.2,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 46,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 46,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-031": {
+   "category": "semantic_filtered",
+   "query": "SQL Bengaluru on-site",
+   "scores": {
+    "A": {
+     "relevant_jobs": 11,
+     "recall_at_5": 0.0,
+     "mrr": 0.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 11,
+     "recall_at_5": 0.0,
+     "mrr": 0.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 11,
+     "recall_at_5": 0.0,
+     "mrr": 0.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 11,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 11,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-032": {
+   "category": "semantic_filtered",
+   "query": "remote roles open to candidates anywhere in India",
+   "scores": {
+    "A": {
+     "relevant_jobs": 5,
+     "recall_at_5": 0.0,
+     "mrr": 0.0,
+     "duplicate_at_5": 0.2,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 5,
+     "recall_at_5": 0.0,
+     "mrr": 0.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 5,
+     "recall_at_5": 0.0,
+     "mrr": 0.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 5,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 5,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-033": {
+   "category": "company",
+   "query": "Databricks engineer requirements",
+   "scores": {
+    "A": {
+     "relevant_jobs": 15,
+     "recall_at_5": 0.0,
+     "mrr": 0.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 15,
+     "recall_at_5": 0.0,
+     "mrr": 0.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 15,
+     "recall_at_5": 0.0,
+     "mrr": 0.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 15,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 15,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-034": {
+   "category": "company",
+   "query": "Zscaler AI data role requirements",
+   "scores": {
+    "A": {
+     "relevant_jobs": 4,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.2,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 4,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 4,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 4,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 4,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-035": {
+   "category": "company",
+   "query": "Okta data roles",
+   "scores": {
+    "A": {
+     "relevant_jobs": 4,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.2,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 4,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 4,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 4,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 4,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-036": {
+   "category": "company",
+   "query": "Coinbase data engineer requirements",
+   "scores": {
+    "A": {
+     "relevant_jobs": 4,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 4,
+     "recall_at_5": 0.0,
+     "mrr": 0.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 4,
+     "recall_at_5": 0.0,
+     "mrr": 0.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 4,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 4,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-037": {
+   "category": "company",
+   "query": "Amgen data AI candidates",
+   "scores": {
+    "A": {
+     "relevant_jobs": 24,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 24,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 24,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 24,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 24,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-043": {
+   "category": "freshness",
+   "query": "Kafka",
+   "scores": {
+    "A": {
+     "relevant_jobs": 175,
+     "recall_at_5": 0.2,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.2,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 175,
+     "recall_at_5": 0.4,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 175,
+     "recall_at_5": 0.4,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 175,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 175,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-044": {
+   "category": "freshness",
+   "query": "data engineering",
+   "scores": {
+    "A": {
+     "relevant_jobs": 86,
+     "recall_at_5": 0.4,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 86,
+     "recall_at_5": 0.4,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 86,
+     "recall_at_5": 0.4,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 86,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 86,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-045": {
+   "category": "freshness",
+   "query": "Senior Data Engineer at Okta",
+   "scores": {
+    "A": {
+     "relevant_jobs": 2,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.2,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 2,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 2,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 2,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 2,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-046": {
+   "category": "freshness",
+   "query": "AI",
+   "scores": {
+    "A": {
+     "relevant_jobs": 9,
+     "recall_at_5": 0.0,
+     "mrr": 0.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 9,
+     "recall_at_5": 0.0,
+     "mrr": 0.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 9,
+     "recall_at_5": 0.0,
+     "mrr": 0.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 9,
+     "recall_at_5": 0.2,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 9,
+     "recall_at_5": 0.2,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-053": {
+   "category": "combined",
+   "query": "remote roles LangChain",
+   "scores": {
+    "A": {
+     "relevant_jobs": 4,
+     "recall_at_5": 0.25,
+     "mrr": 0.333,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 4,
+     "recall_at_5": 0.25,
+     "mrr": 0.333,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 4,
+     "recall_at_5": 0.25,
+     "mrr": 0.333,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 4,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 4,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  },
+  "EV-054": {
+   "category": "combined",
+   "query": "Apache Iceberg",
+   "scores": {
+    "A": {
+     "relevant_jobs": 90,
+     "recall_at_5": 0.8,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.2,
+     "stale_at_5": 0.0
+    },
+    "B": {
+     "relevant_jobs": 90,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "C": {
+     "relevant_jobs": 90,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "D": {
+     "relevant_jobs": 90,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    },
+    "E": {
+     "relevant_jobs": 90,
+     "recall_at_5": 1.0,
+     "mrr": 1.0,
+     "duplicate_at_5": 0.0,
+     "stale_at_5": 0.0
+    }
+   }
+  }
+ }
+}

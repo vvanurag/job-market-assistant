@@ -23,9 +23,9 @@ The project is also a structured learning path, so each phase lists the skills i
 | 4 | Streaming | Near-real-time path for new postings | Apache Kafka, Lambda vs Kappa architecture | Complete |
 | 5 | Retrieval index | Chunked, embedded, filterable index kept in sync | Data engineering for RAG, chunking, embeddings, semantic and hybrid search, ETL | Complete |
 | 6 | Serving | FastAPI service with routing and cited answers | FastAPI, API design, query routing, text-to-SQL safety, service-oriented architecture | Complete |
-| 7 | Evaluation | Evaluation set, baseline, data-quality experiment, model comparison | Choosing LLMs and embedding models, retrieval metrics, LLM-as-judge | Not started |
-| 8 | Delivery | CI/CD, containers, deployment, health view | CI/CD, GitHub Actions, containers, secrets management, non-functional requirements | Not started |
-| 9 | Extensions | Optional comparisons and advanced topics | Databricks, lakehouse and Iceberg, fine-tuning, Azure Data Factory | Not started |
+| 7 | Evaluation | Evaluation set, baseline, data-quality experiment, model comparison | Choosing LLMs and embedding models, retrieval metrics, LLM-as-judge | Complete (human judge check pending) |
+| 8 | Delivery | CI/CD, containers, deployment, health view | CI/CD, GitHub Actions, containers, secrets management, non-functional requirements | Complete (14-day NFR window pending) |
+| 9 | Extensions | Optional comparisons and advanced topics | Databricks, lakehouse and Iceberg, fine-tuning, Azure Data Factory | Optional, after version 1 |
 
 ## Phase 0: Foundations
 

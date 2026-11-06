@@ -14,11 +14,11 @@ flowchart TB
 
     subgraph INDEX["5 · INDEX"]
         PREP["Split into passages<br/>and embed them<br/><i>Ollama · nomic-embed-text</i>"]
-        VECTOR[("Vector index<br/>pgvector or Qdrant")]
+        VECTOR[("Vector index<br/>PostgreSQL + pgvector")]
     end
 
     subgraph ANSWER["6 · ANSWER"]
-        ROUTER{"FastAPI service<br/>count or meaning?"}
+        ROUTER{"FastAPI service<br/>count, meaning, both,<br/>or decline?"}
         LLM["Language model writes<br/>the answer with citations<br/><i>Ollama · Gemini · Groq</i>"]
     end
 
@@ -30,7 +30,8 @@ flowchart TB
     KAFKA -- load --> BRONZE
     BRONZE -- "dbt (SQL)" --> SILVER
     SILVER -- "dbt (SQL)" --> GOLD
-    SILVER -- "new or changed<br/>postings" --> PREP
+    GOLD -- "new or changed<br/>jobs" --> PREP
+    KAFKA -. "within minutes" .-> PREP
     PREP --> VECTOR
     GOLD -- "counts and trends<br/>(SQL)" --> ROUTER
     VECTOR -- "what postings say<br/>(semantic search)" --> ROUTER
@@ -40,7 +41,7 @@ flowchart TB
 
     subgraph SUPPORT["SUPPORTING TOOLS · act on every stage"]
         AIRFLOW["Apache Airflow<br/>schedules · retries · alerts"]
-        EVAL["Evaluation<br/>50 test questions · scores"]
+        EVAL["Evaluation<br/>54 test questions · scores"]
         CICD["GitHub Actions · Docker<br/>tests · one-command start"]
     end
 

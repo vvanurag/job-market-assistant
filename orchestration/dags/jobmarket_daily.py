@@ -20,6 +20,7 @@ separate from Airflow's so dbt and Airflow dependencies can't conflict.
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -98,3 +99,12 @@ with DAG(
     list(model_tasks.values()) >> index
     load >> fresh
     [index, fresh] >> record
+
+    # Optional: keep Snowflake in step too (off by default, to save trial credits).
+    # Set JOBMARKET_DAG_SNOWFLAKE=true in the airflow service's environment to enable.
+    if os.environ.get("JOBMARKET_DAG_SNOWFLAKE", "").lower() == "true":
+        sf_load = BashOperator(
+            task_id="snowflake_load_bronze", bash_command=f"{JOBMARKET} bronze load --target snowflake"
+        )
+        sf_build = BashOperator(task_id="snowflake_dbt_build", bash_command=f"{DBT} build --target snowflake")
+        load >> sf_load >> sf_build >> record

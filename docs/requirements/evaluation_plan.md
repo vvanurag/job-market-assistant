@@ -13,7 +13,7 @@ This plan defines how the assistant's answers are measured, so that changes to d
 
 ## 1. Evaluation set
 
-A versioned file of at least **50 questions** stored in the repository (FR-EVL-01). Each entry records:
+A versioned file of at least **50 questions** stored in the repository (FR-EVL-01): [`eval/eval_set_v1.yaml`](https://github.com/vvanurag/job-market-assistant/blob/main/eval/eval_set_v1.yaml), with 54 questions. Each entry records:
 
 | Field | Description |
 |---|---|
@@ -21,8 +21,8 @@ A versioned file of at least **50 questions** stored in the repository (FR-EVL-0
 | `question` | The question as a user would ask it |
 | `category` | One of the categories below |
 | `expected_route` | `analytical`, `semantic`, `combined` or `unanswerable` |
-| `expected_postings` | For semantic questions: posting IDs that a good answer should retrieve |
-| `expected_answer` | For analytical questions: the reference SQL, whose result is the correct answer |
+| `relevant` | For semantic questions: a rule over Gold (skills, city, work mode, seniority, company, title, recency) that defines which jobs are relevant. A rule rather than a hand-picked list, so the reference doesn't depend on what the system happened to retrieve, and it stays valid as data changes |
+| `reference_sql` | For analytical questions: the reference SQL, whose result is the correct answer |
 | `notes` | Why the question is included and what it tests |
 
 ### Categories and minimum counts
@@ -46,7 +46,7 @@ Because postings change daily, the evaluation runs against a **frozen snapshot**
 |---|---|---|
 | **Routing accuracy** | All | Share of questions sent to the expected route |
 | **Analytical accuracy** | Analytical | Share of answers whose figures match the reference SQL result |
-| **Recall@5** | Semantic | Share of expected postings that appear in the top 5 retrieved |
+| **Recall@5** | Semantic | Relevant jobs among the first 5 distinct jobs retrieved, divided by min(5, number of relevant jobs). This is plain recall when 5 or fewer jobs are relevant, and precision@5 when more are, so it is always between 0 and 1 |
 | **MRR** (mean reciprocal rank) | Semantic | Average of 1 ÷ rank of the first expected posting |
 | **Duplicate rate@5** | Semantic | Share of top-5 results that are the same underlying posting |
 | **Stale rate@5** | Semantic | Share of top-5 results that are closed postings |

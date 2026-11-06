@@ -1,0 +1,17 @@
+{
+ "source_posting_id": "1004",
+ "board_token": "example",
+ "company_name": "Example Analytics",
+ "collected_at": "2026-01-05T01:00:00+00:00",
+ "job": {
+  "id": 1004,
+  "title": "Account Executive",
+  "location": {
+   "name": "Bengaluru, India"
+  },
+  "content": "&lt;p&gt;Sell software.&lt;/p&gt;",
+  "absolute_url": "https://boards.example.com/jobs/1004",
+  "first_published": "2026-01-02T10:00:00-05:00",
+  "offices": []
+ }
+}

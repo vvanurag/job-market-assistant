@@ -1,0 +1,17 @@
+{
+ "source_posting_id": "1002",
+ "board_token": "example",
+ "company_name": "Example Analytics",
+ "collected_at": "2026-01-05T01:00:00+00:00",
+ "job": {
+  "id": 1002,
+  "title": "Analytics Engineer II",
+  "location": {
+   "name": "Hyderabad, Telangana"
+  },
+  "content": "&lt;p&gt;Model data with dbt and Looker. Contact recruiter at jane.doe@example.com or +91 98765 43210.&lt;/p&gt;&lt;p&gt;Experience: 2-4 years.&lt;/p&gt;",
+  "absolute_url": "https://boards.example.com/jobs/1002",
+  "first_published": "2026-01-02T10:00:00-05:00",
+  "offices": []
+ }
+}

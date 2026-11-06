@@ -388,3 +388,84 @@ def stream_consume(
             typer.echo(f"{event['posting_key'][:12]} {outcome}")
     finally:
         consumer.close()
+
+
+# metrics where a lower value is better; everything else is better when higher
+LOWER_IS_BETTER = {
+    "duplicate_at_5",
+    "stale_at_5",
+    "false_refusal_rate",
+    "latency_p50_ms",
+    "latency_p95_ms",
+    "tokens_per_question",
+}
+
+
+@eval_app.command("compare")
+def eval_compare(run_id: str, against: str = typer.Option("accepted", help="Run id, or 'accepted'.")) -> None:
+    """Show how a run differs from the accepted run (FR-EVL-03)."""
+    import json
+
+    from jobmarket.evaluation.runner import RESULTS_DIR
+
+    new = json.loads((RESULTS_DIR / f"{run_id}.json").read_text())
+    base = json.loads((RESULTS_DIR / f"{against}.json").read_text())
+    typer.echo(f"{run_id} vs {base['run_id']}")
+    worse = 0
+    for metric, value in new["summary"].items():
+        old = base["summary"].get(metric)
+        if not isinstance(value, int | float) or not isinstance(old, int | float):
+            continue
+        delta = value - old
+        better = delta < 0 if metric in LOWER_IS_BETTER else delta > 0
+        flag = "" if abs(delta) < 1e-9 else ("better" if better else "WORSE")
+        worse += flag == "WORSE" and not metric.startswith(("latency", "tokens"))
+        typer.echo(f"  {metric:24} {old!s:>10} -> {value!s:<10} {flag}")
+    if worse:
+        typer.echo(f"{worse} quality metric(s) got worse.")
+
+
+@eval_app.command("accept")
+def eval_accept(run_id: str) -> None:
+    """Make a run the accepted baseline that later runs are compared with."""
+    import shutil
+
+    from jobmarket.evaluation.runner import RESULTS_DIR
+
+    shutil.copyfile(RESULTS_DIR / f"{run_id}.json", RESULTS_DIR / "accepted.json")
+    typer.echo(f"{run_id} is now eval/results/accepted.json")
+
+
+@eval_app.command("report")
+def eval_report(run: Annotated[list[str], typer.Option(help="Run ids; the first is the accepted one.")]) -> None:
+    """Write docs/evaluation/results.md from stored runs."""
+    from jobmarket.evaluation.report import write_report
+
+    typer.echo(f"wrote {write_report(run)}")
+
+
+@eval_app.command("embeddings")
+def eval_embeddings(
+    baseline: str,
+    model: Annotated[list[str], typer.Option(help="Embedding models to compare; each needs its index built.")],
+) -> None:
+    """Compare embedding models on retrieval over the same questions (FR-EVL-04)."""
+    from jobmarket.evaluation.experiment import compare_embeddings
+    from jobmarket.evaluation.runner import RESULTS_DIR
+    from jobmarket.llm import get_embedder
+
+    settings = get_settings()
+    result = compare_embeddings(settings, [get_embedder(m, settings) for m in model], RESULTS_DIR / f"{baseline}.json")
+    for name, s in result["summary"].items():
+        typer.echo(f"{name:32} {s}")
+
+
+@eval_app.command("rejudge")
+def eval_rejudge(run_id: str, judge: str = typer.Option("gemini")) -> None:
+    """Re-score groundedness and citation accuracy of a stored run with the current judge inputs."""
+    from jobmarket.evaluation.runner import rejudge
+    from jobmarket.llm import get_embedder, get_llm
+
+    settings = get_settings()
+    data = rejudge(settings, get_embedder(settings=settings), get_llm(judge, settings=settings), run_id, typer.echo)
+    typer.echo({k: data["summary"][k] for k in ("groundedness", "citation_accuracy")})

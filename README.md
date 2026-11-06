@@ -1,13 +1,13 @@
 # Job Market Assistant
 
-A data platform and retrieval-augmented generation (RAG) assistant for the data engineering and AI job market in **Hyderabad and Bengaluru, India**.
+A data platform and retrieval-augmented generation (RAG) assistant for the data engineering and AI job market in **Hyderabad, Bengaluru and remote roles open to candidates in India**.
 
-The system collects job postings from public sources every day, models them in a cloud data warehouse, and answers natural-language questions about them. It combines two kinds of answers:
+It collects job postings every day, models them in a warehouse, and answers natural-language questions about them, with citations:
 
-- **Analytical answers** from SQL over modeled warehouse tables, such as "Which skills grew fastest in data engineering postings over the last 90 days?"
-- **Semantic answers** from retrieval over posting text, such as "What do employers mean by 'strong Kafka experience'? Show three examples."
-
-> **Status:** Phase 0 (Foundations) in progress. See the [Roadmap](docs/roadmap.md).
+- **Analytical answers** come from the warehouse, through a fixed metrics layer: "Is demand for Databricks higher in Hyderabad or Bengaluru?"
+- **Semantic answers** come from searching posting text: "What do employers mean by 'strong Kafka experience'? Give three examples."
+- **Combined answers** do both: "How many remote roles mention LangChain, and what are some examples?"
+- It **declines** questions the data can't answer, such as salaries, other cities and predictions.
 
 **Documentation site:** <https://vvanurag.github.io/job-market-assistant/>
 
@@ -16,87 +16,63 @@ The system collects job postings from public sources every day, models them in a
 ```bash
 git clone https://github.com/vvanurag/job-market-assistant.git
 cd job-market-assistant
-make setup     # virtual environment, dependencies, git hooks, .env
-make doctor    # checks Python, Docker, DuckDB, Snowflake, Ollama and API keys
+make setup        # virtual environment, dependencies, git hooks, .env
+make doctor       # checks Python, Docker, DuckDB, Snowflake, Ollama and API keys
+make collect bronze dbt-build   # collect postings, load Bronze, build Silver and Gold
+make up index     # start the vector database and build the search index
+docker compose up -d            # API, Airflow, Kafka and the vector database
 ```
 
-The full guide, including Snowflake and API key setup, is in [Development Setup](docs/development/setup.md).
+Then open <http://localhost:8000/docs> to ask questions (`X-API-Key` from `.env`), and <http://localhost:8000/status?key=…> for the health view. The full guide is in [Development Setup](docs/development/setup.md).
 
 ---
 
 ## Why this project exists
 
-Most RAG demos index a folder of PDFs and stop there. In production, answer quality depends mostly on the data behind the model: whether it is deduplicated, fresh, well described by metadata and kept in sync as sources change. This project builds that data foundation properly and measures how much it improves the assistant's answers.
+Most RAG demos index a folder of PDFs and stop there. In production, answer quality depends mostly on the data behind the model: whether it's deduplicated, fresh, described by good metadata and kept in sync as sources change. This project builds that data foundation properly, then **measures** how much each data engineering step improves retrieval (the [data-quality experiment](docs/evaluation/results.md#data-quality-experiment)).
 
-## Planned architecture
+## Architecture
 
 ```mermaid
 flowchart LR
-    subgraph Sources
-        A1[Job board APIs]
-        A2[Company career-page APIs]
-        A3[Community hiring threads]
-    end
-
-    subgraph Ingestion
-        B1[Batch extractors<br/>daily]
-        B2[Stream producer<br/>near real time]
-    end
-
-    subgraph Warehouse["Warehouse (Medallion)"]
-        C1[Bronze<br/>raw JSON]
-        C2[Silver<br/>clean, deduplicated, history]
-        C3[Gold<br/>facts and dimensions]
-    end
-
-    subgraph Retrieval
-        D1[Chunking and<br/>embedding pipeline]
-        D2[Vector index<br/>with metadata]
-    end
-
-    subgraph Serving
-        E1[FastAPI service]
-        E2[Query router]
-        E3[LLM]
-    end
-
-    A1 & A2 & A3 --> B1 & B2
-    B1 & B2 --> C1 --> C2 --> C3
-    C2 --> D1 --> D2
-    E1 --> E2
-    E2 -- analytical --> C3
-    E2 -- semantic --> D2
-    E2 --> E3
+    S["Job sources"] --> C["Collectors<br/>daily batch"] --> B[("Bronze<br/>raw JSON")]
+    S --> K["Kafka<br/>new postings"] --> B
+    B -- dbt --> SV[("Silver<br/>clean · deduplicated<br/>history · skills")] -- dbt --> G[("Gold<br/>star schema")]
+    G --> I["Chunk + embed<br/>incremental"] --> V[("pgvector<br/>hybrid search")]
+    K -. "minutes" .-> V
+    Q(["Question"]) --> R{"Router"}
+    R -- analytical --> M["Metrics layer<br/>fixed SQL"] --> G
+    R -- semantic --> V
+    R --> A["Cited answer"]
 ```
-
-## Planned technology
 
 | Concern | Choice | Decision record |
 |---|---|---|
-| Warehouse | Snowflake, with DuckDB as a portable second target | [ADR-0003](docs/decisions/0003-snowflake-as-primary-warehouse.md), [ADR-0005](docs/decisions/0005-portable-warehouse-layer.md) |
-| Transformation | dbt Core | Planned |
-| Orchestration | Apache Airflow (Astro CLI, Cosmos) | Planned |
-| Streaming | Apache Kafka | Planned |
-| Vector store | pgvector or Qdrant, to be decided | [ADR-0004](docs/decisions/0004-vector-store-selection.md) (proposed) |
-| Language models | Local models (Ollama), Google AI Studio (Gemini), Groq Cloud | [ADR-0006](docs/decisions/0006-llm-provider-strategy.md) |
-| API | FastAPI, run locally | Planned |
-| CI/CD | GitHub Actions | Planned |
-| Runtime | Python 3.11+, Docker Compose | Planned |
+| Warehouse | Snowflake and DuckDB, with identical results on both (verified table by table) | [ADR-0003](docs/decisions/0003-snowflake-as-primary-warehouse.md), [ADR-0005](docs/decisions/0005-portable-warehouse-layer.md) |
+| Transformation | dbt Core: Medallion layers, a star schema, SCD Type 2 history, 147 tests | [Silver](docs/pipeline/silver.md), [Gold](docs/pipeline/gold.md) |
+| Orchestration | Apache Airflow 3, one task per dbt model | [ADR-0010](docs/decisions/0010-dbt-in-airflow.md) |
+| Streaming | Apache Kafka, as a Lambda speed layer | [ADR-0009](docs/decisions/0009-lambda-architecture-for-streaming.md) |
+| Vector store | PostgreSQL + pgvector, hybrid search with Reciprocal Rank Fusion | [ADR-0004](docs/decisions/0004-vector-store-selection.md), [ADR-0007](docs/decisions/0007-chunking-strategy.md) |
+| Language models | Groq, Gemini or local Ollama, switched by configuration | [ADR-0006](docs/decisions/0006-llm-provider-strategy.md) |
+| Analytics safety | A metrics layer: the model never writes SQL | [ADR-0008](docs/decisions/0008-metrics-layer-not-text-to-sql.md) |
+| API | FastAPI: `/ask`, `/search`, `/postings/{id}`, `/match`, `/health`, `/status` | [API](docs/serving/api.md) |
+| Delivery | GitHub Actions (lint, secret scan, tests and coverage, dbt build, images), Docker Compose | [Delivery](docs/operations/delivery.md) |
+
+## Results
+
+See [Evaluation Results](docs/evaluation/results.md): routing, analytical accuracy, retrieval, groundedness, refusals, latency, model comparisons and the data-quality experiment, all on a 54-question evaluation set.
 
 ## Documentation
 
 | Document | Purpose |
 |---|---|
 | [Product Requirements](docs/requirements/product_requirements.md) | Vision, goals, users, scope, user stories |
-| [Functional Requirements](docs/requirements/functional_requirements.md) | What the system must do, by component |
-| [Non-Functional Requirements](docs/requirements/non_functional_requirements.md) | Measurable quality targets and service levels |
-| [Data Sources](docs/requirements/data_sources.md) | Candidate sources, fields and compliance checks |
-| [Evaluation Plan](docs/requirements/evaluation_plan.md) | How answer quality is measured |
+| [Functional](docs/requirements/functional_requirements.md) and [Non-Functional Requirements](docs/requirements/non_functional_requirements.md) | What the system must do, and how well |
+| [Data Sources](docs/requirements/data_sources.md) | Sources, fields and compliance checks |
+| [Evaluation Plan](docs/requirements/evaluation_plan.md) and [Results](docs/evaluation/results.md) | How quality is measured, and the measurements |
 | [Roadmap](docs/roadmap.md) | Delivery phases and exit criteria |
-| [Architecture Decisions](docs/decisions/index.md) | Record of significant technical decisions |
-| [Glossary](docs/glossary.md) | Terms used across the project |
-| [Development Setup](docs/development/setup.md) | Getting a working local environment |
-| [Conventions](docs/development/conventions.md) | Repository layout, code style, git and documentation rules |
+| [Architecture Decisions](docs/decisions/index.md) | Ten decision records |
+| [Development Setup](docs/development/setup.md) and [Conventions](docs/development/conventions.md) | Getting started; code and documentation rules |
 
 To browse the documentation locally, run `make docs`.
 

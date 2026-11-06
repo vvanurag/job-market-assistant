@@ -5,13 +5,16 @@ Secrets are typed as ``SecretStr`` so they are never printed by accident (NFR-11
 
 from __future__ import annotations
 
+import os
 from functools import lru_cache
 from pathlib import Path
 
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+# The repository (seeds, config, data). Derived from this file in a source checkout; set
+# JOBMARKET_HOME where the package is installed elsewhere, as in the API container.
+REPO_ROOT = Path(os.environ.get("JOBMARKET_HOME") or Path(__file__).resolve().parents[2])
 
 
 class Settings(BaseSettings):

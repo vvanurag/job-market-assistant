@@ -1,0 +1,20 @@
+{
+ "baseline_run": "baseline_groq_nomic.json",
+ "questions": 27,
+ "summary": {
+  "ollama:nomic-embed-text": {
+   "dimensions": 768,
+   "recall_at_5": 0.948,
+   "mrr": 1.0,
+   "recall_at_5_vector_only_unfiltered": 0.639,
+   "query_embedding_ms_p50": 9.6
+  },
+  "ollama:mxbai-embed-large": {
+   "dimensions": 1024,
+   "recall_at_5": 0.956,
+   "mrr": 1.0,
+   "recall_at_5_vector_only_unfiltered": 0.659,
+   "query_embedding_ms_p50": 14.3
+  }
+ }
+}

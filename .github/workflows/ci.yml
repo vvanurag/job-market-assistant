@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # full history, for secret scanning and the evaluation guard
 
       - uses: actions/setup-python@v7
         with:
@@ -22,15 +24,39 @@ jobs:
       - name: Install
         run: pip install -e ".[dev,transform]"
 
-      - name: Pre-commit hooks (style, secrets, file hygiene)
+      - name: Pre-commit hooks (style, private keys, file hygiene)
         run: pre-commit run --all-files --show-diff-on-failure
 
-      - name: Tests
-        run: pytest
+      - name: Secret scan of the full git history (NFR-11)
+        run: |
+          curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.24.2/gitleaks_8.24.2_linux_x64.tar.gz | tar -xz gitleaks
+          ./gitleaks git --no-banner --redact --exit-code 1 .
 
-      - name: dbt project compiles
-        working-directory: transform
-        run: dbt parse --profiles-dir . --target dev
+      - name: Tests with coverage (NFR-20)
+        run: |
+          pytest -p no:warnings --cov=jobmarket --cov-report=term
+          # extractors, routing and API contracts must stay at 80% or more
+          coverage report --include="src/jobmarket/ingestion/*,src/jobmarket/api/*" --fail-under=80
+
+      - name: dbt builds and tests on DuckDB with synthetic data (NFR-24)
+        env:
+          BRONZE_ROOT: tests/fixtures/bronze
+          DUCKDB_PATH: ${{ runner.temp }}/ci.duckdb
+        run: |
+          jobmarket bronze load
+          cd transform && dbt build --profiles-dir . --target dev
+
+      - name: Evaluation was run for quality-sensitive changes (FR-EVL-03)
+        run: scripts/check_eval_updated.sh "${{ github.event.pull_request.base.sha || github.event.before }}"
 
       - name: Documentation builds
         run: mkdocs build --strict
+
+  containers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the API and Airflow images (NFR-23)
+        run: |
+          docker build -t jobmarket-api:ci .
+          docker build -t jobmarket-airflow:ci -f orchestration/Dockerfile .

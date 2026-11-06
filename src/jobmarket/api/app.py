@@ -16,7 +16,8 @@ from contextlib import asynccontextmanager
 from datetime import date, datetime
 from typing import Annotated, Literal
 
-from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, Security, UploadFile
+from fastapi import Depends, FastAPI, File, Form, HTTPException, Query, Request, Security, UploadFile
+from fastapi.responses import HTMLResponse
 from fastapi.security import APIKeyHeader
 from pydantic import BaseModel, Field, ValidationError
 
@@ -352,3 +353,18 @@ async def match(
         jobs_considered=result.jobs_considered,
         filters_applied=result.filters_applied,
     )
+
+
+@app.get("/status", response_class=HTMLResponse, tags=["operations"])
+def status_page(
+    request: Request,
+    key: Annotated[str | None, Security(api_key_header)] = None,
+    key_param: Annotated[str | None, Query(alias="key")] = None,
+) -> HTMLResponse:
+    """Health view: freshness, volume per source, pipeline runs, index, usage and cost (FR-OBS-03).
+
+    Open http://localhost:8000/status?key=<API_KEY> in a browser."""
+    from jobmarket.api import status
+
+    require_api_key(request, key or key_param)
+    return HTMLResponse(status.render(status.collect(_settings(request))))

@@ -28,7 +28,7 @@ from jobmarket.settings import Settings
 from jobmarket.skills import canonical_skill, dictionary
 
 Route = Literal["analytical", "semantic", "combined", "unanswerable"]
-PROMPT_VERSION = "v1"  # recorded with every evaluation run; change it whenever a prompt changes
+PROMPT_VERSION = "v2"  # recorded with every evaluation run; change it whenever a prompt changes
 NOT_ENOUGH = "I don't have enough information in the collected job postings to answer that."
 
 
@@ -79,6 +79,9 @@ unanswerable.
 - "What does Databricks look for in data engineers?" -> semantic, company "Databricks"
 - "How many remote roles mention LangChain, and what are some examples?" -> combined
 - "What will data engineers earn in 2030?" -> unanswerable
+Every job in the data is already a data, analytics, ML or AI role: never add role_keywords for \
+generic phrases such as "data and AI jobs" or "tech roles". Use role_keywords only for a specific \
+role, e.g. "data engineer", "analytics engineer", "machine learning engineer".
 Remote roles: use work_modes ["remote"] (that includes remote roles open to India). Use cities \
 ["Remote (India)"] only when the user asks for roles with no city at all.
 "How many ... and examples/which ones" questions are combined: count with metric_request and \
@@ -94,6 +97,9 @@ three different sources when three or more are relevant.
 - If the sources don't contain the answer, set "sufficient" to false and leave "answer" empty. \
 Don't use outside knowledge to fill gaps.
 - If analytics results are provided, use their numbers exactly and say what they cover.
+- The search already applied the user's filters (city, work mode, dates, skills); each source's \
+header shows its city, work mode, status and posted date. Don't refuse because a filter isn't \
+restated in the text.
 - Be concise: at most about 180 words. Plain prose or short bullet points.
 Reply with one JSON object: {"sufficient": true|false, "answer": "...", "sources_used": ["S1", ...]}"""
 
@@ -200,7 +206,8 @@ def _sources_block(hits: list[store.Hit]) -> tuple[str, dict[str, store.Hit]]:
             excerpts[sid] = []
         excerpts[sid].append(f"({h.section}) " + h.text.split("\n", 2)[-1])
     lines = [
-        f"[{sid}] {h.title} — {h.company_name} ({h.city}; {h.work_mode}; {h.status})\n" + "\n...\n".join(excerpts[sid])
+        f"[{sid}] {h.title} — {h.company_name} ({h.city}; {h.work_mode}; {h.status}; "
+        f"posted {h.posted_date or 'date unknown'})\n" + "\n...\n".join(excerpts[sid])
         for sid, h in numbered.items()
     ]
     return "\n\n".join(lines), numbered

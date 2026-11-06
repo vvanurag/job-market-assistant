@@ -1,4 +1,8 @@
-# Local runtime services (NFR-23). Start with:  docker compose up -d
+# Local runtime services (NFR-23). Start everything with:  docker compose up -d
+#   vectordb  PostgreSQL + pgvector (retrieval index, request log, run records)
+#   api       the assistant API on http://localhost:8000
+#   airflow   the daily pipeline on http://localhost:8080
+#   kafka     the streaming path's broker on localhost:9094
 # Image versions are pinned; change them deliberately.
 
 services:
@@ -19,6 +23,25 @@ services:
       timeout: 3s
       retries: 20
 
+  api:
+    build: .
+    image: jobmarket-api:local
+    container_name: jma-api
+    depends_on:
+      vectordb:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      VECTORDB_DSN: postgresql://jobmarket:${VECTORDB_PASSWORD:-jobmarket-local}@vectordb:5432/jobmarket
+      DUCKDB_PATH: /opt/jobmarket/data/dev/jobmarket.duckdb
+      SNOWFLAKE_PRIVATE_KEY_PATH: /home/app/.snowflake/jma_key.p8
+    volumes:
+      - ./data:/opt/jobmarket/data:ro      # the API only reads the warehouse
+      - ${HOME}/.snowflake:/home/app/.snowflake:ro
+    ports:
+      - "8000:8000"
+
   airflow:
     build:
       context: .
@@ -26,7 +49,6 @@ services:
     image: jobmarket-airflow:local
     container_name: jma-airflow
     command: standalone
-    profiles: ["pipeline"]   # start with: docker compose --profile pipeline up -d
     depends_on:
       vectordb:
         condition: service_healthy
@@ -48,7 +70,6 @@ services:
   kafka:
     image: apache/kafka:4.4.0
     container_name: jma-kafka
-    profiles: ["streaming"]   # start with: docker compose --profile streaming up -d
     ports:
       - "9094:9094"           # for clients on the host
     environment:

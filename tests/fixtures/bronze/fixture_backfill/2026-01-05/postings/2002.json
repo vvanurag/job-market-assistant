@@ -1,0 +1,17 @@
+{
+ "job_id": "2002",
+ "title": "Data Analyst",
+ "company": "Sample Retail",
+ "location": "Hyderabad, Telangana, India",
+ "raw_description": "Build Power BI dashboards with SQL and Excel. Entry level role.",
+ "seniority_level": "Entry level",
+ "employment_type": "Full-time",
+ "industries": "Software",
+ "job_url": "https://jobs.example.org/2002",
+ "bronze_meta": {
+  "search_hit": {
+   "posted_date": "2026-01-03",
+   "query_keyword": "data engineer"
+  }
+ }
+}

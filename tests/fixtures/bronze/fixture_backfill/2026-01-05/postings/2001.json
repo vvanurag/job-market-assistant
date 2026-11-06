@@ -1,0 +1,17 @@
+{
+ "job_id": "2001",
+ "title": "Senior Data Engineer",
+ "company": "Example Analytics Pvt Ltd",
+ "location": "Bengaluru, Karnataka, India",
+ "raw_description": "Responsibilities:\nBuild batch pipelines with Python, SQL and dbt on Snowflake.\nStream events with Apache Kafka.\nRequirements\n5+ years of data engineering experience. Hybrid work model, 3 days a week in the office.",
+ "seniority_level": "Mid-Senior level",
+ "employment_type": "Full-time",
+ "industries": "Software",
+ "job_url": "https://jobs.example.org/2001",
+ "bronze_meta": {
+  "search_hit": {
+   "posted_date": "2026-01-03",
+   "query_keyword": "data engineer"
+  }
+ }
+}

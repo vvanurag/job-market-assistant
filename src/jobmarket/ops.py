@@ -107,7 +107,8 @@ def alert(settings: Settings, kind: str, message: str) -> bool:
 
 
 def record_run(settings: Settings, run_id: str) -> dict:
-    """Collect what the run did from the artefacts each step leaves behind."""
+    """Collect what the run did from the artefacts each step leaves behind. Failed tasks
+    come from the alerts their failure callbacks raised for this run."""
     summary: dict = {"run_id": run_id, "sources": {}}
     for source in DAILY_SOURCES:
         runs = sorted((settings.bronze_root / source).glob("*/_run.json"))
@@ -148,7 +149,9 @@ def record_run(settings: Settings, run_id: str) -> dict:
         statuses: dict[str, int] = {}
         for r in data.get("results", []):
             statuses[r["status"]] = statuses.get(r["status"], 0) + 1
-        summary["dbt"] = {"statuses": statuses, "seconds": round(data.get("elapsed_time", 0), 1)}
+        # each per-model Airflow task overwrites run_results.json, so this is the last dbt
+        # invocation only; the DAG passes the whole run's task states separately
+        summary["last_dbt_invocation"] = {"statuses": statuses, "seconds": round(data.get("elapsed_time", 0), 1)}
     try:
         with _ops(settings) as con:
             row = con.execute(
@@ -165,6 +168,10 @@ def record_run(settings: Settings, run_id: str) -> dict:
                     )
                 )
             summary["freshness"] = [f.__dict__ for f in freshness(settings)]
+            failed = con.execute(
+                "select message from public.alerts where kind = 'task_failed' and message like %s", [f"%{run_id}%"]
+            ).fetchall()
+            summary["failed_tasks"] = sorted({m[0].split(" failed")[0] for m in failed})
             con.execute(
                 "insert into public.pipeline_runs (run_id, summary) values (%s, %s) "
                 "on conflict (run_id) do update set summary = excluded.summary, recorded_at = now()",

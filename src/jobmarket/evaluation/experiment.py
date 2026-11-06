@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import json
 import statistics
+import time
 from datetime import date
 from pathlib import Path
 
@@ -119,4 +120,41 @@ def run_experiment(settings: Settings, embedder: Embedder, baseline_run: Path) -
         "questions": per_question,
     }
     (RESULTS_DIR / "data_quality_experiment.json").write_text(json.dumps(result, indent=1, default=str))
+    return result
+
+
+def compare_embeddings(settings: Settings, embedders: list[Embedder], baseline_run: Path) -> dict:
+    """FR-EVL-04: the same questions, plans, filters and hybrid search, with each embedding model."""
+    plans = {r["id"]: r.get("plan") or {} for r in json.loads(baseline_run.read_text())["rows"]}
+    today = date.today()
+    questions = [q for q in load_eval_set() if q.get("relevant")]
+    relevant = {q["id"]: relevant_jobs(settings, q["relevant"], today) for q in questions}
+    summary = {}
+    with store.connect(settings.vectordb_dsn.get_secret_value()) as con:
+        for embedder in embedders:
+            schema, scores, timings = store.schema_for(embedder.name), [], []
+            for q in questions:
+                plan = SearchPlan.model_validate((plans.get(q["id"]) or {}).get("search") or {"query": q["question"]})
+                filters = to_index_filters(MetricFilters.model_validate(plan.filters.model_dump()))
+                started = time.perf_counter()
+                vector = embedder.embed_query(plan.query)
+                timings.append((time.perf_counter() - started) * 1000)
+                hits = store.search(con, schema, plan.query, vector, filters, limit=20, mode="hybrid")
+                scores.append(retrieval_scores(top_jobs(hits), relevant[q["id"]]))
+            vector_only = []
+            for q in questions:
+                plan = SearchPlan.model_validate((plans.get(q["id"]) or {}).get("search") or {"query": q["question"]})
+                hits = store.search(
+                    con, schema, plan.query, embedder.embed_query(plan.query), store.Filters(), 20, "vector"
+                )
+                vector_only.append(retrieval_scores(top_jobs(hits), relevant[q["id"]]))
+            summary[embedder.name] = {
+                "dimensions": embedder.dimensions,
+                "recall_at_5": round(statistics.mean(s["recall_at_5"] for s in scores), 3),
+                "mrr": round(statistics.mean(s["mrr"] for s in scores), 3),
+                "recall_at_5_vector_only_unfiltered": round(statistics.mean(s["recall_at_5"] for s in vector_only), 3),
+                "query_embedding_ms_p50": round(statistics.median(timings), 1),
+            }
+    result = {"baseline_run": baseline_run.name, "questions": len(questions), "summary": summary}
+    (RESULTS_DIR / "embedding_comparison.json").write_text(json.dumps(result, indent=1))
     return result

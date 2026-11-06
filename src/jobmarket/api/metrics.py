@@ -128,6 +128,15 @@ with jobs as (
 
 def run_metric(settings: Settings, request: MetricRequest, today: date | None = None) -> MetricResult:
     today = today or date.today()
+    # these metrics have no skill parameter of their own: a given skill is a filter
+    skill_as_filter = (
+        request.skill
+        and request.metric in ("count_jobs", "top_companies", "top_skills")
+        and request.skill.lower() not in (s.lower() for s in request.filters.skills_all)
+    )
+    if skill_as_filter:
+        filters = request.filters.model_copy(update={"skills_all": [*request.filters.skills_all, request.skill]})
+        request = request.model_copy(update={"filters": filters})
     where, params, described = _job_filters(request.filters, today)
     cte = JOBS_CTE.format(where=where)
 

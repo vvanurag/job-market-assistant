@@ -1,0 +1,12 @@
+.git
+.venv
+data
+eval/results
+site
+transform/target
+transform/logs
+transform/dbt_packages
+**/__pycache__
+.env
+private
+resumes

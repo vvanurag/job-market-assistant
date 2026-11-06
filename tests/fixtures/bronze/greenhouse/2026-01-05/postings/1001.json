@@ -1,0 +1,17 @@
+{
+ "source_posting_id": "1001",
+ "board_token": "example",
+ "company_name": "Example Analytics",
+ "collected_at": "2026-01-05T01:00:00+00:00",
+ "job": {
+  "id": 1001,
+  "title": "Senior Data Engineer",
+  "location": {
+   "name": "Bengaluru, India"
+  },
+  "content": "&lt;h3&gt;Responsibilities:&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;Build batch pipelines with Python, SQL and dbt on Snowflake.&lt;/li&gt;&lt;li&gt;Stream events with Apache Kafka.&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Requirements&lt;/h3&gt;&lt;p&gt;5+ years of data engineering experience. Hybrid work model, 3 days a week in the office.&lt;/p&gt;",
+  "absolute_url": "https://boards.example.com/jobs/1001",
+  "first_published": "2026-01-02T10:00:00-05:00",
+  "offices": []
+ }
+}

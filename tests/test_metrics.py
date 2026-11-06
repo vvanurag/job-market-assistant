@@ -99,3 +99,8 @@ def test_top_companies(settings):
 def test_skill_trend_needs_a_skill(settings):
     with pytest.raises(ValueError):
         run(settings, metric="skill_trend")
+
+
+def test_a_skill_given_to_count_jobs_is_applied_as_a_filter(settings):
+    r = run(settings, metric="count_jobs", skill="Databricks", group_by="city")
+    assert sorted(r.rows) == [["Bengaluru", 1], ["Hyderabad", 1]]
