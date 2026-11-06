@@ -3,7 +3,7 @@ VENV   := .venv
 BIN    := $(VENV)/bin
 
 .DEFAULT_GOAL := help
-.PHONY: help setup lint format test doctor doctor-deep docs check collect bronze bronze-snowflake compare dbt-build dbt-build-snowflake up down index
+.PHONY: help setup lint format test doctor doctor-deep docs check collect bronze bronze-snowflake compare dbt-build dbt-build-snowflake up down index api
 
 help: ## Show available commands
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "} {printf "  make %-12s %s\n", $$1, $$2}'
@@ -68,3 +68,6 @@ down: ## Stop local services (data is kept)
 
 index: ## Build or refresh the retrieval index from Gold
 	$(BIN)/jobmarket index build
+
+api: ## Run the API locally on http://localhost:8000 (docs at /docs)
+	$(BIN)/uvicorn jobmarket.api.app:app --port 8000 --reload

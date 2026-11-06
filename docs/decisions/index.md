@@ -13,11 +13,11 @@ The format is described in [ADR-0001](0001-record-architecture-decisions.md). Co
 | [0005](0005-portable-warehouse-layer.md) | Keep the warehouse layer portable | Accepted | 2026-11-05 |
 | [0006](0006-llm-provider-strategy.md) | Language model provider strategy | Accepted (shortlist) | 2026-11-05 |
 | [0007](0007-chunking-strategy.md) | Chunking strategy | Accepted | 2026-11-06 |
+| [0008](0008-metrics-layer-not-text-to-sql.md) | Analytical answers through a metrics layer, not generated SQL | Accepted | 2026-11-06 |
 ## Decisions expected later
 
 | Topic | Needed by |
 |---|---|
 | Lambda vs Kappa for the streaming path | Phase 4 |
-| Text-to-SQL approach: generated SQL vs a pre-defined metrics layer | Phase 6 |
 | Final LLM and embedding model per role | Phase 7 |
 | Snowflake continuation (open question Q3) | When the trial ends |

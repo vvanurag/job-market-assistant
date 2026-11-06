@@ -28,6 +28,19 @@ Each step connects with the least-privileged role that can do the job:
 | Build Silver and Gold | `JMA_TRANSFORM` | Read `BRONZE`; create tables and views in `SILVER` and `GOLD` | Write Bronze |
 | Serve answers (Phase 6) | `JMA_SERVE` | Read `GOLD` | Anything else |
 
+### Secondary roles
+
+Snowflake accounts created since 2024 activate **all** of a user's roles as *secondary roles* in every session by default. A session started as `JMA_SERVE` could then still use `ACCOUNTADMIN`'s privileges, which makes role separation meaningless. This was found on 2026-11-06 when a test showed the serving role could read Silver.
+
+- **Python connections** (the Bronze loader, the API, the index builder) run `use secondary roles none` immediately after connecting. Verified: `JMA_SERVE` can read Gold but not Silver or Bronze, and `JMA_INGEST` can't read Gold.
+- **dbt** opens its own connections. To make every client respect its role, turn the default off for your user, once, in a Snowsight worksheet:
+
+    ```sql
+    alter user identifier(current_user()) set default_secondary_roles = ();
+    ```
+
+    Your own worksheets then use only the role you select, so switch roles explicitly when you need more.
+
 ## How the Snowflake Bronze load works
 
 The Snowflake loader keeps the same contract as the DuckDB loader: the same table, the same key, the same fingerprints, safe to re-run.

@@ -40,7 +40,12 @@ def snowflake_connect(settings: Settings, role: str | None = None):
         params["private_key_file"] = str(settings.snowflake_private_key_path.expanduser())
     else:
         params["password"] = settings.snowflake_password.get_secret_value()
-    return snowflake.connector.connect(**params)
+    con = snowflake.connector.connect(**params)
+    # Accounts created since 2024 activate ALL of a user's roles as secondary roles by
+    # default, which would let a session use privileges beyond its own role. Turning
+    # them off makes each connection exactly as privileged as its role (NFR-12).
+    con.cursor().execute("use secondary roles none")
+    return con
 
 
 def read_gold(settings: Settings, query: str, params: list | None = None) -> list[dict]:

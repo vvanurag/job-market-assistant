@@ -98,3 +98,7 @@ show grants to role jma_serve;
 
 -- Expect SELECT on future TABLE and VIEW objects for JMA_SERVE (and none for other privileges).
 show future grants in schema job_market.gold;
+
+-- Optional, recommended: make every session use only its own role (see docs/pipeline/snowflake.md,
+-- "Secondary roles"). New accounts otherwise activate all your roles in every session.
+-- alter user identifier(current_user()) set default_secondary_roles = ();
