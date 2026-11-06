@@ -61,7 +61,7 @@ class Settings(BaseSettings):
     # Vector store (ADR-0004), started by docker compose
     vectordb_dsn: SecretStr = SecretStr("postgresql://jobmarket:jobmarket-local@localhost:5433/jobmarket")
 
-    # Kafka for the streaming path (Phase 4); docker compose --profile streaming up -d
+    # Kafka for the streaming path (Phase 4); started by docker compose up -d
     kafka_bootstrap: str = "localhost:9094"
 
     # Where pipeline alerts are sent (FR-ORC-04), e.g. https://ntfy.sh/<your-private-topic>.

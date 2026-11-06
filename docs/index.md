@@ -22,6 +22,14 @@ Ask questions about data engineering and AI jobs in **Hyderabad, Bengaluru and r
 
     [:octicons-arrow-right-24: Read the story](story.md)
 
+-   :material-sitemap-outline:{ .lg .middle } **Architecture Decisions, Explained**
+
+    ---
+
+    Why the system is built this way: each decision along the data flow, what in the use case forced it, the options rejected and the trade-offs accepted.
+
+    [:octicons-arrow-right-24: Read the decisions](architecture.md)
+
 </div>
 
 ---
