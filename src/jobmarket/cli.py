@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import UTC
+from datetime import UTC, datetime
 from typing import Annotated
 
 import typer
@@ -212,3 +212,179 @@ def index_search(
         typer.echo(
             f"{h.score:.4f}  {h.title} — {h.company_name} ({h.city}, {h.work_mode})\n        [{h.section}] {snippet}"
         )
+
+
+eval_app = typer.Typer(help="Evaluation: run the evaluation set and compare runs.", no_args_is_help=True)
+app.add_typer(eval_app, name="eval")
+
+
+@eval_app.command("run")
+def eval_run(
+    llm: str = typer.Option(None, help="groq, gemini or ollama; defaults to LLM_PROVIDER."),
+    model: str = typer.Option(None, help="Model name for that provider."),
+    embedding: str = typer.Option(None, help="Embedding model, e.g. ollama:nomic-embed-text."),
+    judge: str = typer.Option("gemini", help="Provider of the LLM judge, or 'none'."),
+    run_id: str = typer.Option(None, help="Resume an interrupted run by its id."),
+    only: Annotated[list[str] | None, typer.Option(help="Only these question ids; repeatable.")] = None,
+    pace: float = typer.Option(0, help="Seconds to wait between questions, to stay under free-tier quotas."),
+) -> None:
+    """Score routing, analytics, retrieval and answers; save eval/results/<run_id>.json."""
+    from jobmarket.evaluation.runner import run
+    from jobmarket.llm import get_embedder, get_llm
+
+    settings = get_settings()
+    judge_llm = None if judge == "none" else get_llm(judge, settings=settings)
+    result = run(
+        settings,
+        get_llm(llm, model, settings),
+        get_embedder(embedding, settings),
+        judge_llm,
+        run_id,
+        only,
+        typer.echo,
+        pace,
+    )
+    typer.echo(f"\nRun {result['run_id']}")
+    for k, v in result["summary"].items():
+        typer.echo(f"  {k:24} {v}")
+
+
+@eval_app.command("experiment")
+def eval_experiment(
+    baseline: str = typer.Argument(..., help="Run id of a baseline evaluation, for the router's queries and filters."),
+    rebuild: bool = typer.Option(False, help="Rebuild index A (all postings) first."),
+) -> None:
+    """Data-quality experiment A-E: what each data engineering step adds to retrieval."""
+    from jobmarket.evaluation.experiment import build_all_postings_index, run_experiment
+    from jobmarket.evaluation.runner import RESULTS_DIR
+    from jobmarket.llm import get_embedder
+
+    settings = get_settings()
+    embedder = get_embedder(settings=settings)
+    if rebuild:
+        r = build_all_postings_index(settings, embedder, typer.echo)
+        typer.echo(f"Index A: {r.postings_in_gold} postings, {r.chunks_written} chunks embedded")
+    result = run_experiment(settings, embedder, RESULTS_DIR / f"{baseline}.json")
+    typer.echo(f"{'run':4} {'recall@5':>9} {'MRR':>6} {'dup@5':>6} {'stale@5':>8} {'recall@5 (filtered qs)':>23}")
+    for name, s in result["summary"].items():
+        typer.echo(
+            f"{name:4} {s['recall_at_5']:>9} {s['mrr']:>6} {s['duplicate_at_5']:>6} {s['stale_at_5']:>8} "
+            f"{s['recall_at_5_filtered_questions']:>23}"
+        )
+
+
+ops_app = typer.Typer(help="Operations: freshness checks, alerts, run records.", no_args_is_help=True)
+app.add_typer(ops_app, name="ops")
+
+
+@ops_app.command("freshness")
+def ops_freshness() -> None:
+    """Fail (exit 1) when a daily source has no load in the last 26 hours (NFR-01)."""
+    from jobmarket.ops import alert, freshness
+
+    settings = get_settings()
+    stale = []
+    for f in freshness(settings):
+        typer.echo(
+            f"{f.source_id:12} last load {f.last_loaded_at}  age {f.age_hours} h  {'fresh' if f.fresh else 'STALE'}"
+        )
+        if not f.fresh:
+            stale.append(f"{f.source_id} ({f.age_hours} h)")
+    if stale:
+        alert(settings, "freshness", "Stale sources: " + ", ".join(stale))
+        raise typer.Exit(1)
+
+
+@ops_app.command("alert")
+def ops_alert(message: str, kind: str = typer.Option("task_failed")) -> None:
+    """Record an alert and send it to ALERT_WEBHOOK_URL if set (FR-ORC-04)."""
+    from jobmarket.ops import alert
+
+    typer.echo("delivered" if alert(get_settings(), kind, message) else "recorded (no webhook, or delivery failed)")
+
+
+@ops_app.command("record-run")
+def ops_record_run(run_id: str) -> None:
+    """Store per-source counts, durations and errors for one pipeline run (FR-OBS-01)."""
+    import json
+
+    from jobmarket.ops import record_run
+
+    typer.echo(json.dumps(record_run(get_settings(), run_id), indent=1, default=str))
+
+
+stream_app = typer.Typer(
+    help="Streaming path: publish new postings and index them within minutes.", no_args_is_help=True
+)
+app.add_typer(stream_app, name="stream")
+
+
+@stream_app.command("produce")
+def stream_produce(
+    interval: int = typer.Option(900, help="Seconds between polls."),
+    once: bool = typer.Option(False, help="Poll once and exit."),
+) -> None:
+    """Poll sources and publish newly detected postings to Kafka (FR-STR-01)."""
+    import time as _time
+
+    from confluent_kafka import Producer
+
+    from jobmarket.streaming import TOPIC, produce_once
+
+    settings = get_settings()
+    producer = Producer({"bootstrap.servers": settings.kafka_bootstrap, "enable.idempotence": True})
+    state = settings.bronze_root.parent / "stream" / "published_ids.json"
+    while True:
+        r = produce_once(settings, producer, state)
+        typer.echo(
+            f"{datetime.now(UTC):%H:%M:%S} polled {r.boards} boards: "
+            f"{r.seen} jobs in scope, {r.published} new -> {TOPIC}"
+        )
+        if once:
+            break
+        _time.sleep(interval)
+
+
+@stream_app.command("consume")
+def stream_consume(
+    max_events: int = typer.Option(None, help="Stop after this many events (for tests)."),
+    idle_exit: int = typer.Option(None, help="Exit after this many seconds without events."),
+) -> None:
+    """Land streamed postings in Bronze and the index; commit after each (FR-STR-02)."""
+    import json as _json
+    import time as _time
+
+    from confluent_kafka import Consumer
+
+    from jobmarket.llm import get_embedder
+    from jobmarket.streaming import TOPIC, handle_event
+
+    settings = get_settings()
+    embedder = get_embedder(settings=settings)
+    consumer = Consumer(
+        {
+            "bootstrap.servers": settings.kafka_bootstrap,
+            "group.id": "jobmarket-indexer",
+            "auto.offset.reset": "earliest",
+            "enable.auto.commit": False,  # commit only after the event is fully processed
+        }
+    )
+    consumer.subscribe([TOPIC])
+    handled, last_event = 0, _time.monotonic()
+    try:
+        while max_events is None or handled < max_events:
+            msg = consumer.poll(1.0)
+            if msg is None:
+                if idle_exit and _time.monotonic() - last_event > idle_exit:
+                    break
+                continue
+            if msg.error():
+                typer.echo(f"kafka error: {msg.error()}")
+                continue
+            event = _json.loads(msg.value())
+            outcome = handle_event(settings, embedder, event)
+            consumer.commit(message=msg, asynchronous=False)
+            handled, last_event = handled + 1, _time.monotonic()
+            typer.echo(f"{event['posting_key'][:12]} {outcome}")
+    finally:
+        consumer.close()

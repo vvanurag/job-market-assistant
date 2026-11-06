@@ -19,5 +19,54 @@ services:
       timeout: 3s
       retries: 20
 
+  airflow:
+    build:
+      context: .
+      dockerfile: orchestration/Dockerfile
+    image: jobmarket-airflow:local
+    container_name: jma-airflow
+    command: standalone
+    profiles: ["pipeline"]   # start with: docker compose --profile pipeline up -d
+    depends_on:
+      vectordb:
+        condition: service_healthy
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/jobmarket/orchestration/dags
+      AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_ALL_ADMINS: "true"   # local only: no login screen
+      AIRFLOW__CORE__DEFAULT_TIMEZONE: utc
+      # the project reads .env from /opt/jobmarket; these override the host-specific values
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      VECTORDB_DSN: postgresql://jobmarket:${VECTORDB_PASSWORD:-jobmarket-local}@vectordb:5432/jobmarket
+      SNOWFLAKE_PRIVATE_KEY_PATH: /home/airflow/.snowflake/jma_key.p8
+    volumes:
+      - .:/opt/jobmarket
+      - ${HOME}/.snowflake:/home/airflow/.snowflake:ro
+    ports:
+      - "8080:8080"
+
+  kafka:
+    image: apache/kafka:4.4.0
+    container_name: jma-kafka
+    profiles: ["streaming"]   # start with: docker compose --profile streaming up -d
+    ports:
+      - "9094:9094"           # for clients on the host
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller        # single-node KRaft, no ZooKeeper
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_NUM_PARTITIONS: 3
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+
 volumes:
   vectordb-data:
+  kafka-data:

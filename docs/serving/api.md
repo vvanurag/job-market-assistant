@@ -73,7 +73,7 @@ All model calls go through `jobmarket/llm.py`. Switching is configuration only:
 
 ```bash
 LLM_PROVIDER=groq      # default: openai/gpt-oss-120b, fastest
-LLM_PROVIDER=gemini    # gemini-2.5-flash
+LLM_PROVIDER=gemini    # gemini-3.5-flash-lite
 LLM_PROVIDER=ollama    # llama3 locally; LLM_MODEL=gemma2:9b for the other local model
 ```
 

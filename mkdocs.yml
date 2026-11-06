@@ -64,6 +64,9 @@ nav:
       - Gold Layer: pipeline/gold.md
       - Running on Snowflake: pipeline/snowflake.md
       - Retrieval index: pipeline/retrieval_index.md
+  - Operations:
+      - Orchestration: operations/orchestration.md
+      - Streaming: operations/streaming.md
   - Serving:
       - API: serving/api.md
   - Development:
@@ -79,5 +82,7 @@ nav:
       - "ADR-0006: LLM providers": decisions/0006-llm-provider-strategy.md
       - "ADR-0007: Chunking": decisions/0007-chunking-strategy.md
       - "ADR-0008: Metrics layer": decisions/0008-metrics-layer-not-text-to-sql.md
+      - "ADR-0009: Lambda streaming": decisions/0009-lambda-architecture-for-streaming.md
+      - "ADR-0010: dbt in Airflow": decisions/0010-dbt-in-airflow.md
       - Template: decisions/template.md
   - Glossary: glossary.md

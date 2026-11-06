@@ -1,0 +1,565 @@
+{
+ "run_id": "baseline_groq_nomic",
+ "config": {
+  "llm": "groq:openai/gpt-oss-120b",
+  "embedding": "ollama:nomic-embed-text",
+  "judge": "gemini:gemini-3.5-flash-lite",
+  "chunker_version": "sections-v2",
+  "prompt_version": "v1",
+  "commit": "142f332-dirty",
+  "snapshot": {
+   "jobs": 1872,
+   "last_seen_at": "2026-11-05 19:43:08.205412-05:00",
+   "warehouse": "duckdb"
+  }
+ },
+ "rows": [
+  {
+   "id": "EV-001",
+   "category": "analytical_counts",
+   "question": "Which 10 skills are most requested across all jobs?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 745,
+   "input_tokens": 1187,
+   "output_tokens": 77,
+   "answer": "Top skills across 1,872 jobs: Python (1456), SQL (1155), AWS (969), Azure (933), CI/CD (921). Filters: all jobs. Posted dates 2020-03-13 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "top_skills",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     },
+     "skill": null,
+     "group_by": "none",
+     "grain": "week",
+     "limit": 10
+    },
+    "search": null,
+    "reason": "request asks for top 10 skills overall"
+   },
+   "analytical_correct": true
+  },
+  {
+   "id": "EV-002",
+   "category": "analytical_counts",
+   "question": "What are the most in-demand skills for data engineer roles?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 682,
+   "input_tokens": 1188,
+   "output_tokens": 82,
+   "answer": "Top skills across 638 jobs: SQL (541), Python (508), ETL and ELT (421), Data modeling (416), Apache Spark (396). Filters: title contains: data engineer; open jobs only. Posted dates 2025-04-04 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "top_skills",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [
+       "data engineer"
+      ],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": true
+     },
+     "skill": null,
+     "group_by": "none",
+     "grain": "week",
+     "limit": 10
+    },
+    "search": null,
+    "reason": "User asks for most in-demand skills for data engineer roles"
+   },
+   "analytical_correct": true
+  },
+  {
+   "id": "EV-003",
+   "category": "analytical_counts",
+   "question": "How many data and AI jobs are there in Hyderabad?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 563,
+   "input_tokens": 1187,
+   "output_tokens": 127,
+   "answer": "703 jobs match. Filters: city: Hyderabad; title contains: data or AI; open jobs only. Posted dates 2025-06-06 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "count_jobs",
+     "filters": {
+      "cities": [
+       "Hyderabad"
+      ],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [
+       "data",
+       "AI"
+      ],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": true
+     },
+     "skill": null,
+     "group_by": "none",
+     "grain": "week",
+     "limit": 10
+    },
+    "search": null,
+    "reason": "User asks for a count of data and AI jobs in Hyderabad"
+   },
+   "analytical_correct": false
+  },
+  {
+   "id": "EV-004",
+   "category": "analytical_counts",
+   "question": "Is demand for Databricks higher in Hyderabad or Bengaluru?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 703,
+   "input_tokens": 1188,
+   "output_tokens": 144,
+   "answer": "623 jobs, by city: Bengaluru: 352, Hyderabad: 271. Filters: city: Hyderabad, Bengaluru; mentions: Databricks; open jobs only. Posted dates 2024-08-19 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "count_jobs",
+     "filters": {
+      "cities": [
+       "Hyderabad",
+       "Bengaluru"
+      ],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [
+       "Databricks"
+      ],
+      "posted_within_days": null,
+      "open_only": true
+     },
+     "skill": null,
+     "group_by": "city",
+     "grain": "month",
+     "limit": 2
+    },
+    "search": null,
+    "reason": "compare number of open jobs mentioning Databricks in each city"
+   },
+   "analytical_correct": true
+  },
+  {
+   "id": "EV-005",
+   "category": "analytical_counts",
+   "question": "Which companies have the most data and AI job openings?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 590,
+   "input_tokens": 1187,
+   "output_tokens": 88,
+   "answer": "Companies with the most jobs (of 1,872): Infosys (51), Accenture in India (43), Deloitte (29), Tata Consultancy Services (28), Amgen (24). Filters: all jobs. Posted dates 2020-03-13 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "top_companies",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     },
+     "skill": null,
+     "group_by": "none",
+     "grain": "week",
+     "limit": 10
+    },
+    "search": null,
+    "reason": "request asks for ranking companies by number of openings"
+   },
+   "analytical_correct": true
+  },
+  {
+   "id": "EV-006",
+   "category": "analytical_counts",
+   "question": "How many remote roles are there?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 511,
+   "input_tokens": 1183,
+   "output_tokens": 107,
+   "answer": "37 jobs match. Filters: work mode: remote. Posted dates 2025-06-04 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "count_jobs",
+     "filters": {
+      "cities": [],
+      "work_modes": [
+       "remote"
+      ],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     },
+     "skill": null,
+     "group_by": "none",
+     "grain": "week",
+     "limit": 10
+    },
+    "search": null,
+    "reason": "User asks for number of remote roles"
+   },
+   "analytical_correct": true
+  },
+  {
+   "id": "EV-007",
+   "category": "analytical_counts",
+   "question": "How are jobs in Bengaluru split by seniority?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 486,
+   "input_tokens": 1186,
+   "output_tokens": 89,
+   "answer": "1,068 jobs, by seniority: senior: 442, lead: 270, mid: 183, unknown: 73, junior: 59, manager: 41. Filters: city: Bengaluru; open jobs only. Posted dates 2020-03-13 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "count_jobs",
+     "filters": {
+      "cities": [
+       "Bengaluru"
+      ],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": true
+     },
+     "skill": null,
+     "group_by": "seniority",
+     "grain": "week",
+     "limit": 10
+    },
+    "search": null,
+    "reason": "count jobs per seniority in Bengaluru"
+   },
+   "analytical_correct": true
+  },
+  {
+   "id": "EV-008",
+   "category": "analytical_counts",
+   "question": "How many jobs mention both dbt and Snowflake?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 639,
+   "input_tokens": 1187,
+   "output_tokens": 132,
+   "answer": "155 jobs match. Filters: mentions: dbt and Snowflake. Posted dates 2026-02-09 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "count_jobs",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [
+       "dbt",
+       "Snowflake"
+      ],
+      "posted_within_days": null,
+      "open_only": false
+     },
+     "skill": null,
+     "group_by": "none",
+     "grain": "week",
+     "limit": 10
+    },
+    "search": null,
+    "reason": "User asks for a count of jobs mentioning both dbt and Snowflake"
+   },
+   "analytical_correct": true
+  },
+  {
+   "id": "EV-009",
+   "category": "analytical_counts",
+   "question": "What are the top 5 skills for machine learning engineer roles in Bengaluru?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 631,
+   "input_tokens": 1191,
+   "output_tokens": 104,
+   "answer": "Top skills across 63 jobs: Python (56), PyTorch (41), LLMs (39), TensorFlow (33), AI agents (31). Filters: city: Bengaluru; title contains: machine learning engineer; open jobs only. Posted dates 2025-08-12 to 2026-11-04.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "top_skills",
+     "filters": {
+      "cities": [
+       "Bengaluru"
+      ],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [
+       "machine learning engineer"
+      ],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": true
+     },
+     "skill": null,
+     "group_by": "none",
+     "grain": "week",
+     "limit": 5
+    },
+    "search": null,
+    "reason": "need top skills count for ML engineer roles in Bengaluru"
+   },
+   "analytical_correct": true
+  },
+  {
+   "id": "EV-010",
+   "category": "analytical_counts",
+   "question": "How many hybrid jobs are there in each city?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 717,
+   "input_tokens": 1186,
+   "output_tokens": 120,
+   "answer": "225 jobs, by city: Bengaluru: 139, Hyderabad: 86. Filters: work mode: hybrid; open jobs only. Posted dates 2026-05-27 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "count_jobs",
+     "filters": {
+      "cities": [],
+      "work_modes": [
+       "hybrid"
+      ],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": true
+     },
+     "skill": null,
+     "group_by": "city",
+     "grain": "week",
+     "limit": 10
+    },
+    "search": null,
+    "reason": "User asks for counts of hybrid jobs per city"
+   },
+   "analytical_correct": true
+  },
+  {
+   "id": "EV-011",
+   "category": "analytical_trends",
+   "question": "How has demand for dbt changed month by month?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 824,
+   "input_tokens": 1187,
+   "output_tokens": 84,
+   "answer": "243 of 1,872 jobs mention dbt, across 10 months. Busiest month: 2026-10-01. Filters: all jobs. Posted dates 2020-03-13 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "skill_trend",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     },
+     "skill": "dbt",
+     "group_by": "month",
+     "grain": "month",
+     "limit": 50
+    },
+    "search": null,
+    "reason": "User asks for month\u2011by\u2011month demand trend for dbt"
+   },
+   "analytical_correct": true
+  },
+  {
+   "id": "EV-012",
+   "category": "analytical_trends",
+   "question": "How many jobs mentioning Kafka were posted each month?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 1290,
+   "input_tokens": 1186,
+   "output_tokens": 107,
+   "answer": "1,872 jobs, by month: 2020-03-01: 1, 2020-12-01: 1, 2021-11-01: 2, 2023-08-01: 1, 2024-08-01: 1, 2024-09-01: 2, 2025-01-01: 1, 2025-02-01: 2. Filters: all jobs. Posted dates 2020-03-13 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "count_jobs",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": false
+     },
+     "skill": "Apache Kafka",
+     "group_by": "month",
+     "grain": "month",
+     "limit": 50
+    },
+    "search": null,
+    "reason": "User asks for monthly counts of jobs mentioning Kafka"
+   },
+   "analytical_correct": false
+  },
+  {
+   "id": "EV-013",
+   "category": "analytical_trends",
+   "question": "How many jobs were posted each week in Bengaluru?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 631,
+   "input_tokens": 1186,
+   "output_tokens": 85,
+   "answer": "1,068 jobs, by week: 2020-03-09: 1, 2020-11-30: 1, 2021-11-01: 1, 2021-11-08: 1, 2023-07-31: 1, 2024-08-19: 1, 2024-09-23: 2, 2025-02-03: 1. Filters: city: Bengaluru; open jobs only. Posted dates 2020-03-13 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "count_jobs",
+     "filters": {
+      "cities": [
+       "Bengaluru"
+      ],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": true
+     },
+     "skill": null,
+     "group_by": "week",
+     "grain": "week",
+     "limit": 50
+    },
+    "search": null,
+    "reason": "User asks for weekly job counts in Bengaluru"
+   },
+   "analytical_correct": true
+  },
+  {
+   "id": "EV-014",
+   "category": "analytical_trends",
+   "question": "How many analytics engineer roles were posted each month?",
+   "expected_route": "analytical",
+   "route": "analytical",
+   "route_correct": true,
+   "latency_ms": 613,
+   "input_tokens": 1186,
+   "output_tokens": 94,
+   "answer": "30 jobs, by month: 2026-06-01: 1, 2026-07-01: 1, 2026-08-01: 3, 2026-09-01: 1, 2026-10-01: 20, 2026-11-01: 4. Filters: title contains: analytics engineer; open jobs only. Posted dates 2026-06-22 to 2026-11-05.",
+   "refused": false,
+   "citations": [],
+   "plan": {
+    "route": "analytical",
+    "metric_request": {
+     "metric": "count_jobs",
+     "filters": {
+      "cities": [],
+      "work_modes": [],
+      "seniorities": [],
+      "role_keywords": [
+       "analytics engineer"
+      ],
+      "company": null,
+      "skills_all": [],
+      "posted_within_days": null,
+      "open_only": true
+     },
+     "skill": null,
+     "group_by": "month",
+     "grain": "month",
+     "limit": 50
+    },
+    "search": null,
+    "reason": "User asks for monthly counts of analytics engineer roles"
+   },
+   "analytical_correct": true
+  }
+ ]
+}

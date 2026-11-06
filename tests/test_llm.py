@@ -50,7 +50,7 @@ def test_rate_limits_are_retried_then_succeed(monkeypatch):
         return httpx.Response(200, json={"candidates": [{"content": {"parts": [{"text": "hi"}]}}]})
 
     monkeypatch.setattr(llm.time, "sleep", lambda _s: None)
-    chat = llm.GeminiChat(settings(), "gemini-2.5-flash", client=client(handler))
+    chat = llm.GeminiChat(settings(), "gemini-3.5-flash-lite", client=client(handler))
     assert chat.chat("s", "u").text == "hi" and len(calls) == 3
 
 
@@ -78,3 +78,17 @@ def test_nomic_embeddings_use_task_prefixes():
     emb.embed_query("b")
     assert seen == [["search_document: a"], ["search_query: b"]]
     assert emb.name == "ollama:nomic-embed-text"
+
+
+def test_groq_invalid_json_is_retried_without_json_mode(monkeypatch):
+    bodies = []
+
+    def handler(request):
+        body = json.loads(request.content)
+        bodies.append(body)
+        if "response_format" in body:
+            return httpx.Response(400, json={"error": {"code": "json_validate_failed"}})
+        return httpx.Response(200, json={"choices": [{"message": {"content": '{"ok": 1}'}}]})
+
+    result = llm.GroqChat(settings(), "m", client=client(handler)).chat("s", "u", json_output=True)
+    assert result.text == '{"ok": 1}' and len(bodies) == 2 and "response_format" not in bodies[1]

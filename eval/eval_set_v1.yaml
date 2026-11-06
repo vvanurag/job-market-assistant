@@ -1,0 +1,413 @@
+# Evaluation set v1 (FR-EVL-01). See docs/evaluation/index.md for how it is scored.
+#
+# analytical:   reference_sql returns the correct rows as (label, value) or (value);
+#               the answer is correct when every reference row appears in the API's
+#               analytics rows (labels compared case-insensitively).
+# semantic etc: relevant describes which jobs in Gold are relevant, as filters over
+#               gold.posting_documents; retrieval is scored against that set.
+# resume:       expected_skills must be extracted from resume_text; every match must
+#               respect the filters.
+version: 1
+created: 2026-11-06
+questions:
+
+  # --- Analytical: counts and rankings (10) -----------------------------------
+  - id: EV-001
+    category: analytical_counts
+    question: Which 10 skills are most requested across all jobs?
+    expected_route: analytical
+    reference_sql: |
+      select s.skill_name, count(*) from gold.fct_posting_skills ps
+      join gold.dim_skill s using (skill_key) group by 1 order by 2 desc, 1 limit 10
+    notes: Basic ranking over deduplicated jobs.
+
+  - id: EV-002
+    category: analytical_counts
+    question: What are the most in-demand skills for data engineer roles?
+    expected_route: analytical
+    reference_sql: |
+      select s.skill_name, count(*) from gold.fct_postings f
+      join gold.fct_posting_skills ps using (posting_key) join gold.dim_skill s using (skill_key)
+      where lower(f.title) like '%data engineer%' group by 1 order by 2 desc, 1 limit 5
+    notes: Role filter through title keywords.
+
+  - id: EV-003
+    category: analytical_counts
+    question: How many data and AI jobs are there in Hyderabad?
+    expected_route: analytical
+    reference_sql: |
+      select count(*) from gold.fct_postings where location_key = 'hyderabad'
+    notes: City filter; reposts counted once.
+
+  - id: EV-004
+    category: analytical_counts
+    question: Is demand for Databricks higher in Hyderabad or Bengaluru?
+    expected_route: analytical
+    reference_sql: |
+      select l.city, count(*) from gold.fct_postings f join gold.dim_location l using (location_key)
+      join gold.fct_posting_skills ps using (posting_key)
+      where ps.skill_key = 'databricks' and l.city in ('Hyderabad', 'Bengaluru') group by 1
+    notes: PRD example question; compare_cities with a skill.
+
+  - id: EV-005
+    category: analytical_counts
+    question: Which companies have the most data and AI job openings?
+    expected_route: analytical
+    reference_sql: |
+      select c.company_name, count(*) from gold.fct_postings f join gold.dim_company c using (company_key)
+      group by 1 order by 2 desc, 1 limit 5
+    notes: Company normalisation (FR-TRN-04).
+
+  - id: EV-006
+    category: analytical_counts
+    question: How many remote roles are there?
+    expected_route: analytical
+    reference_sql: |
+      select count(*) from gold.fct_postings where work_mode = 'remote'
+    notes: Inferred work mode (FR-TRN-06).
+
+  - id: EV-007
+    category: analytical_counts
+    question: How are jobs in Bengaluru split by seniority?
+    expected_route: analytical
+    reference_sql: |
+      select seniority, count(*) from gold.fct_postings where location_key = 'bengaluru' group by 1
+    notes: Inferred seniority, grouped.
+
+  - id: EV-008
+    category: analytical_counts
+    question: How many jobs mention both dbt and Snowflake?
+    expected_route: analytical
+    reference_sql: |
+      select count(*) from gold.fct_postings f
+      where posting_key in (select posting_key from gold.fct_posting_skills where skill_key = 'dbt')
+        and posting_key in (select posting_key from gold.fct_posting_skills where skill_key = 'snowflake')
+    notes: Two skills combined with AND.
+
+  - id: EV-009
+    category: analytical_counts
+    question: What are the top 5 skills for machine learning engineer roles in Bengaluru?
+    expected_route: analytical
+    reference_sql: |
+      select s.skill_name, count(*) from gold.fct_postings f
+      join gold.fct_posting_skills ps using (posting_key) join gold.dim_skill s using (skill_key)
+      where lower(f.title) like '%machine learning engineer%' and f.location_key = 'bengaluru'
+      group by 1 order by 2 desc, 1 limit 5
+    notes: Role and city filters together.
+
+  - id: EV-010
+    category: analytical_counts
+    question: How many hybrid jobs are there in each city?
+    expected_route: analytical
+    reference_sql: |
+      select l.city, count(*) from gold.fct_postings f join gold.dim_location l using (location_key)
+      where f.work_mode = 'hybrid' group by 1
+    notes: Filter plus grouping by city.
+
+  # --- Analytical: trends over time (6) ----------------------------------------
+  - id: EV-011
+    category: analytical_trends
+    question: How has demand for dbt changed month by month?
+    expected_route: analytical
+    reference_sql: |
+      select date_trunc('month', f.posted_date), count(*) from gold.fct_postings f
+      join gold.fct_posting_skills ps using (posting_key)
+      where ps.skill_key = 'dbt' and f.posted_date is not null group by 1
+    notes: Monthly skill trend.
+
+  - id: EV-012
+    category: analytical_trends
+    question: How many jobs mentioning Kafka were posted each month?
+    expected_route: analytical
+    reference_sql: |
+      select date_trunc('month', f.posted_date), count(*) from gold.fct_postings f
+      join gold.fct_posting_skills ps using (posting_key)
+      where ps.skill_key = 'kafka' and f.posted_date is not null group by 1
+    notes: Skill alias "Kafka" must map to Apache Kafka.
+
+  - id: EV-013
+    category: analytical_trends
+    question: How many jobs were posted each week in Bengaluru?
+    expected_route: analytical
+    reference_sql: |
+      select date_trunc('week', posted_date), count(*) from gold.fct_postings
+      where location_key = 'bengaluru' and posted_date is not null group by 1
+    notes: PRD example, weekly grain.
+
+  - id: EV-014
+    category: analytical_trends
+    question: How many analytics engineer roles were posted each month?
+    expected_route: analytical
+    reference_sql: |
+      select date_trunc('month', posted_date), count(*) from gold.fct_postings
+      where lower(title) like '%analytics engineer%' and posted_date is not null group by 1
+    notes: Role trend.
+
+  - id: EV-015
+    category: analytical_trends
+    question: Show the monthly trend of jobs that mention LLMs.
+    expected_route: analytical
+    reference_sql: |
+      select date_trunc('month', f.posted_date), count(*) from gold.fct_postings f
+      join gold.fct_posting_skills ps using (posting_key)
+      where ps.skill_key = 'llm' and f.posted_date is not null group by 1
+    notes: GenAI skill trend.
+
+  - id: EV-016
+    category: analytical_trends
+    question: How many jobs were posted in the last 30 days?
+    expected_route: analytical
+    reference_sql: |
+      select count(*) from gold.fct_postings where posted_date >= current_date - 30
+    notes: Relative date window.
+
+  # --- Semantic: explain a requirement (8) ---------------------------------------
+  - id: EV-017
+    category: semantic_explain
+    question: What do employers mean by strong Kafka experience? Give three examples.
+    expected_route: semantic
+    relevant: { skills_any: [Apache Kafka] }
+    notes: PRD example question.
+
+  - id: EV-018
+    category: semantic_explain
+    question: What does hands-on Databricks experience usually involve in these postings?
+    expected_route: semantic
+    relevant: { skills_any: [Databricks] }
+
+  - id: EV-019
+    category: semantic_explain
+    question: What do job postings expect from candidates who know dbt?
+    expected_route: semantic
+    relevant: { skills_any: [dbt] }
+
+  - id: EV-020
+    category: semantic_explain
+    question: What do employers mean by experience building RAG pipelines?
+    expected_route: semantic
+    relevant: { skills_any: [RAG] }
+
+  - id: EV-021
+    category: semantic_explain
+    question: What kind of Airflow experience are employers asking for?
+    expected_route: semantic
+    relevant: { skills_any: [Apache Airflow] }
+
+  - id: EV-022
+    category: semantic_explain
+    question: What do postings mean when they ask for data modeling skills?
+    expected_route: semantic
+    relevant: { skills_any: [Data modeling, Dimensional modeling] }
+
+  - id: EV-023
+    category: semantic_explain
+    question: What are employers looking for in experience with AI agents?
+    expected_route: semantic
+    relevant: { skills_any: [AI agents, LangGraph] }
+
+  - id: EV-024
+    category: semantic_explain
+    question: What does MLOps experience mean in these postings?
+    expected_route: semantic
+    relevant: { skills_any: [MLflow, Kubeflow, SageMaker, Vertex AI, Azure Machine Learning] }
+    notes: Concept without a dictionary entry of its own.
+
+  # --- Semantic with filters (8) ------------------------------------------------
+  - id: EV-025
+    category: semantic_filtered
+    question: Hybrid roles in Hyderabad that mention dbt and Snowflake.
+    expected_route: semantic
+    relevant: { cities: [Hyderabad], work_modes: [hybrid], skills_all: [dbt, Snowflake] }
+    notes: PRD example with metadata filters.
+
+  - id: EV-026
+    category: semantic_filtered
+    question: Show me remote data engineering roles that use Python.
+    expected_route: semantic
+    relevant: { work_modes: [remote], skills_all: [Python] }
+
+  - id: EV-027
+    category: semantic_filtered
+    question: Senior data engineer roles in Bengaluru that need Apache Spark.
+    expected_route: semantic
+    relevant: { cities: [Bengaluru], seniorities: [senior], skills_all: [Apache Spark] }
+
+  - id: EV-028
+    category: semantic_filtered
+    question: Lead-level roles in Hyderabad that work with Azure.
+    expected_route: semantic
+    relevant: { cities: [Hyderabad], seniorities: [lead], skills_all: [Azure] }
+
+  - id: EV-029
+    category: semantic_filtered
+    question: Which Bengaluru jobs mention LangChain?
+    expected_route: semantic
+    relevant: { cities: [Bengaluru], skills_all: [LangChain] }
+
+  - id: EV-030
+    category: semantic_filtered
+    question: Junior or entry-level data roles in Hyderabad.
+    expected_route: semantic
+    relevant: { cities: [Hyderabad], seniorities: [junior, intern] }
+
+  - id: EV-031
+    category: semantic_filtered
+    question: On-site roles in Bengaluru that need SQL.
+    expected_route: semantic
+    relevant: { cities: [Bengaluru], work_modes: [on-site], skills_all: [SQL] }
+
+  - id: EV-032
+    category: semantic_filtered
+    question: Remote roles open to candidates anywhere in India, with no fixed city.
+    expected_route: semantic
+    relevant: { cities: [Remote (India)] }
+
+  # --- Company-specific (5) -----------------------------------------------------
+  - id: EV-033
+    category: company
+    question: What does Databricks look for in engineers?
+    expected_route: semantic
+    relevant: { company: Databricks }
+    notes: PRD example; answer must use only Databricks postings.
+
+  - id: EV-034
+    category: company
+    question: What skills does Zscaler ask for in its AI and data roles?
+    expected_route: semantic
+    relevant: { company: Zscaler }
+
+  - id: EV-035
+    category: company
+    question: What kind of data roles is Okta hiring for?
+    expected_route: semantic
+    relevant: { company: Okta }
+
+  - id: EV-036
+    category: company
+    question: What does Coinbase expect from its data and ML engineers?
+    expected_route: semantic
+    relevant: { company: Coinbase }
+
+  - id: EV-037
+    category: company
+    question: What is Amgen looking for in data and AI candidates?
+    expected_route: semantic
+    relevant: { company: Amgen }
+
+  # --- Resume matching and gap analysis (5) -----------------------------------
+  - id: EV-038
+    category: resume
+    resume_text: >
+      Data engineer, 4 years. Built batch pipelines in Python and SQL on AWS with Amazon S3
+      and Amazon Redshift, orchestrated with Apache Airflow. Modelled data with dbt.
+    filters: { cities: [Hyderabad], role_keywords: [data engineer] }
+    expected_skills: [AWS, Amazon Redshift, Amazon S3, Apache Airflow, Data modeling, Python, SQL, dbt]
+
+  - id: EV-039
+    category: resume
+    resume_text: >
+      Machine learning engineer. PyTorch and scikit-learn models, served with FastAPI in Docker
+      on Kubernetes. Experiment tracking with MLflow. Some NLP with Hugging Face.
+    filters: { role_keywords: [machine learning] }
+    expected_skills: [Docker, FastAPI, Hugging Face, Kubernetes, MLflow, NLP, PyTorch, scikit-learn]
+
+  - id: EV-040
+    category: resume
+    resume_text: >
+      Analytics engineer: dbt on Snowflake, dimensional modeling (Kimball star schemas), Looker
+      dashboards, Git and GitHub Actions for CI/CD.
+    filters: { cities: [Bengaluru] }
+    expected_skills: [CI/CD, Dimensional modeling, Git, GitHub Actions, Looker, Snowflake, dbt]
+
+  - id: EV-041
+    category: resume
+    resume_text: >
+      AI engineer building RAG applications with LangChain and LangGraph, embeddings stored in
+      pgvector, prompt engineering and evaluation of LLMs through the OpenAI API.
+    filters: { work_modes: [remote] }
+    expected_skills: [Embeddings, LLMs, LangChain, LangGraph, OpenAI API, Prompt engineering, RAG, pgvector]
+
+  - id: EV-042
+    category: resume
+    resume_text: >
+      Big data developer: Apache Spark and Scala on Hadoop and Hive, streaming with Apache Kafka,
+      some Java. Moving to Databricks and Delta Lake.
+    filters: {}
+    expected_skills: [Apache Kafka, Apache Spark, Databricks, Delta Lake, Hadoop, Hive, Java, Scala]
+
+  # --- Freshness and history (4) ------------------------------------------------
+  - id: EV-043
+    category: freshness
+    question: Open Kafka roles posted in the last 14 days.
+    expected_route: semantic
+    relevant: { skills_all: [Apache Kafka], posted_within_days: 14 }
+    notes: Date filter and open status.
+
+  - id: EV-044
+    category: freshness
+    question: Which data engineering roles in Hyderabad were posted this week?
+    expected_route: semantic
+    relevant: { cities: [Hyderabad], posted_within_days: 7, title_like: data engineer }
+
+  - id: EV-045
+    category: freshness
+    question: Is the Senior Data Engineer role at Okta still open?
+    expected_route: semantic
+    relevant: { company: Okta, title_like: senior data engineer }
+    notes: Status must come from the cited posting.
+
+  - id: EV-046
+    category: freshness
+    question: Recently posted remote AI roles, from the last 30 days.
+    expected_route: semantic
+    relevant: { work_modes: [remote], posted_within_days: 30, skills_any: [LLMs, Generative AI, AI agents, RAG, Deep learning, NLP] }
+
+  # --- Unanswerable or out of scope (6) ---------------------------------------
+  - id: EV-047
+    category: unanswerable
+    question: What is the average salary for prompt engineers on Mars?
+    expected_route: unanswerable
+    notes: PRD example; must decline.
+
+  - id: EV-048
+    category: unanswerable
+    question: What salary do senior data engineers in Hyderabad earn?
+    expected_route: unanswerable
+    notes: Salaries aren't collected.
+
+  - id: EV-049
+    category: unanswerable
+    question: How many data engineering jobs are there in London?
+    expected_route: unanswerable
+    notes: Outside the geography.
+
+  - id: EV-050
+    category: unanswerable
+    question: Will demand for data engineers grow by 2030?
+    expected_route: unanswerable
+    notes: Prediction.
+
+  - id: EV-051
+    category: unanswerable
+    question: What is the capital of France?
+    expected_route: unanswerable
+    notes: Not about jobs.
+
+  - id: EV-052
+    category: unanswerable
+    question: Write me a poem about Apache Kafka.
+    expected_route: unanswerable
+    notes: Not a question about the data.
+
+  # --- Combined (2) -------------------------------------------------------------
+  - id: EV-053
+    category: combined
+    question: How many remote roles mention LangChain, and what are some examples?
+    expected_route: combined
+    relevant: { work_modes: [remote], skills_all: [LangChain] }
+
+  - id: EV-054
+    category: combined
+    question: How many jobs mention Apache Iceberg, and what do those postings say about it?
+    expected_route: combined
+    relevant: { skills_all: [Apache Iceberg] }

@@ -22,7 +22,7 @@ from jobmarket.settings import Settings, get_settings
 
 DEFAULT_CHAT_MODELS = {
     "groq": "openai/gpt-oss-120b",
-    "gemini": "gemini-2.5-flash",
+    "gemini": "gemini-3.5-flash-lite",  # gemini-2.5-* is closed to new keys; full Flash is often overloaded
     "ollama": "llama3",
 }
 RETRY_WAITS_SECONDS = (2, 5, 15, 30)
@@ -31,6 +31,7 @@ RETRYABLE_STATUS = {429, 500, 502, 503, 504}
 # Some embedding models are trained with task prefixes; using them improves retrieval.
 EMBEDDING_PREFIXES = {
     "nomic-embed-text": ("search_document: ", "search_query: "),
+    "mxbai-embed-large": ("", "Represent this sentence for searching relevant passages: "),
 }
 
 
@@ -151,7 +152,15 @@ class GroqChat:
             body["max_completion_tokens"] = max_tokens + 1000  # room for the reasoning tokens
         if json_output:
             body["response_format"] = {"type": "json_object"}
-        data = _post(self.client, self.url, json=body, headers={"Authorization": f"Bearer {self.key}"})
+        try:
+            data = _post(self.client, self.url, json=body, headers={"Authorization": f"Bearer {self.key}"})
+        except ModelError as exc:
+            # Groq rejects a reply that isn't valid JSON in JSON mode; ask again without the
+            # constraint (the prompt still asks for JSON, and callers extract it)
+            if "json_validate_failed" not in str(exc):
+                raise
+            body.pop("response_format", None)
+            data = _post(self.client, self.url, json=body, headers={"Authorization": f"Bearer {self.key}"})
         usage = data.get("usage") or {}
         return ChatResult(
             text=data["choices"][0]["message"]["content"] or "",

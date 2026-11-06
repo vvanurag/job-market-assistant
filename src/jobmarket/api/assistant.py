@@ -28,6 +28,7 @@ from jobmarket.settings import Settings
 from jobmarket.skills import canonical_skill, dictionary
 
 Route = Literal["analytical", "semantic", "combined", "unanswerable"]
+PROMPT_VERSION = "v1"  # recorded with every evaluation run; change it whenever a prompt changes
 NOT_ENOUGH = "I don't have enough information in the collected job postings to answer that."
 
 
@@ -115,6 +116,7 @@ class AskResult:
     metric: MetricResult | None = None
     plan: dict | None = None
     model_calls: list[ChatResult] = field(default_factory=list)
+    retrieved: list[store.Hit] = field(default_factory=list)  # what the answer was based on, in rank order
 
 
 def _parse_json(text: str) -> dict:
@@ -235,6 +237,7 @@ def answer(
     hits = retrieve(settings, embedder, plan.search or SearchPlan(query=question), limit=search_limit)
     if not hits:
         return AskResult(NOT_ENOUGH, plan.route, metric=metric, plan=plan_dump, model_calls=calls)
+    base = {"metric": metric, "plan": plan_dump, "model_calls": calls, "retrieved": hits}
 
     sources, numbered = _sources_block(hits)
     analytics = f"Analytics result: {metric.summary}\n\n" if metric else ""
@@ -249,7 +252,7 @@ def answer(
     used = [s for s in reply.get("sources_used", []) if s in numbered]
     used += [s for s in re.findall(r"\[(S\d+)\]", reply.get("answer", "")) if s in numbered and s not in used]
     if not reply.get("sufficient") or not used or not reply.get("answer"):
-        return AskResult(NOT_ENOUGH, plan.route, metric=metric, plan=plan_dump, model_calls=calls)
+        return AskResult(NOT_ENOUGH, plan.route, **base)
 
     seen, citations = set(), []
     for sid in used:
@@ -264,4 +267,4 @@ def answer(
     }
     text = re.sub(r"\[(S\d+)\]", lambda m: f"[{order[m.group(1)]}]" if m.group(1) in order else "", reply["answer"])
     text = re.sub(r"\b(S\d+)\b", lambda m: f"[{order[m.group(1)]}]" if m.group(1) in order else "a source", text)
-    return AskResult(text.strip(), plan.route, citations, metric, plan_dump, calls)
+    return AskResult(text.strip(), plan.route, citations, **base)

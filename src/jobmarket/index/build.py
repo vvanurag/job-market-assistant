@@ -74,19 +74,32 @@ def build_index(
     embedder: Embedder,
     limit: int | None = None,
     progress: Callable[[str], None] = lambda _msg: None,
+    docs: list[dict] | None = None,
+    schema: str | None = None,
+    remove_missing: bool = True,
+    source_label: str | None = None,
 ) -> BuildResult:
+    """Refresh the index from Gold. ``docs`` and ``schema`` let an experiment index a
+    different document set into its own schema (see evaluation/experiment.py)."""
     started = time.perf_counter()
-    docs = read_gold(settings, GOLD_QUERY)
+    docs = docs if docs is not None else read_gold(settings, GOLD_QUERY)
     if limit:
         docs = sorted(docs, key=lambda d: d["posting_key"])[:limit]
-    schema = store.schema_for(embedder.name)
+    schema = schema or store.schema_for(embedder.name)
 
     with store.connect(settings.vectordb_dsn.get_secret_value()) as con:
         store.ensure_schema(con, schema, embedder.dimensions)
         build_id = con.execute(
             "insert into public.index_builds (index_schema, embedding_model, dimensions, chunker_version, "
             "source_warehouse, postings_in_gold) values (%s, %s, %s, %s, %s, %s) returning build_id",
-            [schema, embedder.name, embedder.dimensions, CHUNKER_VERSION, settings.serving_warehouse, len(docs)],
+            [
+                schema,
+                embedder.name,
+                embedder.dimensions,
+                CHUNKER_VERSION,
+                source_label or settings.serving_warehouse,
+                len(docs),
+            ],
         ).fetchone()[0]
         con.commit()
 
@@ -97,8 +110,8 @@ def build_index(
         to_embed = [d for d in docs if existing.get(d["posting_key"]) != f"{d['document_hash']}|{CHUNKER_VERSION}"]
         embed_keys = {d["posting_key"] for d in to_embed}
         to_update = [d for d in docs if d["posting_key"] in existing and d["posting_key"] not in embed_keys]
-        # a limited (test) build sees only part of Gold, so it must not delete the rest
-        to_remove = [] if limit else [k for k in existing if k not in wanted]
+        # a partial build (a --limit test, or one streamed posting) must not delete the rest
+        to_remove = [k for k in existing if k not in wanted] if remove_missing and not limit else []
 
         # metadata-only refresh: status, seniority, skills... without re-embedding
         set_list = ", ".join(f"{c} = %s" for c in METADATA_COLUMNS)

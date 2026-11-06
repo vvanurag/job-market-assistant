@@ -20,8 +20,8 @@ log = logging.getLogger("jobmarket.api")
 PRICE_PER_MILLION = {
     "groq:openai/gpt-oss-120b": (0.15, 0.60),
     "groq:openai/gpt-oss-20b": (0.075, 0.30),
-    "gemini:gemini-2.5-flash": (0.30, 2.50),
-    "gemini:gemini-2.5-flash-lite": (0.10, 0.40),
+    # Gemini 3.5 Flash-Lite list price wasn't published when this was written; add it here
+    # when known. Until then its paid-equivalent cost is reported as 0.
 }
 
 DDL = """

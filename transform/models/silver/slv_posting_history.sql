@@ -28,6 +28,9 @@ with deliveries as (
         location_raw,
         md5(coalesce(description_raw, ''))          as description_hash
     from {{ ref('stg_postings') }}
+    -- streamed batches hold only new postings, so they aren't full runs: counting them
+    -- would make every other posting look "missed" (ADR-0009)
+    where batch_id not like 'stream-%'
 
 ),
 
@@ -41,6 +44,7 @@ runs as (
     from (
         select source_id, batch_id, min(loaded_at) as run_started_at
         from {{ ref('stg_postings') }}
+        where batch_id not like 'stream-%'
         group by source_id, batch_id
     ) as batches
 
