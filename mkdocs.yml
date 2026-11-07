@@ -24,7 +24,10 @@ theme:
   features:
     - navigation.tabs
     - navigation.sections
+    - navigation.indexes
+    - navigation.path
     - navigation.top
+    - toc.integrate
     - search.suggest
     - search.highlight
     - content.code.copy
@@ -55,46 +58,61 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - User's Guide: guide.md
-  - Project Story: story.md
-  - Architecture: architecture.md
-  - Requirements:
-      - Product Requirements: requirements/product_requirements.md
-      - Functional Requirements: requirements/functional_requirements.md
-      - Non-Functional Requirements: requirements/non_functional_requirements.md
-      - Data Sources: requirements/data_sources.md
-      - Evaluation Plan: requirements/evaluation_plan.md
-  - Roadmap: roadmap.md
-  - Pipeline:
-      - Bronze Layer: pipeline/bronze.md
-      - Silver Layer: pipeline/silver.md
-      - Gold Layer: pipeline/gold.md
-      - Running on Snowflake: pipeline/snowflake.md
-      - Retrieval index: pipeline/retrieval_index.md
-  - Operations:
-      - Orchestration: operations/orchestration.md
-      - Streaming: operations/streaming.md
-      - Delivery: operations/delivery.md
-  - Serving:
-      - API: serving/api.md
-  - Evaluation:
-      - Results: evaluation/results.md
-      - Release readiness: evaluation/release.md
-  - Development:
-      - Setup: development/setup.md
-      - Conventions: development/conventions.md
+  # 1. Plain-language explanations, no code needed.
+  - Learn:
+      - User's Guide: guide.md
+      - Project Story: story.md
+      - How the Pieces Operate Together: how-it-operates.md
+      - How Data Moves: data-movement.md
+      - Glossary: glossary.md
+  # 2. What each part of the running system contains and how to run it.
+  - Components:
+      - Pipeline:
+          - Bronze Layer: pipeline/bronze.md
+          - Silver Layer: pipeline/silver.md
+          - Gold Layer: pipeline/gold.md
+          - Running on Snowflake: pipeline/snowflake.md
+          - Retrieval Index: pipeline/retrieval_index.md
+      - Serving:
+          - API: serving/api.md
+      - Operations:
+          - Orchestration: operations/orchestration.md
+          - Streaming: operations/streaming.md
+          - Delivery: operations/delivery.md
+      - Evaluation:
+          - Results: evaluation/results.md
+          - Release Readiness: evaluation/release.md
+  # 3. The source code, piece by piece. Each piece gets a folder with an index.md
+  #    overview, so it can grow down to single files, e.g.
+  #    - Collect & Bronze: [code/bronze/index.md, {loader.py: code/bronze/loader.md}]
+  - Code Map:
+      - code/index.md
+  # 4. Why it is built this way.
   - Decisions:
-      - Overview: decisions/index.md
-      - "ADR-0001: Record decisions": decisions/0001-record-architecture-decisions.md
-      - "ADR-0002: Project domain": decisions/0002-job-market-as-project-domain.md
-      - "ADR-0003: Primary warehouse": decisions/0003-snowflake-as-primary-warehouse.md
-      - "ADR-0004: Vector store": decisions/0004-vector-store-selection.md
-      - "ADR-0005: Portable warehouse": decisions/0005-portable-warehouse-layer.md
-      - "ADR-0006: LLM providers": decisions/0006-llm-provider-strategy.md
-      - "ADR-0007: Chunking": decisions/0007-chunking-strategy.md
-      - "ADR-0008: Metrics layer": decisions/0008-metrics-layer-not-text-to-sql.md
-      - "ADR-0009: Lambda streaming": decisions/0009-lambda-architecture-for-streaming.md
-      - "ADR-0010: dbt in Airflow": decisions/0010-dbt-in-airflow.md
-      - "ADR-0011: Model selection": decisions/0011-model-selection.md
-      - Template: decisions/template.md
-  - Glossary: glossary.md
+      - Decisions, Explained: architecture.md
+      - All Decision Records: decisions/index.md
+      - Records:
+          - "ADR-0001: Record decisions": decisions/0001-record-architecture-decisions.md
+          - "ADR-0002: Project domain": decisions/0002-job-market-as-project-domain.md
+          - "ADR-0003: Primary warehouse": decisions/0003-snowflake-as-primary-warehouse.md
+          - "ADR-0004: Vector store": decisions/0004-vector-store-selection.md
+          - "ADR-0005: Portable warehouse": decisions/0005-portable-warehouse-layer.md
+          - "ADR-0006: LLM providers": decisions/0006-llm-provider-strategy.md
+          - "ADR-0007: Chunking": decisions/0007-chunking-strategy.md
+          - "ADR-0008: Metrics layer": decisions/0008-metrics-layer-not-text-to-sql.md
+          - "ADR-0009: Lambda streaming": decisions/0009-lambda-architecture-for-streaming.md
+          - "ADR-0010: dbt in Airflow": decisions/0010-dbt-in-airflow.md
+          - "ADR-0011: Model selection": decisions/0011-model-selection.md
+          - Template: decisions/template.md
+  # 5. Planning and working on the project.
+  - Project:
+      - Roadmap: roadmap.md
+      - Requirements:
+          - Product Requirements: requirements/product_requirements.md
+          - Functional Requirements: requirements/functional_requirements.md
+          - Non-Functional Requirements: requirements/non_functional_requirements.md
+          - Data Sources: requirements/data_sources.md
+          - Evaluation Plan: requirements/evaluation_plan.md
+      - Development:
+          - Setup: development/setup.md
+          - Conventions: development/conventions.md

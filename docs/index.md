@@ -1,34 +1,70 @@
+---
+hide:
+  - navigation
+  - toc
+---
+
 # Job Market Assistant
 
 Ask questions about data engineering and AI jobs in **Hyderabad, Bengaluru and remote roles open to candidates in India**, and get answers based on real job postings, with sources.
 
 > **Status:** Phases 0–8 complete. Version 1 needs 14 days of daily runs; see [Release Readiness](evaluation/release.md).
 
+## Where to go
+
+The site has five sections. Each card below is one tab in the top bar.
+
 <div class="grid cards" markdown>
 
--   :material-book-open-page-variant:{ .lg .middle } **User's Guide**
+-   :material-school-outline:{ .lg .middle } **Learn**
 
     ---
 
-    What the project does, how the system and pipeline work, how to use it, and lessons for a beginner data engineer, with diagrams throughout.
+    The system explained in plain language, no code needed.
 
-    [:octicons-arrow-right-24: Read the guide](guide.md)
+    - [User's Guide](guide.md): what it does and how to use it
+    - [Project Story](story.md): how it was built, chapter by chapter
+    - [How the Pieces Operate Together](how-it-operates.md): Snowflake, dbt, Airflow, Kafka and the layers
+    - [How Data Moves](data-movement.md): where the data is, and which program moves it
+    - [Glossary](glossary.md)
 
--   :material-script-text-outline:{ .lg .middle } **The Story of the Project**
-
-    ---
-
-    How it was built, chapter by chapter: the decisions, the dead ends and the bugs, from the first idea to a measured system.
-
-    [:octicons-arrow-right-24: Read the story](story.md)
-
--   :material-sitemap-outline:{ .lg .middle } **Architecture Decisions, Explained**
+-   :material-puzzle-outline:{ .lg .middle } **Components**
 
     ---
 
-    Why the system is built this way: each decision along the data flow, what in the use case forced it, the options rejected and the trade-offs accepted.
+    What each part of the running system contains, and how to run it.
 
-    [:octicons-arrow-right-24: Read the decisions](architecture.md)
+    - Pipeline: [Bronze](pipeline/bronze.md), [Silver](pipeline/silver.md), [Gold](pipeline/gold.md), [Snowflake](pipeline/snowflake.md), [Retrieval Index](pipeline/retrieval_index.md)
+    - Serving: [API](serving/api.md)
+    - Operations: [Orchestration](operations/orchestration.md), [Streaming](operations/streaming.md), [Delivery](operations/delivery.md)
+    - Evaluation: [Results](evaluation/results.md), [Release Readiness](evaluation/release.md)
+
+-   :material-file-tree-outline:{ .lg .middle } **Code Map**
+
+    ---
+
+    The source code, piece by piece: the main parts, how they connect and which folder holds each one.
+
+    [:octicons-arrow-right-24: Start at the overview](code/index.md)
+
+-   :material-sitemap-outline:{ .lg .middle } **Decisions**
+
+    ---
+
+    Why the system is built this way.
+
+    - [Decisions, Explained](architecture.md): each choice along the data flow, as one story
+    - [All Decision Records](decisions/index.md): the eleven ADRs
+
+-   :material-clipboard-text-outline:{ .lg .middle } **Project**
+
+    ---
+
+    Planning and working on the project.
+
+    - [Roadmap](roadmap.md)
+    - [Requirements](requirements/product_requirements.md): product, functional, non-functional, data sources, evaluation plan
+    - [Development Setup](development/setup.md) and [Conventions](development/conventions.md)
 
 </div>
 
@@ -103,22 +139,6 @@ make doctor    # checks Python, Docker, DuckDB, Snowflake, Ollama and API keys
 ```
 
 The full guide, including Snowflake and API key setup, is in [Development Setup](development/setup.md).
-
-## Documentation
-
-| Document | Purpose |
-|---|---|
-| [Product Requirements](requirements/product_requirements.md) | Vision, goals, users, scope, user stories |
-| [Functional Requirements](requirements/functional_requirements.md) | What the system must do, by component |
-| [Non-Functional Requirements](requirements/non_functional_requirements.md) | Measurable quality targets and service levels |
-| [Data Sources](requirements/data_sources.md) | Candidate sources, fields and compliance checks |
-| [Evaluation Plan](requirements/evaluation_plan.md) | How answer quality is measured |
-| [Roadmap](roadmap.md) | Delivery phases and exit criteria |
-| [Architecture Decisions](decisions/index.md) | Record of significant technical decisions |
-| [Development Setup](development/setup.md) | Getting a working local environment |
-| [Conventions](development/conventions.md) | Repository layout, code style, git and documentation rules |
-| [Glossary](glossary.md) | Terms used across the project |
-
 
 ## Author
 
